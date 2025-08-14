@@ -212,6 +212,62 @@ export default function Index() {
         </div>
       </section>
 
+      {/* Features Section */}
+      <section className="py-24 px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
+              Complete Agricultural Solution
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Everything you need to optimize your farming operations, from disease detection to expert guidance.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className={`p-3 rounded-lg ${feature.color}`}>
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <Button variant="ghost" size="sm" asChild className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Link to={feature.path}>
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <CardDescription className="text-gray-600">
+                      {feature.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-2">
+                      {feature.benefits.map((benefit, benefitIndex) => (
+                        <div key={benefitIndex} className="flex items-center text-sm text-gray-600">
+                          <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
+                          {benefit}
+                        </div>
+                      ))}
+                    </div>
+                    <Button asChild className="w-full mt-6" variant="outline">
+                      <Link to={feature.path}>
+                        Explore {feature.title}
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* Dashboard Section */}
       <section className="py-16 px-6 lg:px-8 bg-white">
         <div className="mx-auto max-w-6xl">
@@ -368,62 +424,6 @@ export default function Index() {
               </div>
             </TabsContent>
           </Tabs>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-24 px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
-              Complete Agricultural Solution
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Everything you need to optimize your farming operations, from disease detection to expert guidance.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className={`p-3 rounded-lg ${feature.color}`}>
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <Button variant="ghost" size="sm" asChild className="opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Link to={feature.path}>
-                          <ArrowRight className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                    <CardDescription className="text-gray-600">
-                      {feature.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="space-y-2">
-                      {feature.benefits.map((benefit, benefitIndex) => (
-                        <div key={benefitIndex} className="flex items-center text-sm text-gray-600">
-                          <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
-                          {benefit}
-                        </div>
-                      ))}
-                    </div>
-                    <Button asChild className="w-full mt-6" variant="outline">
-                      <Link to={feature.path}>
-                        Explore {feature.title}
-                        <ArrowRight className="h-4 w-4 ml-2" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
         </div>
       </section>
 
