@@ -232,7 +232,7 @@ export default function ExpertConsultation() {
               <div className="flex justify-center mb-2">
                 <Clock className="h-8 w-8 text-orange-600" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900">< 4hrs</h3>
+              <h3 className="text-2xl font-bold text-gray-900">&lt; 4hrs</h3>
               <p className="text-gray-600">Avg Response Time</p>
             </CardContent>
           </Card>
