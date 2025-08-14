@@ -13,30 +13,35 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { 
-    name: "Home", 
-    path: "/", 
-    icon: Leaf 
+  {
+    name: "Home",
+    path: "/",
+    icon: Leaf
   },
-  { 
-    name: "Disease Detection", 
-    path: "/disease-detection", 
-    icon: Scan 
+  {
+    name: "Disease Detection",
+    path: "/disease-detection",
+    icon: Scan
   },
-  { 
-    name: "AI Assistant", 
-    path: "/ai-chat", 
-    icon: Bot 
+  {
+    name: "AI Assistant",
+    path: "/ai-chat",
+    icon: Bot
   },
-  { 
-    name: "Community", 
-    path: "/community", 
-    icon: Users 
+  {
+    name: "Community",
+    path: "/community",
+    icon: Users
   },
-  { 
-    name: "Expert Consultation", 
-    path: "/experts", 
-    icon: UserCheck 
+  {
+    name: "Expert Consultation",
+    path: "/experts",
+    icon: UserCheck
+  },
+  {
+    name: "News",
+    path: "/news",
+    icon: Menu
   },
 ];
 
