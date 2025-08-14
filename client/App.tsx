@@ -27,6 +27,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
+          <InstallPrompt />
         </div>
       </BrowserRouter>
     </AppProvider>
