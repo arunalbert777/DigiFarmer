@@ -212,6 +212,165 @@ export default function Index() {
         </div>
       </section>
 
+      {/* Dashboard Section */}
+      <section className="py-16 px-6 lg:px-8 bg-white">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
+              Farmer Dashboard
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Stay updated with the latest agricultural news and market prices in Bengaluru
+            </p>
+          </div>
+
+          <Tabs defaultValue="news" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-8">
+              <TabsTrigger value="news" className="flex items-center space-x-2">
+                <Newspaper className="h-4 w-4" />
+                <span>Latest News</span>
+              </TabsTrigger>
+              <TabsTrigger value="prices" className="flex items-center space-x-2">
+                <DollarSign className="h-4 w-4" />
+                <span>Market Prices</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="news" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {latestNews.map((article) => (
+                  <Card key={article.id} className="hover:shadow-md transition-shadow">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between mb-2">
+                        <Badge
+                          variant="outline"
+                          className={`text-xs ${
+                            article.priority === "urgent"
+                              ? "border-red-200 text-red-700 bg-red-50"
+                              : article.priority === "high"
+                              ? "border-orange-200 text-orange-700 bg-orange-50"
+                              : "border-blue-200 text-blue-700 bg-blue-50"
+                          }`}
+                        >
+                          {article.priority === "urgent" && <AlertTriangle className="h-3 w-3 mr-1" />}
+                          {article.category}
+                        </Badge>
+                        {article.priority === "urgent" && (
+                          <Badge variant="destructive" className="text-xs animate-pulse">
+                            URGENT
+                          </Badge>
+                        )}
+                      </div>
+                      <CardTitle className="text-lg leading-tight mb-2">
+                        {article.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        {article.summary}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center">
+                            <Clock className="h-3 w-3 mr-1" />
+                            <span>{article.time}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <MapPin className="h-3 w-3 mr-1" />
+                            <span>{article.location}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        Read More
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <div className="text-center mt-8">
+                <Button variant="outline" asChild>
+                  <Link to="/news">
+                    View All News
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Link>
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="prices" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {marketPrices.map((price, index) => (
+                  <Card key={index} className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-lg">{price.commodity}</h3>
+                          <p className="text-sm text-gray-600">{price.market}</p>
+                        </div>
+                        <div className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${
+                          price.trend === "up"
+                            ? "bg-green-100 text-green-800"
+                            : price.trend === "down"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}>
+                          {price.trend === "up" && "↗"}
+                          {price.trend === "down" && "↘"}
+                          {price.trend === "stable" && "→"}
+                          <span className="ml-1">
+                            {price.change > 0 ? "+" : ""}{price.change}%
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex items-baseline space-x-2">
+                          <span className="text-2xl font-bold text-gray-900">₹{price.currentPrice}</span>
+                          <span className="text-sm text-gray-600">/{price.unit}</span>
+                        </div>
+
+                        <div className="flex items-center space-x-2 text-sm">
+                          <span className="text-gray-600">Previous:</span>
+                          <span className={`font-medium ${
+                            price.currentPrice > price.previousPrice
+                              ? "text-red-600"
+                              : price.currentPrice < price.previousPrice
+                              ? "text-green-600"
+                              : "text-gray-600"
+                          }`}>
+                            ₹{price.previousPrice}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <div className="bg-leaf-50 rounded-lg p-6">
+                <div className="text-center">
+                  <h3 className="font-semibold text-gray-900 mb-2">Real-time Market Data</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Prices updated every hour from major wholesale markets in Bengaluru
+                  </p>
+                  <div className="flex items-center justify-center space-x-4 text-xs text-gray-500">
+                    <div className="flex items-center">
+                      <Clock className="h-3 w-3 mr-1" />
+                      <span>Last updated: 2 hours ago</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      <span>Data source: APMC Bengaluru</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-24 px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
