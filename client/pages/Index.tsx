@@ -224,66 +224,80 @@ export default function Index() {
             </TabsList>
 
             <TabsContent value="news" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {latestNews.map((article) => (
-                  <Card key={article.id} className="hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between mb-2">
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${
-                            article.priority === "urgent"
-                              ? "border-red-200 text-red-700 bg-red-50"
-                              : article.priority === "high"
-                              ? "border-orange-200 text-orange-700 bg-orange-50"
-                              : "border-blue-200 text-blue-700 bg-blue-50"
-                          }`}
-                        >
-                          {article.priority === "urgent" && <AlertTriangle className="h-3 w-3 mr-1" />}
-                          {article.category}
-                        </Badge>
-                        {article.priority === "urgent" && (
-                          <Badge variant="destructive" className="text-xs animate-pulse">
-                            URGENT
-                          </Badge>
-                        )}
-                      </div>
-                      <CardTitle className="text-lg leading-tight mb-2">
-                        {article.title}
-                      </CardTitle>
-                      <CardDescription className="text-sm">
-                        {article.summary}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="flex items-center">
-                            <Clock className="h-3 w-3 mr-1" />
-                            <span>{article.time}</span>
+              {newsController.loading ? (
+                <div className="text-center py-8">
+                  <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-gray-400" />
+                  <p className="text-gray-600">Loading latest news...</p>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {newsController.latestNews.slice(0, 3).map((article) => (
+                      <Card key={article.id} className="hover:shadow-md transition-shadow">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-start justify-between mb-2">
+                            <Badge
+                              variant="outline"
+                              className={`text-xs ${
+                                article.priority === "urgent"
+                                  ? "border-red-200 text-red-700 bg-red-50"
+                                  : article.priority === "high"
+                                  ? "border-orange-200 text-orange-700 bg-orange-50"
+                                  : "border-blue-200 text-blue-700 bg-blue-50"
+                              }`}
+                            >
+                              {article.priority === "urgent" && <AlertTriangle className="h-3 w-3 mr-1" />}
+                              {article.category}
+                            </Badge>
+                            {article.priority === "urgent" && (
+                              <Badge variant="destructive" className="text-xs animate-pulse">
+                                URGENT
+                              </Badge>
+                            )}
                           </div>
-                          <div className="flex items-center">
-                            <MapPin className="h-3 w-3 mr-1" />
-                            <span>{article.location}</span>
+                          <CardTitle className="text-lg leading-tight mb-2">
+                            {article.title}
+                          </CardTitle>
+                          <CardDescription className="text-sm">
+                            {article.summary}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                            <div className="flex items-center space-x-3">
+                              <div className="flex items-center">
+                                <Clock className="h-3 w-3 mr-1" />
+                                <span>{formatTimestamp(article.publishedAt)}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <MapPin className="h-3 w-3 mr-1" />
+                                <span>{article.location}</span>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm" className="w-full">
-                        <ExternalLink className="h-3 w-3 mr-1" />
-                        Read More
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              <div className="text-center mt-8">
-                <Button variant="outline" asChild>
-                  <Link to="/news">
-                    View All News
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Link>
-                </Button>
-              </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => newsController.incrementViews(article.id)}
+                          >
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            Read More
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                  <div className="text-center mt-8">
+                    <Button variant="outline" asChild>
+                      <Link to="/news">
+                        View All News
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Link>
+                    </Button>
+                  </div>
+                </>
+              )}
             </TabsContent>
 
             <TabsContent value="prices" className="space-y-6">
