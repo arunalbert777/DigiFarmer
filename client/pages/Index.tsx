@@ -396,7 +396,7 @@ export default function Index() {
             Ready to Transform Your Farm?
           </h2>
           <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-            Join thousands of farmers who are already using AgroDoc to improve their crop yields and make smarter farming decisions.
+            Join thousands of farmers who are already using DigiFarmer to improve their crop yields and make smarter farming decisions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" asChild>
