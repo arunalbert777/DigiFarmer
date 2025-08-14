@@ -204,7 +204,7 @@ export default function Index() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
-              Farmer Dashboard
+              To Updates
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Stay updated with the latest agricultural news and market prices in Bengaluru
