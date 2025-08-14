@@ -78,9 +78,15 @@ export const useNewsController = (): UseNewsControllerReturn => {
   }, []);
 
   const loadLatestNews = useCallback(async (limit: number = 5) => {
+    // Use mock data by default for development
+    const mockNews = newsService.getNewsMock().slice(0, limit);
+    setLatestNews(mockNews);
+
+    // Commented out API call for now - uncomment when backend is ready
+    /*
     try {
       const response = await newsService.getLatestNews(limit);
-      
+
       if (response.success && response.data) {
         setLatestNews(response.data);
       } else {
@@ -93,6 +99,7 @@ export const useNewsController = (): UseNewsControllerReturn => {
       const mockNews = newsService.getNewsMock().slice(0, limit);
       setLatestNews(mockNews);
     }
+    */
   }, []);
 
   const searchNews = useCallback(async (query: string) => {
