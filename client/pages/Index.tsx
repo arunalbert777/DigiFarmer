@@ -301,72 +301,89 @@ export default function Index() {
             </TabsContent>
 
             <TabsContent value="prices" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {marketPrices.map((price, index) => (
-                  <Card key={index} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <h3 className="font-semibold text-gray-900 text-lg">{price.commodity}</h3>
-                          <p className="text-sm text-gray-600">{price.market}</p>
-                        </div>
-                        <div className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${
-                          price.trend === "up"
-                            ? "bg-green-100 text-green-800"
-                            : price.trend === "down"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}>
-                          {price.trend === "up" && "↗"}
-                          {price.trend === "down" && "↘"}
-                          {price.trend === "stable" && "→"}
-                          <span className="ml-1">
-                            {price.change > 0 ? "+" : ""}{price.change}%
+              {priceController.loading ? (
+                <div className="text-center py-8">
+                  <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-gray-400" />
+                  <p className="text-gray-600">Loading market prices...</p>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {priceController.marketPrices.slice(0, 6).map((price) => (
+                      <Card key={price.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <h3 className="font-semibold text-gray-900 text-lg">{price.commodity}</h3>
+                              <p className="text-sm text-gray-600">{price.market}</p>
+                            </div>
+                            <div className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${priceController.getPriceChangeColor(price.trend)}`}>
+                              {priceController.getPriceChangeIcon(price.trend)}
+                              <span className="ml-1">
+                                {priceController.formatPriceChange(price.change)}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <div className="flex items-baseline space-x-2">
+                              <span className="text-2xl font-bold text-gray-900">{priceController.formatPrice(price.currentPrice)}</span>
+                              <span className="text-sm text-gray-600">/{price.unit}</span>
+                            </div>
+
+                            <div className="flex items-center space-x-2 text-sm">
+                              <span className="text-gray-600">Previous:</span>
+                              <span className={`font-medium ${
+                                price.currentPrice > price.previousPrice
+                                  ? "text-red-600"
+                                  : price.currentPrice < price.previousPrice
+                                  ? "text-green-600"
+                                  : "text-gray-600"
+                              }`}>
+                                {priceController.formatPrice(price.previousPrice)}
+                              </span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                  <div className="bg-leaf-50 rounded-lg p-6">
+                    <div className="text-center">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-gray-900">Real-time Market Data</h3>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={priceController.refreshPrices}
+                          disabled={priceController.loading}
+                        >
+                          <RefreshCw className={`h-3 w-3 mr-1 ${priceController.loading ? 'animate-spin' : ''}`} />
+                          Refresh
+                        </Button>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Prices updated every hour from major wholesale markets in Bengaluru
+                      </p>
+                      <div className="flex items-center justify-center space-x-4 text-xs text-gray-500">
+                        <div className="flex items-center">
+                          <Clock className="h-3 w-3 mr-1" />
+                          <span>
+                            Last updated: {priceController.lastUpdated
+                              ? formatTimestamp(priceController.lastUpdated)
+                              : 'Never'
+                            }
                           </span>
                         </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex items-baseline space-x-2">
-                          <span className="text-2xl font-bold text-gray-900">₹{price.currentPrice}</span>
-                          <span className="text-sm text-gray-600">/{price.unit}</span>
-                        </div>
-
-                        <div className="flex items-center space-x-2 text-sm">
-                          <span className="text-gray-600">Previous:</span>
-                          <span className={`font-medium ${
-                            price.currentPrice > price.previousPrice
-                              ? "text-red-600"
-                              : price.currentPrice < price.previousPrice
-                              ? "text-green-600"
-                              : "text-gray-600"
-                          }`}>
-                            ₹{price.previousPrice}
-                          </span>
+                        <div className="flex items-center">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          <span>Data source: APMC Bengaluru</span>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              <div className="bg-leaf-50 rounded-lg p-6">
-                <div className="text-center">
-                  <h3 className="font-semibold text-gray-900 mb-2">Real-time Market Data</h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Prices updated every hour from major wholesale markets in Bengaluru
-                  </p>
-                  <div className="flex items-center justify-center space-x-4 text-xs text-gray-500">
-                    <div className="flex items-center">
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>Last updated: 2 hours ago</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      <span>Data source: APMC Bengaluru</span>
                     </div>
                   </div>
-                </div>
-              </div>
+                </>
+              )}
             </TabsContent>
           </Tabs>
         </div>
