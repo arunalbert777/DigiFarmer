@@ -42,7 +42,7 @@ const navItems = [
   {
     name: "News",
     path: "/news",
-    icon: Menu
+    icon: Newspaper
   },
 ];
 
