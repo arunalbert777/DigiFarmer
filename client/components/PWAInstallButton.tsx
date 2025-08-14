@@ -1,20 +1,67 @@
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Download, Smartphone } from "lucide-react";
-import { usePWA } from "../hooks/usePWA";
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
 
 export function PWAInstallButton() {
-  const { canInstall, installApp, isInstalled } = usePWA();
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
 
-  if (isInstalled || !canInstall) {
-    return null;
-  }
+  useEffect(() => {
+    // Check if app is already installed
+    if (window.matchMedia('(display-mode: standalone)').matches ||
+        (window.navigator as any).standalone === true) {
+      setIsInstalled(true);
+    }
+
+    // Listen for beforeinstallprompt event
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      console.log('Install prompt available');
+    };
+
+    // Listen for app installed event
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+      console.log('App installed');
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
 
   const handleInstall = async () => {
-    const success = await installApp();
-    if (success) {
-      console.log('App installed successfully');
+    if (!deferredPrompt) {
+      // Fallback for browsers that don't support the install prompt
+      alert('To install DigiFarmer:\n\n• Chrome: Click the install icon in the address bar\n• Mobile: Use "Add to Home Screen" from browser menu\n• Edge: Look for the app available notification');
+      return;
+    }
+
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('Install result:', outcome);
+      setDeferredPrompt(null);
+    } catch (error) {
+      console.error('Installation failed:', error);
     }
   };
+
+  // Always show the button unless app is already installed
+  if (isInstalled) {
+    return null;
+  }
 
   return (
     <Button
