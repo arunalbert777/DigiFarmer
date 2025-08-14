@@ -70,94 +70,22 @@ const stats = [
   { label: "Countries", value: "25+", icon: Globe }
 ];
 
-const latestNews = [
-  {
-    id: "1",
-    title: "Karnataka Government Announces ₹500 Crore Package for Bengaluru Farmers",
-    summary: "New financial assistance scheme to support sustainable farming practices and crop insurance.",
-    category: "Government Policy",
-    time: "2 hours ago",
-    priority: "high",
-    location: "Bengaluru"
-  },
-  {
-    id: "2",
-    title: "Weather Alert: Heavy Rains Expected in Bengaluru Rural This Week",
-    summary: "Meteorological department issues warning for 3-day heavy rainfall period.",
-    category: "Weather Alert",
-    time: "5 hours ago",
-    priority: "urgent",
-    location: "Bengaluru Rural"
-  },
-  {
-    id: "3",
-    title: "New Wholesale Market Opens in Electronic City for Vegetable Farmers",
-    summary: "Modern facilities with cold storage and direct farmer-to-buyer connections now available.",
-    category: "Market News",
-    time: "1 day ago",
-    priority: "medium",
-    location: "Electronic City"
-  }
-];
-
-const marketPrices = [
-  {
-    commodity: "Tomato",
-    currentPrice: 45,
-    previousPrice: 42,
-    unit: "kg",
-    market: "KR Market",
-    trend: "up",
-    change: 7.1
-  },
-  {
-    commodity: "Onion",
-    currentPrice: 35,
-    previousPrice: 38,
-    unit: "kg",
-    market: "KR Market",
-    trend: "down",
-    change: -7.9
-  },
-  {
-    commodity: "Potato",
-    currentPrice: 28,
-    previousPrice: 28,
-    unit: "kg",
-    market: "KR Market",
-    trend: "stable",
-    change: 0
-  },
-  {
-    commodity: "Cabbage",
-    currentPrice: 18,
-    previousPrice: 15,
-    unit: "kg",
-    market: "Madiwala Market",
-    trend: "up",
-    change: 20.0
-  },
-  {
-    commodity: "Carrot",
-    currentPrice: 32,
-    previousPrice: 35,
-    unit: "kg",
-    market: "Madiwala Market",
-    trend: "down",
-    change: -8.6
-  },
-  {
-    commodity: "Green Beans",
-    currentPrice: 55,
-    previousPrice: 52,
-    unit: "kg",
-    market: "Russell Market",
-    trend: "up",
-    change: 5.8
-  }
-];
-
 export default function Index() {
+  // Initialize MVC controllers
+  const newsController = useNewsController();
+  const priceController = useMarketPriceController();
+
+  const formatTimestamp = (date: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffHours < 1) return "Just now";
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString();
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-leaf-50 via-white to-earth-50">
       {/* Hero Section */}
