@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
+import { PWAInstallButton, PWAInstallButtonMobile } from "./PWAInstallButton";
 import {
   Leaf,
   Scan,
