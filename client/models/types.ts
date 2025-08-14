@@ -200,3 +200,72 @@ export interface MarketPriceFilter {
   dateFrom?: Date;
   dateTo?: Date;
 }
+
+// Marketplace Product model
+export const ProductSchema = z.object({
+  id: z.string(),
+  farmerId: z.string(),
+  farmerName: z.string(),
+  farmerAvatar: z.string().optional(),
+  title: z.string().min(3).max(100),
+  description: z.string().min(10).max(1000),
+  category: z.enum(['Fruits', 'Vegetables', 'Grains', 'Pulses', 'Spices', 'Dairy', 'Organic', 'Seeds', 'Equipment', 'Other']),
+  price: z.number().positive(),
+  unit: z.enum(['kg', 'gram', 'ton', 'piece', 'dozen', 'liter', 'bag', 'quintal']),
+  quantity: z.number().positive(),
+  minOrder: z.number().positive().optional(),
+  images: z.array(z.string()).min(1).max(5),
+  location: z.string(),
+  harvest_date: z.date().optional(),
+  expiry_date: z.date().optional(),
+  is_organic: z.boolean().default(false),
+  quality_grade: z.enum(['A', 'B', 'C']).optional(),
+  tags: z.array(z.string()).default([]),
+  status: z.enum(['available', 'sold', 'expired', 'draft']).default('available'),
+  views: z.number().min(0).default(0),
+  likes: z.number().min(0).default(0),
+  contact_phone: z.string().optional(),
+  contact_email: z.string().email().optional(),
+  negotiable: z.boolean().default(false),
+  featured: z.boolean().default(false),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export type Product = z.infer<typeof ProductSchema>;
+
+// Product creation/update form schema
+export const CreateProductSchema = ProductSchema.omit({
+  id: true,
+  farmerId: true,
+  farmerName: true,
+  farmerAvatar: true,
+  views: true,
+  likes: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type CreateProductData = z.infer<typeof CreateProductSchema>;
+
+// Product filter interface
+export interface ProductFilter {
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  location?: string;
+  is_organic?: boolean;
+  quality_grade?: string;
+  status?: string;
+  farmerId?: string;
+  search?: string;
+  tags?: string[];
+  dateFrom?: Date;
+  dateTo?: Date;
+}
+
+// Product sort options
+export interface ProductSort {
+  field: 'price' | 'createdAt' | 'views' | 'likes' | 'title';
+  direction: 'asc' | 'desc';
+}
