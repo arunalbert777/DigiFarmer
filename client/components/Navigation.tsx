@@ -59,7 +59,7 @@ export function Navigation() {
             <div className="bg-primary p-2 rounded-lg">
               <Leaf className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">AgroDoc</span>
+            <span className="text-xl font-bold text-gray-900">DigiFarmer</span>
           </Link>
 
           {/* Desktop Navigation */}
