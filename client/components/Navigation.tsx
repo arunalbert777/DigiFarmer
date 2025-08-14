@@ -1,13 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
-import { 
-  Leaf, 
-  Scan, 
-  Bot, 
-  Users, 
+import {
+  Leaf,
+  Scan,
+  Bot,
+  Users,
   UserCheck,
   Menu,
-  X
+  X,
+  Newspaper
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
