@@ -78,18 +78,28 @@ export function PWAInstallButton() {
 
 // Mobile version for the navigation menu
 export function PWAInstallButtonMobile() {
-  const { canInstall, installApp, isInstalled } = usePWA();
+  const [isInstalled, setIsInstalled] = useState(false);
 
-  if (isInstalled || !canInstall) {
-    return null;
-  }
+  useEffect(() => {
+    // Check if app is already installed
+    if (window.matchMedia('(display-mode: standalone)').matches ||
+        (window.navigator as any).standalone === true) {
+      setIsInstalled(true);
+    }
+  }, []);
 
-  const handleInstall = async () => {
-    const success = await installApp();
-    if (success) {
-      console.log('App installed successfully');
+  const handleInstall = () => {
+    // For mobile, show instructions since the install prompt might not be available
+    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+      alert('To install DigiFarmer on iOS:\n\n1. Tap the Share button at the bottom\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" to confirm');
+    } else {
+      alert('To install DigiFarmer:\n\n• Use "Add to Home Screen" from your browser menu\n• Or look for the install icon in your browser');
     }
   };
+
+  if (isInstalled) {
+    return null;
+  }
 
   return (
     <button
