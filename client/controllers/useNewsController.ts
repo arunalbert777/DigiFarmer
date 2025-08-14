@@ -37,10 +37,21 @@ export const useNewsController = (): UseNewsControllerReturn => {
   const loadNews = useCallback(async (filter?: NewsFilter, page: number = 1) => {
     setLoading(true);
     setError(null);
-    
+
+    // Use mock data by default for development
+    const mockNews = newsService.getNewsMock();
+    setNews(mockNews);
+    setHasMore(false);
+    setTotalCount(mockNews.length);
+    setCurrentPage(page);
+    setCurrentFilter(filter);
+    setLoading(false);
+
+    // Commented out API call for now - uncomment when backend is ready
+    /*
     try {
       const response = await newsService.getNews(filter, page, 10);
-      
+
       if (response.success && response.data) {
         const newNews = page === 1 ? response.data.data : [...news, ...response.data.data];
         setNews(newNews);
@@ -63,7 +74,8 @@ export const useNewsController = (): UseNewsControllerReturn => {
     } finally {
       setLoading(false);
     }
-  }, [news]);
+    */
+  }, []);
 
   const loadLatestNews = useCallback(async (limit: number = 5) => {
     try {
