@@ -25,6 +25,7 @@ function App() {
               <Route path="/community" element={<Community />} />
               <Route path="/experts" element={<ExpertConsultation />} />
               <Route path="/news" element={<News />} />
+              <Route path="/developers" element={<Developers />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
