@@ -209,7 +209,8 @@ export const useMarketPriceController = (): UseMarketPriceControllerReturn => {
     }
   }, []);
 
-  // Auto-refresh prices every 5 minutes
+  // Auto-refresh disabled for development - uncomment when backend is ready
+  /*
   useEffect(() => {
     const interval = setInterval(() => {
       refreshPrices();
@@ -217,6 +218,7 @@ export const useMarketPriceController = (): UseMarketPriceControllerReturn => {
 
     return () => clearInterval(interval);
   }, [refreshPrices]);
+  */
 
   // Initial load
   useEffect(() => {
