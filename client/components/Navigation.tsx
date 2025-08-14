@@ -46,6 +46,11 @@ const navItems = [
     path: "/news",
     icon: Newspaper
   },
+  {
+    name: "Developers",
+    path: "/developers",
+    icon: Code
+  },
 ];
 
 export function Navigation() {
