@@ -1,62 +1,203 @@
-import { DemoResponse } from "@shared/api";
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Scan, 
+  Bot, 
+  Users, 
+  UserCheck, 
+  ArrowRight,
+  CheckCircle,
+  Leaf,
+  Camera,
+  MessageCircle,
+  TrendingUp,
+  Shield,
+  Globe
+} from "lucide-react";
+
+const features = [
+  {
+    icon: Scan,
+    title: "Disease Detection",
+    description: "AI-powered plant disease identification using advanced CNN technology. Upload plant images for instant diagnosis.",
+    path: "/disease-detection",
+    color: "bg-red-50 text-red-600",
+    benefits: ["200+ disease detection", "90%+ accuracy", "Instant results"]
+  },
+  {
+    icon: Bot,
+    title: "AI Assistant",
+    description: "24/7 intelligent farming assistant for instant answers to agricultural questions and personalized advice.",
+    path: "/ai-chat",
+    color: "bg-blue-50 text-blue-600",
+    benefits: ["Instant responses", "Expert knowledge", "Personalized advice"]
+  },
+  {
+    icon: Users,
+    title: "Community",
+    description: "Connect with fellow farmers, share experiences, and learn from agricultural experts worldwide.",
+    path: "/community",
+    color: "bg-purple-50 text-purple-600",
+    benefits: ["Global network", "Experience sharing", "Peer support"]
+  },
+  {
+    icon: UserCheck,
+    title: "Expert Consultation",
+    description: "Book one-on-one consultations with certified agricultural experts for personalized farm management.",
+    path: "/experts",
+    color: "bg-green-50 text-green-600",
+    benefits: ["Certified experts", "Personalized advice", "Flexible scheduling"]
+  }
+];
+
+const stats = [
+  { label: "Farmers Helped", value: "50K+", icon: Users },
+  { label: "Diseases Detected", value: "200+", icon: Scan },
+  { label: "Success Rate", value: "94%", icon: TrendingUp },
+  { label: "Countries", value: "25+", icon: Globe }
+];
 
 export default function Index() {
-  const [exampleFromServer, setExampleFromServer] = useState("");
-  // Fetch users on component mount
-  useEffect(() => {
-    fetchDemo();
-  }, []);
-
-  // Example of how to fetch data from the server (if needed)
-  const fetchDemo = async () => {
-    try {
-      const response = await fetch("/api/demo");
-      const data = (await response.json()) as DemoResponse;
-      setExampleFromServer(data.message);
-    } catch (error) {
-      console.error("Error fetching hello:", error);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-      <div className="text-center">
-        {/* TODO: FUSION_GENERATION_APP_PLACEHOLDER replace everything here with the actual app! */}
-        <h1 className="text-2xl font-semibold text-slate-800 flex items-center justify-center gap-3">
-          <svg
-            className="animate-spin h-8 w-8 text-slate-400"
-            viewBox="0 0 50 50"
-          >
-            <circle
-              className="opacity-30"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-            />
-            <circle
-              className="text-slate-600"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-              strokeDasharray="100"
-              strokeDashoffset="75"
-            />
-          </svg>
-          Generating your app...
-        </h1>
-        <p className="mt-4 text-slate-600 max-w-md">
-          Watch the chat on the left for updates that might need your attention
-          to finish generating
-        </p>
-        <p className="mt-4 hidden max-w-md">{exampleFromServer}</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-leaf-50 via-white to-earth-50">
+      {/* Hero Section */}
+      <section className="relative px-6 lg:px-8 pb-24 pt-16">
+        <div className="mx-auto max-w-4xl text-center">
+          <div className="mb-8">
+            <Badge variant="secondary" className="mb-4">
+              <Leaf className="h-3 w-3 mr-1" />
+              Powered by Advanced AI
+            </Badge>
+          </div>
+          
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl mb-6">
+            Revolutionize Your
+            <span className="text-primary block">Agricultural Journey</span>
+          </h1>
+          
+          <p className="text-lg leading-8 text-gray-600 mb-10 max-w-2xl mx-auto">
+            Empower your farming with AI-driven disease detection, expert consultation, and a thriving community. 
+            Make data-driven decisions to maximize your crop yield and productivity.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Button size="lg" asChild className="bg-primary hover:bg-primary/90">
+              <Link to="/disease-detection">
+                <Camera className="h-4 w-4 mr-2" />
+                Start Disease Detection
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/ai-chat">
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Chat with AI Assistant
+              </Link>
+            </Button>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+            {stats.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <div key={index} className="text-center">
+                  <div className="flex justify-center mb-2">
+                    <div className="bg-primary/10 p-2 rounded-lg">
+                      <Icon className="h-6 w-6 text-primary" />
+                    </div>
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                  <div className="text-sm text-gray-600">{stat.label}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-24 px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
+              Complete Agricultural Solution
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Everything you need to optimize your farming operations, from disease detection to expert guidance.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className={`p-3 rounded-lg ${feature.color}`}>
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <Button variant="ghost" size="sm" asChild className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Link to={feature.path}>
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <CardDescription className="text-gray-600">
+                      {feature.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-2">
+                      {feature.benefits.map((benefit, benefitIndex) => (
+                        <div key={benefitIndex} className="flex items-center text-sm text-gray-600">
+                          <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
+                          {benefit}
+                        </div>
+                      ))}
+                    </div>
+                    <Button asChild className="w-full mt-6" variant="outline">
+                      <Link to={feature.path}>
+                        Explore {feature.title}
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 px-6 lg:px-8 bg-primary">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-4">
+            Ready to Transform Your Farm?
+          </h2>
+          <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
+            Join thousands of farmers who are already using AgroDoc to improve their crop yields and make smarter farming decisions.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" variant="secondary" asChild>
+              <Link to="/disease-detection">
+                <Shield className="h-4 w-4 mr-2" />
+                Get Started Free
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary" asChild>
+              <Link to="/experts">
+                <UserCheck className="h-4 w-4 mr-2" />
+                Consult Expert
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
