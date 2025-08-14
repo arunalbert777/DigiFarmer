@@ -64,7 +64,7 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
@@ -84,6 +84,7 @@ export function Navigation() {
                 </Link>
               );
             })}
+            <PWAInstallButton />
           </div>
 
           {/* Mobile menu button */}
