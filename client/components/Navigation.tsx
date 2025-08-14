@@ -10,7 +10,8 @@ import {
   Menu,
   X,
   Newspaper,
-  Code
+  Code,
+  ShoppingCart
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
