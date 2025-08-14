@@ -5,6 +5,7 @@ import DiseaseDetection from "./pages/DiseaseDetection";
 import AIChat from "./pages/AIChat";
 import Community from "./pages/Community";
 import ExpertConsultation from "./pages/ExpertConsultation";
+import News from "./pages/News";
 import NotFound from "./pages/NotFound";
 
 function App() {
