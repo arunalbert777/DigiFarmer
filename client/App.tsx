@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./contexts/AppContext";
 import { Navigation } from "./components/Navigation";
+import { InstallPrompt } from "./components/InstallPrompt";
 import Index from "./pages/Index";
 import DiseaseDetection from "./pages/DiseaseDetection";
 import AIChat from "./pages/AIChat";
