@@ -85,6 +85,21 @@ export function Navigation() {
               );
             })}
             <PWAInstallButton />
+            {/* Temporary visible install button for testing */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-primary/5 hover:bg-primary/10 text-primary border-primary/20"
+              onClick={() => {
+                if ('serviceWorker' in navigator && 'PushManager' in window) {
+                  alert('PWA features supported! Install button should work.');
+                } else {
+                  alert('PWA not supported in this browser');
+                }
+              }}
+            >
+              📱 Install App
+            </Button>
           </div>
 
           {/* Mobile menu button */}
