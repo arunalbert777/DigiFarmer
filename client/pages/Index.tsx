@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Scan, 
-  Bot, 
-  Users, 
-  UserCheck, 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Scan,
+  Bot,
+  Users,
+  UserCheck,
   ArrowRight,
   CheckCircle,
   Leaf,
@@ -14,7 +15,14 @@ import {
   MessageCircle,
   TrendingUp,
   Shield,
-  Globe
+  Globe,
+  Newspaper,
+  DollarSign,
+  Clock,
+  MapPin,
+  AlertTriangle,
+  Calendar,
+  ExternalLink
 } from "lucide-react";
 
 const features = [
