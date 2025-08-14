@@ -48,6 +48,11 @@ const navItems = [
     icon: Newspaper
   },
   {
+    name: "Marketplace",
+    path: "/marketplace",
+    icon: ShoppingCart
+  },
+  {
     name: "Developers",
     path: "/developers",
     icon: Code
