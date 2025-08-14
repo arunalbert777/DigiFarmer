@@ -18,11 +18,39 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 45 100% 96%;
+    --secondary-foreground: 142 71% 45%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 100%;
+
+    --earth-50: 45 100% 96%;
+    --earth-100: 43 96% 89%;
+    --earth-200: 42 87% 75%;
+    --earth-300: 41 81% 60%;
+    --earth-400: 39 75% 48%;
+    --earth-500: 36 70% 38%;
+    --earth-600: 33 65% 31%;
+    --earth-700: 30 59% 25%;
+    --earth-800: 27 53% 20%;
+    --earth-900: 24 45% 15%;
+
+    --leaf-50: 138 76% 97%;
+    --leaf-100: 140 84% 92%;
+    --leaf-200: 141 84% 85%;
+    --leaf-300: 142 81% 73%;
+    --leaf-400: 142 76% 59%;
+    --leaf-500: 142 71% 45%;
+    --leaf-600: 142 72% 36%;
+    --leaf-700: 142 72% 29%;
+    --leaf-800: 143 69% 24%;
+    --leaf-900: 144 61% 20%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -66,11 +94,39 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 100%;
+
+    --earth-50: 24 45% 15%;
+    --earth-100: 27 53% 20%;
+    --earth-200: 30 59% 25%;
+    --earth-300: 33 65% 31%;
+    --earth-400: 36 70% 38%;
+    --earth-500: 39 75% 48%;
+    --earth-600: 41 81% 60%;
+    --earth-700: 42 87% 75%;
+    --earth-800: 43 96% 89%;
+    --earth-900: 45 100% 96%;
+
+    --leaf-50: 144 61% 20%;
+    --leaf-100: 143 69% 24%;
+    --leaf-200: 142 72% 29%;
+    --leaf-300: 142 72% 36%;
+    --leaf-400: 142 71% 45%;
+    --leaf-500: 142 76% 59%;
+    --leaf-600: 142 81% 73%;
+    --leaf-700: 141 84% 85%;
+    --leaf-800: 140 84% 92%;
+    --leaf-900: 138 76% 97%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
