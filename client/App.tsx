@@ -20,6 +20,7 @@ function App() {
             <Route path="/ai-chat" element={<AIChat />} />
             <Route path="/community" element={<Community />} />
             <Route path="/experts" element={<ExpertConsultation />} />
+            <Route path="/news" element={<News />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
