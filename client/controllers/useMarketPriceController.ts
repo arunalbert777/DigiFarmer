@@ -40,10 +40,18 @@ export const useMarketPriceController = (): UseMarketPriceControllerReturn => {
   const loadMarketPrices = useCallback(async (filter?: MarketPriceFilter) => {
     setLoading(true);
     setError(null);
-    
+
+    // Use mock data by default for development
+    const mockPrices = marketPriceService.getMarketPricesMock();
+    setMarketPrices(mockPrices);
+    setLastUpdated(new Date());
+    setLoading(false);
+
+    // Commented out API call for now - uncomment when backend is ready
+    /*
     try {
       const response = await marketPriceService.getMarketPrices(filter, 1, 50);
-      
+
       if (response.success && response.data) {
         setMarketPrices(response.data.data);
         setLastUpdated(new Date());
@@ -62,6 +70,7 @@ export const useMarketPriceController = (): UseMarketPriceControllerReturn => {
     } finally {
       setLoading(false);
     }
+    */
   }, []);
 
   const getCurrentPrices = useCallback(async (limit: number = 10) => {
