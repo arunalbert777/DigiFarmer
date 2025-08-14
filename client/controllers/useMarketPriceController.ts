@@ -156,8 +156,14 @@ export const useMarketPriceController = (): UseMarketPriceControllerReturn => {
   }, []);
 
   const refreshPrices = useCallback(async () => {
-    await getCurrentPrices();
-  }, [getCurrentPrices]);
+    // Use mock data refresh for development
+    const mockPrices = marketPriceService.getMarketPricesMock();
+    setMarketPrices(mockPrices);
+    setLastUpdated(new Date());
+
+    // Commented out API refresh - uncomment when backend is ready
+    // await getCurrentPrices();
+  }, []);
 
   // Computed values
   const pricesByMarket = marketPrices.reduce((acc, price) => {
