@@ -50,6 +50,7 @@ const botResponses: { [key: string]: string } = {
 };
 
 export default function AIChat() {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
