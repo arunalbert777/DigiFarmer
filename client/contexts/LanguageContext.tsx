@@ -15,7 +15,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error("useLanguage must be used within a LanguageProvider");
+    console.error("useLanguage hook called outside of LanguageProvider");
+    // Return a fallback context instead of throwing
+    return {
+      language: "en" as Language,
+      setLanguage: () => {},
+      t: (key: string) => key.split('.').pop() || key
+    };
   }
   return context;
 };
