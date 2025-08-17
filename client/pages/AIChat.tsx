@@ -143,10 +143,10 @@ export default function AIChat() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
-            AI Farming Assistant
+            {t('nav.aiAssistant')}
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Get instant answers to your agricultural questions. Our AI assistant knows about crops, pest control, irrigation, and farming techniques for Bengaluru.
+            {t('nav.aiAssistant')}
           </p>
         </div>
 
@@ -157,10 +157,10 @@ export default function AIChat() {
               <CardHeader>
                 <CardTitle className="flex items-center text-lg">
                   <Lightbulb className="h-5 w-5 mr-2" />
-                  Quick Ask
+                  {t('common.search')}
                 </CardTitle>
                 <CardDescription>
-                  Try these common farming questions
+                  {t('common.search')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
