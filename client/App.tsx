@@ -30,6 +30,7 @@ function App() {
                 <Route path="/experts" element={<ExpertConsultation />} />
                 <Route path="/news" element={<News />} />
                 <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/contract-farming" element={<ContractFarming />} />
                 <Route path="/developers" element={<Developers />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
