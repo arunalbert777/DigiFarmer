@@ -8,6 +8,7 @@ export default {
     expertConsultation: 'ತಜ್ಞರ ಸಲಹೆ',
     news: 'ಸುದ್ದಿ',
     marketplace: 'ಮಾರುಕಟ್ಟೆ',
+    contractFarming: 'ಗುತ್ತಿಗೆ ಕೃಷಿ',
     developers: 'ಡೆವಲಪರ್‌ಗಳು',
   },
 
@@ -27,8 +28,8 @@ export default {
     close: 'ಮುಚ್ಚಿ',
     next: 'ಮುಂದೆ',
     previous: 'ಹಿಂದೆ',
-    viewMore: 'ಇ���್ನಷ್ಟು ನೋಡಿ',
-    learnMore: 'ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ',
+    viewMore: 'ಇನ್ನಷ್ಟು ನೋಡಿ',
+    learnMore: 'ಇನ್ನಷ್ಟು ತಿಳಿಯಿ���ಿ',
     getStarted: 'ಪ್ರಾರಂಭಿಸಿ',
     contact: 'ಸಂಪರ್ಕಿಸಿ',
     phone: 'ಫೋನ್',
@@ -92,7 +93,7 @@ export default {
   // Marketplace
   marketplace: {
     title: 'ಕೃಷಿ ಮಾರುಕಟ್ಟೆ',
-    subtitle: 'ತಾ���ಾ, ಗುಣಮಟ್ಟದ ಕೃಷಿ ಉತ್ಪನ್ನಗಳನ್ನು ಉತ್ತಮ ಬೆಲೆಗಳಿಗೆ ಖರೀದಿಸಲು ರೈತರೊಂದಿಗೆ ನೇರವಾಗಿ ಸಂಪರ್ಕ ಸಾಧಿಸಿ',
+    subtitle: 'ತಾಜಾ, ಗುಣಮಟ್ಟದ ಕೃಷಿ ಉತ್ಪನ್ನಗಳನ್ನು ಉತ್ತಮ ಬೆಲೆಗಳಿಗೆ ಖರೀದಿಸಲು ರೈತರೊಂದಿಗೆ ನೇರವಾಗಿ ಸಂಪರ್ಕ ಸಾಧಿಸಿ',
     stats: {
       products: 'ಉತ್ಪನ್ನಗಳು',
       farmers: 'ರೈತರು',
@@ -118,7 +119,7 @@ export default {
       minPrice: 'ಕನಿಷ್ಠ',
       maxPrice: 'ಗರಿಷ್ಠ',
       location: 'ಸ್ಥಳ',
-      locationPlaceholder: 'ಸ್ಥಳದಿಂದ ಹುಡುಕಿ',
+      locationPlaceholder: 'ಸ್ಥಳದಿಂದ ಹುಡು���ಿ',
       qualityGrade: 'ಗುಣಮಟ್ಟದ ದರ್ಜೆ',
       anyGrade: 'ಯಾವುದೇ ದರ್ಜೆ',
       organicOnly: 'ಸಾವಯವ ಉತ್ಪನ್ನಗಳು ಮಾತ್ರ',
@@ -158,7 +159,7 @@ export default {
         unit: 'ಘಟಕ',
         quantity: 'ಪ್ರಮಾಣ',
         minOrder: 'ಕನಿಷ್ಠ ಆರ್ಡರ್',
-        optional: 'ಐಚ್ಛಿಕ',
+        optional: 'ಐಚ��ಛಿಕ',
         location: 'ಸ್ಥಳ',
         locationPlaceholder: 'ಉದಾ., ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ',
         contactPhone: 'ಸಂಪರ್ಕ ಫೋನ್',
@@ -225,7 +226,7 @@ export default {
     availability: '{{time}} ಲಭ್ಯವಿದೆ',
     specialization: 'ವಿಶೇಷತೆ',
     languages: 'ಭಾಷೆಗಳು',
-    consultations: '{{count}} ಸಲ���ೆಗಳು',
+    consultations: '{{count}} ಸಲಹೆಗಳು',
     verified: 'ಪರಿಶೀಲಿಸಿದ ತಜ್ಞ',
   },
 
@@ -253,7 +254,7 @@ export default {
   // Community
   community: {
     title: 'ರೈತರ ಸಮುದಾಯ',
-    subtitle: 'ಸಹ ರೈತರೊಂದಿಗೆ ಸಂಪರ್ಕ ಸಾಧಿಸಿ, ಹಂಚಿಕೊಳ್ಳಿ ಮತ್ತು ಕಲಿ���ಿರಿ',
+    subtitle: 'ಸಹ ರೈತರೊಂದಿಗೆ ಸಂಪರ್ಕ ಸಾಧಿಸಿ, ಹಂಚಿಕೊಳ್ಳಿ ಮತ್ತು ಕಲಿಯಿರಿ',
     createPost: 'ಪೋಸ್ಟ್ ರಚಿಸಿ',
     posts: 'ಪೋಸ್ಟ್‌ಗಳು',
     discussions: 'ಚರ್ಚೆಗಳು',
@@ -274,7 +275,7 @@ export default {
     installButton: 'ಈಗ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ',
     installLater: 'ಬಹುಶಃ ನಂತರ',
     installInstructions: 'ಹಂಚಿಕೆ ಬಟನ್ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು "ಮುಖ್ಯ ಪರದೆಗೆ ಸೇರಿಸಿ" ಆಯ್ಕೆಮಾಡಿ',
-    offlineMessage: 'ನೀವು ಪ್ರಸ್ತುತ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದೀರಿ. ಕೆಲವು ವೈಶಿಷ್ಟ್ಯಗಳು ಲಭ್ಯವಿಲ್ಲದಿರಬಹುದು.',
+    offlineMessage: 'ನೀವು ಪ್ರಸ್ತುತ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದೀರಿ. ಕೆಲವು ವೈಶಿಷ್ಟ���ಯಗಳು ಲಭ್ಯವಿಲ್ಲದಿರಬಹುದು.',
   },
 
   // Language
