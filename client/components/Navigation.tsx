@@ -55,6 +55,11 @@ const getNavItems = (t: (key: string) => string) => [
     icon: ShoppingCart
   },
   {
+    name: t("nav.contractFarming"),
+    path: "/contract-farming",
+    icon: Handshake
+  },
+  {
     name: t("nav.developers"),
     path: "/developers",
     icon: Code
