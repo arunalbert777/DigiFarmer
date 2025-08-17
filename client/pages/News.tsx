@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Newspaper, 
-  Clock, 
-  MapPin, 
-  TrendingUp, 
-  AlertTriangle, 
+import { useLanguage } from "../contexts/LanguageContext";
+import {
+  Newspaper,
+  Clock,
+  MapPin,
+  TrendingUp,
+  AlertTriangle,
   Search,
   Calendar,
   ExternalLink,
