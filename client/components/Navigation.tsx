@@ -100,6 +100,7 @@ export function Navigation() {
                 </Link>
               );
             })}
+            <LanguageSelector />
             <PWAInstallButton />
             {/* Temporary visible install button for testing */}
             <Button
@@ -114,7 +115,7 @@ export function Navigation() {
                 }
               }}
             >
-              📱 Install App
+              📱 {t('pwa.install')}
             </Button>
           </div>
 
