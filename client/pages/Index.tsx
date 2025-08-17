@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNewsController } from "../controllers/useNewsController";
 import { useMarketPriceController } from "../controllers/useMarketPriceController";
+import { useLanguage } from "../contexts/LanguageContext";
 import {
   Scan,
   Bot,
