@@ -18,44 +18,44 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const navItems = [
+const getNavItems = (t: (key: string) => string) => [
   {
-    name: "Home",
+    name: t("nav.home"),
     path: "/",
     icon: Leaf
   },
   {
-    name: "Disease Detection",
+    name: t("nav.diseaseDetection"),
     path: "/disease-detection",
     icon: Scan
   },
   {
-    name: "AI Assistant",
+    name: t("nav.aiAssistant"),
     path: "/ai-chat",
     icon: Bot
   },
   {
-    name: "Community",
+    name: t("nav.community"),
     path: "/community",
     icon: Users
   },
   {
-    name: "Expert Consultation",
+    name: t("nav.expertConsultation"),
     path: "/experts",
     icon: UserCheck
   },
   {
-    name: "News",
+    name: t("nav.news"),
     path: "/news",
     icon: Newspaper
   },
   {
-    name: "Marketplace",
+    name: t("nav.marketplace"),
     path: "/marketplace",
     icon: ShoppingCart
   },
   {
-    name: "Developers",
+    name: t("nav.developers"),
     path: "/developers",
     icon: Code
   },
