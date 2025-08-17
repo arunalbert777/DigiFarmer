@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "../contexts/LanguageContext";
+import { diseaseDetectionService } from "../services/DiseaseDetectionService";
 import {
   Upload,
   Camera,
@@ -12,15 +15,25 @@ import {
   AlertTriangle,
   Leaf,
   FileImage,
-  X
+  X,
+  Clock,
+  Thermometer,
+  Droplets,
+  Shield,
+  Zap,
+  Eye
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const supportedCrops = [
   { name: "Tomato", diseases: 50, icon: "🍅" },
   { name: "Potato", diseases: 45, icon: "🥔" },
-  { name: "Cherry", diseases: 35, icon: "🍒" },
-  { name: "Pepper", diseases: 40, icon: "🌶️" }
+  { name: "Pepper", diseases: 40, icon: "🌶️" },
+  { name: "Cabbage", diseases: 35, icon: "🥬" },
+  { name: "Eggplant", diseases: 38, icon: "🍆" },
+  { name: "Cucumber", diseases: 30, icon: "🥒" },
+  { name: "Lettuce", diseases: 25, icon: "🥬" },
+  { name: "Spinach", diseases: 28, icon: "🥬" }
 ];
 
 export default function DiseaseDetection() {
@@ -29,14 +42,38 @@ export default function DiseaseDetection() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [selectedCropType, setSelectedCropType] = useState<string>("");
+  const [imageQuality, setImageQuality] = useState<number>(0);
+  const [analysisProgress, setAnalysisProgress] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleImageUpload = useCallback((file: File) => {
+  const handleImageUpload = useCallback(async (file: File) => {
+    setError(null);
+
+    // Validate file
+    const validation = diseaseDetectionService.validateImageFile(file);
+    if (!validation.valid) {
+      setError(validation.error || 'Invalid file');
+      return;
+    }
+
+    // Preprocess image
+    const processedFile = await diseaseDetectionService.preprocessImage(file);
+
+    // Analyze image quality
+    const quality = await diseaseDetectionService.analyzeImageQuality(processedFile);
+    setImageQuality(quality);
+
+    if (quality < 0.6) {
+      setError('Image quality is too low for accurate detection. Please capture a clearer image with better lighting.');
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       setSelectedImage(e.target?.result as string);
       setResult(null);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(processedFile);
   }, []);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
