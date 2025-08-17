@@ -334,7 +334,7 @@ export function ContractFarming() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {Object.entries(t('contractFarming.localCompanies')).map(([key, company]: [string, any]) => (
+              {Object.entries(t('contractFarming.localCompanies') || {}).map(([key, company]: [string, any]) => (
                 <Card key={key} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex items-center space-x-3">
@@ -345,8 +345,8 @@ export function ContractFarming() {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <CardTitle className="text-lg">{company.name}</CardTitle>
-                        <CardDescription className="text-sm">{company.description}</CardDescription>
+                        <CardTitle className="text-lg">{company?.name || key || 'Company'}</CardTitle>
+                        <CardDescription className="text-sm">{company?.description || ''}</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
@@ -354,15 +354,15 @@ export function ContractFarming() {
                   <CardContent className="space-y-3">
                     <div>
                       <span className="font-medium text-gray-700">Preferred Crops:</span>
-                      <p className="text-gray-600">{company.crops}</p>
+                      <p className="text-gray-600">{company?.crops || 'N/A'}</p>
                     </div>
                     <div>
                       <span className="font-medium text-gray-700">Area Requirement:</span>
-                      <p className="text-gray-600">{company.minArea}</p>
+                      <p className="text-gray-600">{company?.minArea || 'N/A'}</p>
                     </div>
                     <div>
                       <span className="font-medium text-gray-700">Support Provided:</span>
-                      <p className="text-gray-600">{company.support}</p>
+                      <p className="text-gray-600">{company?.support || 'N/A'}</p>
                     </div>
                     
                     <div className="flex space-x-2 pt-4">
