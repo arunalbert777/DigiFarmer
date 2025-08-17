@@ -233,10 +233,10 @@ export default function News() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
-            Bengaluru Agricultural News
+            {t('news.title')}
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Stay updated with the latest agricultural news, weather alerts, and farming insights specific to Bengaluru and surrounding areas.
+            {t('news.title')}
           </p>
         </div>
 
