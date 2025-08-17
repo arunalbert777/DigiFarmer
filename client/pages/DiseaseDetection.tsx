@@ -398,6 +398,28 @@ export default function DiseaseDetection() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Enhanced Features Info */}
+        <div className="mt-12 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">Advanced AI Features</h3>
+          <div className="grid md:grid-cols-3 gap-4 text-sm">
+            <div className="text-center p-4">
+              <Zap className="h-8 w-8 mx-auto text-primary mb-2" />
+              <h4 className="font-semibold mb-1">Enhanced Accuracy</h4>
+              <p className="text-gray-600">Ensemble CNN models with 95%+ accuracy for major crop diseases</p>
+            </div>
+            <div className="text-center p-4">
+              <Shield className="h-8 w-8 mx-auto text-primary mb-2" />
+              <h4 className="font-semibold mb-1">Smart Detection</h4>
+              <p className="text-gray-600">Automated image quality assessment and preprocessing</p>
+            </div>
+            <div className="text-center p-4">
+              <Clock className="h-8 w-8 mx-auto text-primary mb-2" />
+              <h4 className="font-semibold mb-1">Real-time Analysis</h4>
+              <p className="text-gray-600">Fast processing with detailed treatment recommendations</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
