@@ -270,46 +270,129 @@ export default function DiseaseDetection() {
               ) : (
                 <div className="space-y-6">
                   {/* Disease Info */}
-                  <div className="p-4 bg-red-50 rounded-lg">
+                  <div className={cn(
+                    "p-4 rounded-lg border",
+                    result.severity === 'Critical' ? 'bg-red-50 border-red-200' :
+                    result.severity === 'High' ? 'bg-orange-50 border-orange-200' :
+                    result.severity === 'Moderate' ? 'bg-yellow-50 border-yellow-200' :
+                    'bg-green-50 border-green-200'
+                  )}>
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold text-red-900">{result.disease}</h3>
-                      <Badge variant="destructive">{result.confidence}% confidence</Badge>
+                      <h3 className="font-semibold text-gray-900">{result.disease}</h3>
+                      <Badge
+                        variant={result.confidence >= 90 ? "default" : result.confidence >= 80 ? "secondary" : "outline"}
+                      >
+                        {result.confidence}% confidence
+                      </Badge>
                     </div>
-                    <div className="flex items-center text-sm text-red-700">
-                      <AlertTriangle className="h-4 w-4 mr-1" />
-                      {result.severity} severity in {result.crop}
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="flex items-center">
+                        <AlertTriangle className="h-4 w-4 mr-1 text-orange-600" />
+                        <span>{result.severity} severity</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Leaf className="h-4 w-4 mr-1 text-green-600" />
+                        <span>{result.crop}</span>
+                      </div>
+                      {result.timeToTreat && (
+                        <div className="flex items-center col-span-2">
+                          <Clock className="h-4 w-4 mr-1 text-blue-600" />
+                          <span className="font-medium">{result.timeToTreat}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Treatment */}
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">{t('disease.treatment')}</h4>
-                    <ul className="space-y-2">
-                      {result.treatment.map((step: string, index: number) => (
-                        <li key={index} className="flex items-start text-sm">
-                          <CheckCircle className="h-4 w-4 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                          {step}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {/* Detailed Results in Tabs */}
+                  <Tabs defaultValue="treatment" className="w-full">
+                    <TabsList className="grid w-full grid-cols-4">
+                      <TabsTrigger value="treatment">Treatment</TabsTrigger>
+                      <TabsTrigger value="prevention">Prevention</TabsTrigger>
+                      <TabsTrigger value="symptoms">Symptoms</TabsTrigger>
+                      <TabsTrigger value="environment">Environment</TabsTrigger>
+                    </TabsList>
 
-                  {/* Prevention */}
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">{t('disease.prevention')}</h4>
-                    <ul className="space-y-2">
-                      {result.prevention.map((tip: string, index: number) => (
-                        <li key={index} className="flex items-start text-sm">
-                          <Leaf className="h-4 w-4 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                    <TabsContent value="treatment" className="space-y-3">
+                      <div className="flex items-center mb-3">
+                        <Zap className="h-5 w-5 text-orange-600 mr-2" />
+                        <h4 className="font-semibold text-gray-900">Treatment Plan</h4>
+                      </div>
+                      <ul className="space-y-2">
+                        {result.treatment.map((step: string, index: number) => (
+                          <li key={index} className="flex items-start text-sm">
+                            <CheckCircle className="h-4 w-4 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                            {step}
+                          </li>
+                        ))}
+                      </ul>
+                    </TabsContent>
 
-                  <Button onClick={resetAnalysis} variant="outline" className="w-full">
-                    Analyze Another Image
-                  </Button>
+                    <TabsContent value="prevention" className="space-y-3">
+                      <div className="flex items-center mb-3">
+                        <Shield className="h-5 w-5 text-blue-600 mr-2" />
+                        <h4 className="font-semibold text-gray-900">Prevention Strategies</h4>
+                      </div>
+                      <ul className="space-y-2">
+                        {result.prevention.map((tip: string, index: number) => (
+                          <li key={index} className="flex items-start text-sm">
+                            <Leaf className="h-4 w-4 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                            {tip}
+                          </li>
+                        ))}
+                      </ul>
+                    </TabsContent>
+
+                    <TabsContent value="symptoms" className="space-y-3">
+                      <div className="flex items-center mb-3">
+                        <Eye className="h-5 w-5 text-purple-600 mr-2" />
+                        <h4 className="font-semibold text-gray-900">Key Symptoms</h4>
+                      </div>
+                      {result.symptoms ? (
+                        <ul className="space-y-2">
+                          {result.symptoms.map((symptom: string, index: number) => (
+                            <li key={index} className="flex items-start text-sm">
+                              <div className="h-2 w-2 bg-purple-600 rounded-full mr-2 mt-2 flex-shrink-0" />
+                              {symptom}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-600 text-sm">Symptom details not available for this disease.</p>
+                      )}
+                    </TabsContent>
+
+                    <TabsContent value="environment" className="space-y-3">
+                      <div className="flex items-center mb-3">
+                        <Thermometer className="h-5 w-5 text-red-600 mr-2" />
+                        <h4 className="font-semibold text-gray-900">Environmental Factors</h4>
+                      </div>
+                      {result.environmentalFactors ? (
+                        <ul className="space-y-2">
+                          {result.environmentalFactors.map((factor: string, index: number) => (
+                            <li key={index} className="flex items-start text-sm">
+                              <Droplets className="h-4 w-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+                              {factor}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-600 text-sm">Environmental factor details not available.</p>
+                      )}
+                    </TabsContent>
+                  </Tabs>
+
+                  <div className="flex gap-2">
+                    <Button onClick={resetAnalysis} variant="outline" className="flex-1">
+                      Analyze Another Image
+                    </Button>
+                    <Button
+                      onClick={() => window.print()}
+                      variant="secondary"
+                      size="sm"
+                    >
+                      Save Report
+                    </Button>
+                  </div>
                 </div>
               )}
             </CardContent>
