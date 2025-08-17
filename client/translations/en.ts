@@ -64,6 +64,10 @@ export default {
         title: 'AI Disease Detection',
         description: 'Upload crop images for instant disease identification and treatment recommendations using advanced AI technology.',
       },
+      aiAssistant: {
+        title: 'AI Assistant',
+        description: '24/7 intelligent farming assistant for instant answers to agricultural questions and personalized advice.',
+      },
       expertConsultation: {
         title: 'Expert Consultation',
         description: 'Connect with agricultural experts for personalized advice and solutions to your farming challenges.',
