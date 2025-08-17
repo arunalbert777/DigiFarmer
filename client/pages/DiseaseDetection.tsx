@@ -24,6 +24,7 @@ const supportedCrops = [
 ];
 
 export default function DiseaseDetection() {
+  const { t } = useLanguage();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
