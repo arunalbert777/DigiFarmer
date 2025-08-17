@@ -8,6 +8,7 @@ export default {
     expertConsultation: 'Expert Consultation',
     news: 'News',
     marketplace: 'Marketplace',
+    contractFarming: 'Contract Farming',
     developers: 'Developers',
   },
 
