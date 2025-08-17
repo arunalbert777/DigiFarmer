@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useMarketplaceController } from '../controllers/useMarketplaceController';
+import { useLanguage } from '../contexts/LanguageContext';
 import { ProductFilter, ProductSort, Product } from '../models/types';
 import { ProductCard } from '../components/ProductCard';
 import { AddProductForm } from '../components/AddProductForm';
