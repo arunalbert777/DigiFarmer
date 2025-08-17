@@ -531,9 +531,24 @@ export function VerticalFarming() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                t('verticalFarming.costs.starter'),
-                t('verticalFarming.costs.intermediate'),
-                t('verticalFarming.costs.commercial')
+                {
+                  title: t('verticalFarming.costs.starter.title'),
+                  price: t('verticalFarming.costs.starter.price'),
+                  description: t('verticalFarming.costs.starter.description'),
+                  includes: t('verticalFarming.costs.starter.includes')
+                },
+                {
+                  title: t('verticalFarming.costs.intermediate.title'),
+                  price: t('verticalFarming.costs.intermediate.price'),
+                  description: t('verticalFarming.costs.intermediate.description'),
+                  includes: t('verticalFarming.costs.intermediate.includes')
+                },
+                {
+                  title: t('verticalFarming.costs.commercial.title'),
+                  price: t('verticalFarming.costs.commercial.price'),
+                  description: t('verticalFarming.costs.commercial.description'),
+                  includes: t('verticalFarming.costs.commercial.includes')
+                }
               ].map((cost, index) => (
                 <Card key={index} className={`text-center hover:shadow-lg transition-shadow ${index === 1 ? 'ring-2 ring-primary' : ''}`}>
                   <CardHeader>
@@ -544,10 +559,10 @@ export function VerticalFarming() {
                     <div className="text-2xl font-bold text-primary">{cost.price}</div>
                     <CardDescription>{cost.description}</CardDescription>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-4">
                     <p className="text-sm text-gray-600">{cost.includes}</p>
-                    
+
                     <Button className="w-full" variant={index === 1 ? 'default' : 'outline'}>
                       {t('verticalFarming.getStarted')}
                     </Button>
