@@ -11,6 +11,7 @@ import ExpertConsultation from "./pages/ExpertConsultation";
 import News from "./pages/News";
 import { Marketplace } from "./pages/Marketplace";
 import { ContractFarming } from "./pages/ContractFarming";
+import { VerticalFarming } from "./pages/VerticalFarming";
 import Developers from "./pages/Developers";
 import NotFound from "./pages/NotFound";
 
