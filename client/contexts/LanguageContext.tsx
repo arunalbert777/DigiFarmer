@@ -31,7 +31,39 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     return (saved as Language) || "en";
   });
 
-  const [translations, setTranslations] = useState<Record<string, any>>({});
+  // Initialize with basic fallback translations to prevent undefined context
+  const [translations, setTranslations] = useState<Record<string, any>>(() => ({
+    nav: {
+      home: 'Home',
+      diseaseDetection: 'Disease Detection',
+      aiAssistant: 'AI Assistant',
+      community: 'Community',
+      expertConsultation: 'Expert Consultation',
+      news: 'News',
+      marketplace: 'Marketplace',
+      contractFarming: 'Contract Farming',
+      verticalFarming: 'Vertical Farming',
+      developers: 'Developers'
+    },
+    common: {
+      loading: 'Loading...',
+      error: 'Error',
+      success: 'Success'
+    },
+    home: {
+      title: 'DigiFarmer',
+      subtitle: 'Empowering farmers with modern agricultural technology'
+    },
+    disease: {
+      title: 'AI Disease Detection',
+      subtitle: 'Upload crop images for instant disease identification',
+      uploadImage: 'Upload Crop Image',
+      analyzing: 'Analyzing image...',
+      results: 'Detection Results',
+      treatment: 'Treatment Recommendations',
+      prevention: 'Prevention Tips'
+    }
+  }));
   const [isLoading, setIsLoading] = useState(true);
 
   // Load translations when language changes
