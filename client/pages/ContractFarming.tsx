@@ -341,7 +341,7 @@ export function ContractFarming() {
                       <Avatar className="h-12 w-12">
                         <AvatarImage src="/api/placeholder/60/60" />
                         <AvatarFallback>
-                          {company.name.split(' ').map((n: string) => n[0]).join('')}
+                          {(company?.name || key || 'Company').split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
                         </AvatarFallback>
                       </Avatar>
                       <div>
