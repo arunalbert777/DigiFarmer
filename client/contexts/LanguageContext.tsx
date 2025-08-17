@@ -77,6 +77,11 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   }, [language]);
 
   const t = (key: string, params?: Record<string, string | number>): string => {
+    // If translations are still loading, return the key or a loading placeholder
+    if (isLoading || !translations || Object.keys(translations).length === 0) {
+      return key.split('.').pop() || key; // Return the last part of the key as fallback
+    }
+
     const keys = key.split(".");
     let value = translations;
 
@@ -84,12 +89,12 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       if (value && typeof value === "object" && k in value) {
         value = value[k];
       } else {
-        // Return the key if translation is not found
-        return key;
+        // Return a user-friendly fallback if translation is not found
+        return key.split('.').pop() || key;
       }
     }
 
-    let result = typeof value === "string" ? value : key;
+    let result = typeof value === "string" ? value : (key.split('.').pop() || key);
 
     // Replace parameters in the translation
     if (params) {
