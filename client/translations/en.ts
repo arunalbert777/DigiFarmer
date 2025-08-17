@@ -76,6 +76,10 @@ export default {
         title: 'Direct Marketplace',
         description: 'Sell your products directly to buyers without middlemen and get the best prices for your harvest.',
       },
+      contractFarming: {
+        title: 'Contract Farming',
+        description: 'Partner with local companies for guaranteed purchase, input support, and technical guidance for your crops.',
+      },
     },
     stats: {
       farmers: 'Farmers Connected',
