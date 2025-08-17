@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Upload, 
-  Camera, 
-  Scan, 
-  CheckCircle, 
+import { useLanguage } from "../contexts/LanguageContext";
+import {
+  Upload,
+  Camera,
+  Scan,
+  CheckCircle,
   AlertTriangle,
   Leaf,
   FileImage,
