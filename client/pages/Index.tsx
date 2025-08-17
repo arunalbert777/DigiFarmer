@@ -62,6 +62,14 @@ const features = [
     path: "/experts",
     color: "bg-green-50 text-green-600",
     benefits: ["Certified experts", "Personalized advice", "Flexible scheduling"]
+  },
+  {
+    icon: Handshake,
+    title: "Contract Farming",
+    description: "Partner with local companies for guaranteed purchase, input support, and technical guidance for your crops.",
+    path: "/contract-farming",
+    color: "bg-orange-50 text-orange-600",
+    benefits: ["Guaranteed purchase", "Input support", "Technical guidance"]
   }
 ];
 
