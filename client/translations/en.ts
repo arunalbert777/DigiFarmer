@@ -290,6 +290,82 @@ export default {
     select: 'Select Language',
   },
 
+  // Contract Farming
+  contractFarming: {
+    title: 'Contract Farming',
+    subtitle: 'Partner with local companies for guaranteed purchase and farming support',
+    partnerships: 'Local Partnerships',
+    contracts: 'Available Contracts',
+    benefits: 'Contract Benefits',
+    requirements: 'Requirements',
+    apply: 'Apply for Contract',
+    viewDetails: 'View Contract Details',
+    companies: {
+      title: 'Partner Companies',
+      subtitle: 'Trusted local companies offering contract farming opportunities',
+    },
+    crops: {
+      vegetables: 'Vegetables',
+      fruits: 'Fruits',
+      grains: 'Grains',
+      spices: 'Spices',
+      flowers: 'Flowers',
+    },
+    contractTypes: {
+      seasonal: 'Seasonal Contract',
+      annual: 'Annual Contract',
+      multiYear: 'Multi-Year Contract',
+    },
+    support: {
+      title: 'Support Provided',
+      seeds: 'Quality Seeds & Saplings',
+      fertilizers: 'Fertilizers & Pesticides',
+      technical: 'Technical Guidance',
+      equipment: 'Equipment Support',
+      training: 'Training Programs',
+      guaranteed: 'Guaranteed Purchase',
+    },
+    localCompanies: {
+      iffco: {
+        name: 'IFFCO Kisan',
+        description: 'Leading cooperative for vegetable and grain contracts',
+        crops: 'Tomato, Onion, Potato, Wheat',
+        minArea: '2 acres minimum',
+        support: 'Seeds, fertilizers, technical guidance',
+      },
+      reliance: {
+        name: 'Reliance Fresh',
+        description: 'Fresh produce supply chain with direct farmer partnerships',
+        crops: 'Leafy vegetables, Fruits, Herbs',
+        minArea: '1 acre minimum',
+        support: 'Input supply, cold storage, transportation',
+      },
+      bigBasket: {
+        name: 'BigBasket Farm',
+        description: 'E-commerce platform connecting farmers to urban consumers',
+        crops: 'Organic vegetables, Fruits',
+        minArea: '0.5 acres minimum',
+        support: 'Organic certification, premium pricing',
+      },
+      heritage: {
+        name: 'Heritage Foods',
+        description: 'Dairy and food processing company contract farming',
+        crops: 'Fodder crops, Millets, Pulses',
+        minArea: '3 acres minimum',
+        support: 'Equipment lease, buyback guarantee',
+      },
+    },
+    applications: {
+      title: 'Your Applications',
+      status: {
+        pending: 'Under Review',
+        approved: 'Approved',
+        rejected: 'Rejected',
+        active: 'Active Contract',
+      },
+    },
+  },
+
   // Notifications
   notifications: {
     error: 'An error occurred',
