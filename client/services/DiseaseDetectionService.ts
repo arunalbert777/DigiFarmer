@@ -15,6 +15,9 @@ export interface DiseaseDetectionResult {
   crop: string;
   treatment: string[];
   prevention: string[];
+  symptoms?: string[];
+  timeToTreat?: string;
+  environmentalFactors?: string[];
 }
 
 export class DiseaseDetectionService {
