@@ -382,7 +382,7 @@ export default {
     technologies: 'Farming Technologies',
     providers: 'Equipment Providers',
     setup: 'Setup Guide',
-    benefits: 'Benefits',
+    benefitsLabel: 'Benefits',
     getStarted: 'Get Started',
     learnMore: 'Learn More',
     contactProvider: 'Contact Provider',
