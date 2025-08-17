@@ -87,12 +87,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
               "Failed to load fallback translations:",
               fallbackError,
             );
-            // Provide minimal fallback translations
-            setTranslations({
-              nav: { home: 'Home', diseaseDetection: 'Disease Detection' },
-              common: { loading: 'Loading...' },
-              home: { title: 'DigiFarmer' }
-            });
+            // Keep existing fallback translations - don't reset them
           }
         }
       } finally {
