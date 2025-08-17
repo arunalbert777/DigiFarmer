@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./contexts/AppContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { Navigation } from "./components/Navigation";
 import { InstallPrompt } from "./components/InstallPrompt";
 import Index from "./pages/Index";
@@ -8,6 +9,7 @@ import AIChat from "./pages/AIChat";
 import Community from "./pages/Community";
 import ExpertConsultation from "./pages/ExpertConsultation";
 import News from "./pages/News";
+import { Marketplace } from "./pages/Marketplace";
 import Developers from "./pages/Developers";
 import NotFound from "./pages/NotFound";
 
