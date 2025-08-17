@@ -20,7 +20,7 @@ export const useLanguage = () => {
     return {
       language: "en" as Language,
       setLanguage: () => {},
-      t: (key: string) => key.split('.').pop() || key
+      t: (key: string) => key.split(".").pop() || key,
     };
   }
   return context;
@@ -40,35 +40,35 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Initialize with basic fallback translations to prevent undefined context
   const [translations, setTranslations] = useState<Record<string, any>>(() => ({
     nav: {
-      home: 'Home',
-      diseaseDetection: 'Disease Detection',
-      aiAssistant: 'AI Assistant',
-      community: 'Community',
-      expertConsultation: 'Expert Consultation',
-      news: 'News',
-      marketplace: 'Marketplace',
-      contractFarming: 'Contract Farming',
-      verticalFarming: 'Vertical Farming',
-      developers: 'Developers'
+      home: "Home",
+      diseaseDetection: "Disease Detection",
+      aiAssistant: "AI Assistant",
+      community: "Community",
+      expertConsultation: "Expert Consultation",
+      news: "News",
+      marketplace: "Marketplace",
+      contractFarming: "Contract Farming",
+      verticalFarming: "Vertical Farming",
+      developers: "Developers",
     },
     common: {
-      loading: 'Loading...',
-      error: 'Error',
-      success: 'Success'
+      loading: "Loading...",
+      error: "Error",
+      success: "Success",
     },
     home: {
-      title: 'DigiFarmer',
-      subtitle: 'Empowering farmers with modern agricultural technology'
+      title: "DigiFarmer",
+      subtitle: "Empowering farmers with modern agricultural technology",
     },
     disease: {
-      title: 'AI Disease Detection',
-      subtitle: 'Upload crop images for instant disease identification',
-      uploadImage: 'Upload Crop Image',
-      analyzing: 'Analyzing image...',
-      results: 'Detection Results',
-      treatment: 'Treatment Recommendations',
-      prevention: 'Prevention Tips'
-    }
+      title: "AI Disease Detection",
+      subtitle: "Upload crop images for instant disease identification",
+      uploadImage: "Upload Crop Image",
+      analyzing: "Analyzing image...",
+      results: "Detection Results",
+      treatment: "Treatment Recommendations",
+      prevention: "Prevention Tips",
+    },
   }));
   const [isLoading, setIsLoading] = useState(true);
 
@@ -112,7 +112,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const t = (key: string, params?: Record<string, string | number>): string => {
     // If translations are still loading, return the key or a loading placeholder
     if (isLoading || !translations || Object.keys(translations).length === 0) {
-      return key.split('.').pop() || key; // Return the last part of the key as fallback
+      return key.split(".").pop() || key; // Return the last part of the key as fallback
     }
 
     const keys = key.split(".");
@@ -123,11 +123,12 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
         value = value[k];
       } else {
         // Return a user-friendly fallback if translation is not found
-        return key.split('.').pop() || key;
+        return key.split(".").pop() || key;
       }
     }
 
-    let result = typeof value === "string" ? value : (key.split('.').pop() || key);
+    let result =
+      typeof value === "string" ? value : key.split(".").pop() || key;
 
     // Replace parameters in the translation
     if (params) {
