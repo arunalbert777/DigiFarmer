@@ -58,7 +58,7 @@ export class MarketplaceService {
     files.forEach((file, index) => {
       formData.append(`image_${index}`, file);
     });
-    return this.apiService.upload<string[]>('/marketplace/upload', formData);
+    return this.apiService.post<string[]>('/marketplace/upload', formData);
   }
 
   // Generate mock products for development
