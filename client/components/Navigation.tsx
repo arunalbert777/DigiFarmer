@@ -64,6 +64,8 @@ const getNavItems = (t: (key: string) => string) => [
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLanguage();
+  const navItems = getNavItems(t);
 
   return (
     <nav className="bg-white/95 backdrop-blur-sm border-b border-leaf-200 sticky top-0 z-50">
