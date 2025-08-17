@@ -214,7 +214,6 @@ export const useNewsController = (): UseNewsControllerReturn => {
     getNewsByCategory,
     incrementViews,
     refreshNews,
-    loadMoreNews,
     
     // Computed
     urgentNews,
