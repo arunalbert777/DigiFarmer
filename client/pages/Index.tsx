@@ -71,6 +71,14 @@ const getFeatures = (t: (key: string) => string) => [
     path: "/contract-farming",
     color: "bg-orange-50 text-orange-600",
     benefits: ["Guaranteed purchase", "Input support", "Technical guidance"]
+  },
+  {
+    icon: Building2,
+    title: t('home.features.verticalFarming.title'),
+    description: t('home.features.verticalFarming.description'),
+    path: "/vertical-farming",
+    color: "bg-emerald-50 text-emerald-600",
+    benefits: ["Space efficient", "95% water saved", "Year-round harvest"]
   }
 ];
 
