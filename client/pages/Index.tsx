@@ -27,7 +27,8 @@ import {
   Calendar,
   ExternalLink,
   RefreshCw,
-  Handshake
+  Handshake,
+  Building2
 } from "lucide-react";
 
 const getFeatures = (t: (key: string) => string) => [
