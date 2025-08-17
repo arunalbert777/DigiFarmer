@@ -15,26 +15,29 @@ import NotFound from "./pages/NotFound";
 
 function App() {
   return (
-    <AppProvider>
-      <BrowserRouter>
-        <div className="min-h-screen bg-white">
-          <Navigation />
-          <main>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/disease-detection" element={<DiseaseDetection />} />
-              <Route path="/ai-chat" element={<AIChat />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/experts" element={<ExpertConsultation />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/developers" element={<Developers />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <InstallPrompt />
-        </div>
-      </BrowserRouter>
-    </AppProvider>
+    <LanguageProvider>
+      <AppProvider>
+        <BrowserRouter>
+          <div className="min-h-screen bg-white">
+            <Navigation />
+            <main>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/disease-detection" element={<DiseaseDetection />} />
+                <Route path="/ai-chat" element={<AIChat />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/experts" element={<ExpertConsultation />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/developers" element={<Developers />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <InstallPrompt />
+          </div>
+        </BrowserRouter>
+      </AppProvider>
+    </LanguageProvider>
   );
 }
 
