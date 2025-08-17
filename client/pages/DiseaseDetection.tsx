@@ -129,10 +129,10 @@ export default function DiseaseDetection() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Upload className="h-5 w-5 mr-2" />
-                Upload Plant Image
+                {t('disease.uploadImage')}
               </CardTitle>
               <CardDescription>
-                Choose an image file or drag and drop to analyze
+                {t('disease.subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -166,7 +166,7 @@ export default function DiseaseDetection() {
                     <Button asChild>
                       <span>
                         <Camera className="h-4 w-4 mr-2" />
-                        Choose Image
+                        {t('disease.uploadImage')}
                       </span>
                     </Button>
                   </label>
@@ -192,7 +192,7 @@ export default function DiseaseDetection() {
                   {!isAnalyzing && !result && (
                     <Button onClick={analyzeImage} className="w-full" size="lg">
                       <Scan className="h-4 w-4 mr-2" />
-                      Analyze Image
+                      {t('disease.analyzing')}
                     </Button>
                   )}
                   
@@ -200,7 +200,7 @@ export default function DiseaseDetection() {
                     <div className="text-center space-y-4">
                       <Leaf className="h-8 w-8 mx-auto text-primary animate-pulse" />
                       <div>
-                        <p className="font-medium text-gray-900 mb-2">Analyzing image...</p>
+                        <p className="font-medium text-gray-900 mb-2">{t('disease.analyzing')}</p>
                         <Progress value={66} className="w-full" />
                         <p className="text-sm text-gray-600 mt-2">
                           Using advanced CNN to detect diseases
@@ -218,7 +218,7 @@ export default function DiseaseDetection() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <CheckCircle className="h-5 w-5 mr-2" />
-                Analysis Results
+                {t('disease.results')}
               </CardTitle>
               <CardDescription>
                 AI-powered disease identification and treatment recommendations
@@ -246,7 +246,7 @@ export default function DiseaseDetection() {
 
                   {/* Treatment */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Immediate Treatment</h4>
+                    <h4 className="font-semibold text-gray-900 mb-3">{t('disease.treatment')}</h4>
                     <ul className="space-y-2">
                       {result.treatment.map((step: string, index: number) => (
                         <li key={index} className="flex items-start text-sm">
@@ -259,7 +259,7 @@ export default function DiseaseDetection() {
 
                   {/* Prevention */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Prevention Tips</h4>
+                    <h4 className="font-semibold text-gray-900 mb-3">{t('disease.prevention')}</h4>
                     <ul className="space-y-2">
                       {result.prevention.map((tip: string, index: number) => (
                         <li key={index} className="flex items-start text-sm">
