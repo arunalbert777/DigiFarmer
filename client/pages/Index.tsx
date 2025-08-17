@@ -30,43 +30,43 @@ import {
   Handshake
 } from "lucide-react";
 
-const features = [
+const getFeatures = (t: (key: string) => string) => [
   {
     icon: Scan,
-    title: "Disease Detection",
-    description: "AI-powered plant disease identification using advanced CNN technology. Upload plant images for instant diagnosis.",
+    title: t('home.features.diseaseDetection.title'),
+    description: t('home.features.diseaseDetection.description'),
     path: "/disease-detection",
     color: "bg-red-50 text-red-600",
     benefits: ["200+ disease detection", "90%+ accuracy", "Instant results"]
   },
   {
     icon: Bot,
-    title: "AI Assistant",
-    description: "24/7 intelligent farming assistant for instant answers to agricultural questions and personalized advice.",
+    title: t('home.features.aiAssistant.title'),
+    description: t('home.features.aiAssistant.description'),
     path: "/ai-chat",
     color: "bg-blue-50 text-blue-600",
     benefits: ["Instant responses", "Expert knowledge", "Personalized advice"]
   },
   {
     icon: Users,
-    title: "Community",
-    description: "Connect with fellow farmers, share experiences, and learn from agricultural experts worldwide.",
+    title: t('home.features.community.title'),
+    description: t('home.features.community.description'),
     path: "/community",
     color: "bg-purple-50 text-purple-600",
     benefits: ["Global network", "Experience sharing", "Peer support"]
   },
   {
     icon: UserCheck,
-    title: "Expert Consultation",
-    description: "Book one-on-one consultations with certified agricultural experts for personalized farm management.",
+    title: t('home.features.expertConsultation.title'),
+    description: t('home.features.expertConsultation.description'),
     path: "/experts",
     color: "bg-green-50 text-green-600",
     benefits: ["Certified experts", "Personalized advice", "Flexible scheduling"]
   },
   {
     icon: Handshake,
-    title: "Contract Farming",
-    description: "Partner with local companies for guaranteed purchase, input support, and technical guidance for your crops.",
+    title: t('home.features.contractFarming.title'),
+    description: t('home.features.contractFarming.description'),
     path: "/contract-farming",
     color: "bg-orange-50 text-orange-600",
     benefits: ["Guaranteed purchase", "Input support", "Technical guidance"]
