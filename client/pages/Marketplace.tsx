@@ -28,6 +28,7 @@ type ViewMode = 'grid' | 'list';
 
 export function Marketplace() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const {
     products,
     featuredProducts,
