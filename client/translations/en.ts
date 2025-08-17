@@ -85,6 +85,10 @@ export default {
         title: 'Contract Farming',
         description: 'Partner with local companies for guaranteed purchase, input support, and technical guidance for your crops.',
       },
+      verticalFarming: {
+        title: 'Vertical Farming',
+        description: 'Learn about space-efficient vertical farming technologies, setup guides, and local equipment providers in Bengaluru.',
+      },
     },
     stats: {
       farmers: 'Farmers Connected',
