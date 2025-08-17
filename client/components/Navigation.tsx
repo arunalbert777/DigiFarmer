@@ -159,7 +159,8 @@ export function Navigation() {
                   </Link>
                 );
               })}
-              <div className="pt-2 border-t border-gray-200 mt-2">
+              <div className="pt-2 border-t border-gray-200 mt-2 space-y-2">
+                <LanguageSelector variant="mobile" />
                 <PWAInstallButtonMobile />
               </div>
             </div>
