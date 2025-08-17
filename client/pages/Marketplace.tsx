@@ -1,31 +1,43 @@
-import { useState, useEffect } from 'react';
-import { useMarketplaceController } from '../controllers/useMarketplaceController';
-import { useLanguage } from '../contexts/LanguageContext';
-import { ProductFilter, ProductSort, Product } from '../models/types';
-import { ProductCard } from '../components/ProductCard';
-import { AddProductForm } from '../components/AddProductForm';
-import { ProductFilters } from '../components/ProductFilters';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { 
-  Plus, 
-  Search, 
-  SortAsc, 
-  SortDesc, 
-  Grid, 
-  List, 
-  MapPin, 
+import { useState, useEffect } from "react";
+import { useMarketplaceController } from "../controllers/useMarketplaceController";
+import { useLanguage } from "../contexts/LanguageContext";
+import { ProductFilter, ProductSort, Product } from "../models/types";
+import { ProductCard } from "../components/ProductCard";
+import { AddProductForm } from "../components/AddProductForm";
+import { ProductFilters } from "../components/ProductFilters";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import {
+  Plus,
+  Search,
+  SortAsc,
+  SortDesc,
+  Grid,
+  List,
+  MapPin,
   TrendingUp,
   Users,
-  Package
-} from 'lucide-react';
-import { useToast } from '../hooks/use-toast';
+  Package,
+} from "lucide-react";
+import { useToast } from "../hooks/use-toast";
 
-type ViewMode = 'grid' | 'list';
+type ViewMode = "grid" | "list";
 
 export function Marketplace() {
   const { toast } = useToast();
@@ -44,14 +56,17 @@ export function Marketplace() {
     toggleLike,
     availableCategories,
     availableUnits,
-    clearError
+    clearError,
   } = useMarketplaceController();
 
   const [showAddForm, setShowAddForm] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<ProductFilter>({});
-  const [sort, setSort] = useState<ProductSort>({ field: 'createdAt', direction: 'desc' });
+  const [sort, setSort] = useState<ProductSort>({
+    field: "createdAt",
+    direction: "desc",
+  });
 
   useEffect(() => {
     if (error) {
@@ -79,8 +94,9 @@ export function Marketplace() {
 
   const handleSortChange = (field: string) => {
     const newSort: ProductSort = {
-      field: field as ProductSort['field'],
-      direction: sort.field === field && sort.direction === 'desc' ? 'asc' : 'desc'
+      field: field as ProductSort["field"],
+      direction:
+        sort.field === field && sort.direction === "desc" ? "asc" : "desc",
     };
     setSort(newSort);
     loadProducts(filters, newSort);
@@ -98,12 +114,15 @@ export function Marketplace() {
   const handleProductContact = (product: Product) => {
     if (product.contact_phone) {
       const message = `Hi ${product.farmerName}, I'm interested in your ${product.title}. Is it still available?`;
-      const whatsappUrl = `https://wa.me/${product.contact_phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, '_blank');
+      const whatsappUrl = `https://wa.me/${product.contact_phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, "_blank");
     } else if (product.contact_email) {
       const subject = `Inquiry about ${product.title}`;
       const body = `Hi ${product.farmerName},\n\nI'm interested in your ${product.title}. Could you please provide more details?\n\nThank you!`;
-      window.open(`mailto:${product.contact_email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+      window.open(
+        `mailto:${product.contact_email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
+        "_blank",
+      );
     } else {
       toast({
         title: "Contact Information",
@@ -135,19 +154,21 @@ export function Marketplace() {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {t('marketplace.title')}
+              {t("marketplace.title")}
             </h1>
             <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
-              {t('marketplace.subtitle')}
+              {t("marketplace.subtitle")}
             </p>
-            
+
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
               <div className="text-center">
                 <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg mx-auto mb-2">
                   <Package className="h-6 w-6 text-primary" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900">{products.length}</div>
+                <div className="text-2xl font-bold text-gray-900">
+                  {products.length}
+                </div>
                 <div className="text-sm text-gray-600">Products</div>
               </div>
               <div className="text-center">
@@ -181,7 +202,9 @@ export function Marketplace() {
         {featuredProducts.length > 0 && (
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Featured Products</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Featured Products
+              </h2>
               <Badge variant="secondary">Premium Selection</Badge>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -220,18 +243,15 @@ export function Marketplace() {
                       placeholder="Search products..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                      onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                     />
                     <Button onClick={handleSearch}>
                       <Search className="h-4 w-4" />
                     </Button>
                   </div>
-                  
+
                   <div className="flex gap-2">
-                    <Select 
-                      value={sort.field} 
-                      onValueChange={handleSortChange}
-                    >
+                    <Select value={sort.field} onValueChange={handleSortChange}>
                       <SelectTrigger className="w-40">
                         <SelectValue />
                       </SelectTrigger>
@@ -248,21 +268,25 @@ export function Marketplace() {
                       size="sm"
                       onClick={() => handleSortChange(sort.field)}
                     >
-                      {sort.direction === 'desc' ? <SortDesc className="h-4 w-4" /> : <SortAsc className="h-4 w-4" />}
+                      {sort.direction === "desc" ? (
+                        <SortDesc className="h-4 w-4" />
+                      ) : (
+                        <SortAsc className="h-4 w-4" />
+                      )}
                     </Button>
 
                     <div className="flex border rounded-md">
                       <Button
-                        variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                        variant={viewMode === "grid" ? "default" : "ghost"}
                         size="sm"
-                        onClick={() => setViewMode('grid')}
+                        onClick={() => setViewMode("grid")}
                       >
                         <Grid className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant={viewMode === 'list' ? 'default' : 'ghost'}
+                        variant={viewMode === "list" ? "default" : "ghost"}
                         size="sm"
-                        onClick={() => setViewMode('list')}
+                        onClick={() => setViewMode("list")}
                       >
                         <List className="h-4 w-4" />
                       </Button>
@@ -294,11 +318,13 @@ export function Marketplace() {
 
             {/* Products Grid */}
             {!loading && products.length > 0 && (
-              <div className={
-                viewMode === 'grid' 
-                  ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-                  : "space-y-4"
-              }>
+              <div
+                className={
+                  viewMode === "grid"
+                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+                    : "space-y-4"
+                }
+              >
                 {products.map((product) => (
                   <ProductCard
                     key={product.id}
@@ -306,7 +332,7 @@ export function Marketplace() {
                     onViewDetails={handleProductView}
                     onToggleLike={toggleLike}
                     onContact={handleProductContact}
-                    className={viewMode === 'list' ? 'flex-row' : ''}
+                    className={viewMode === "list" ? "flex-row" : ""}
                   />
                 ))}
               </div>
@@ -317,12 +343,13 @@ export function Marketplace() {
               <Card className="text-center py-12">
                 <CardContent>
                   <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    No products found
+                  </h3>
                   <p className="text-gray-600 mb-4">
-                    {Object.keys(filters).length > 0 
+                    {Object.keys(filters).length > 0
                       ? "Try adjusting your filters or search terms"
-                      : "Be the first to list a product in the marketplace!"
-                    }
+                      : "Be the first to list a product in the marketplace!"}
                   </p>
                   <Button onClick={() => setShowAddForm(true)}>
                     <Plus className="h-4 w-4 mr-2" />

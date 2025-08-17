@@ -1,6 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -18,16 +24,16 @@ import {
   Bug,
   Sun,
   Cloud,
-  Thermometer
+  Thermometer,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Message {
   id: string;
   content: string;
-  sender: 'user' | 'bot';
+  sender: "user" | "bot";
   timestamp: Date;
-  type?: 'text' | 'suggestion';
+  type?: "text" | "suggestion";
 }
 
 const quickSuggestions = [
@@ -36,28 +42,34 @@ const quickSuggestions = [
   { icon: Bug, text: "Common pest control methods", category: "Pests" },
   { icon: Sun, text: "Seasonal farming calendar", category: "Calendar" },
   { icon: Cloud, text: "Weather impact on crops", category: "Weather" },
-  { icon: Thermometer, text: "Soil temperature management", category: "Soil" }
+  { icon: Thermometer, text: "Soil temperature management", category: "Soil" },
 ];
 
 const botResponses: { [key: string]: string } = {
-  "hello": "Hello! I'm your AI farming assistant. I'm here to help you with all your agricultural questions. How can I assist you today?",
-  "crops": "For Bengaluru's climate, I recommend crops like tomatoes, beans, carrots, cabbage, and leafy greens. The moderate climate is perfect for year-round cultivation of many vegetables.",
-  "irrigation": "In Bengaluru, drip irrigation works best. Water early morning (6-8 AM) or evening (5-7 PM). For most crops, water every 2-3 days depending on soil moisture and weather.",
-  "pest": "Common pests in Bengaluru include aphids, whiteflies, and caterpillars. Use neem oil spray, introduce beneficial insects like ladybugs, and practice crop rotation for natural pest control.",
-  "weather": "Bengaluru has a pleasant climate year-round. Monsoon season (June-September) requires good drainage. Winter is ideal for most crops. Summer needs adequate irrigation.",
-  "soil": "Bengaluru's red soil is generally fertile but may need organic matter. Test pH levels (ideal 6.0-7.0), add compost, and ensure good drainage for optimal crop growth.",
-  "default": "That's a great question! Based on my knowledge of agriculture and Bengaluru's farming conditions, here are some recommendations. For more specific advice, you might want to consult with our agricultural experts."
+  hello:
+    "Hello! I'm your AI farming assistant. I'm here to help you with all your agricultural questions. How can I assist you today?",
+  crops:
+    "For Bengaluru's climate, I recommend crops like tomatoes, beans, carrots, cabbage, and leafy greens. The moderate climate is perfect for year-round cultivation of many vegetables.",
+  irrigation:
+    "In Bengaluru, drip irrigation works best. Water early morning (6-8 AM) or evening (5-7 PM). For most crops, water every 2-3 days depending on soil moisture and weather.",
+  pest: "Common pests in Bengaluru include aphids, whiteflies, and caterpillars. Use neem oil spray, introduce beneficial insects like ladybugs, and practice crop rotation for natural pest control.",
+  weather:
+    "Bengaluru has a pleasant climate year-round. Monsoon season (June-September) requires good drainage. Winter is ideal for most crops. Summer needs adequate irrigation.",
+  soil: "Bengaluru's red soil is generally fertile but may need organic matter. Test pH levels (ideal 6.0-7.0), add compost, and ensure good drainage for optimal crop growth.",
+  default:
+    "That's a great question! Based on my knowledge of agriculture and Bengaluru's farming conditions, here are some recommendations. For more specific advice, you might want to consult with our agricultural experts.",
 };
 
 export default function AIChat() {
   const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
-      content: "Hello! I'm your AI farming assistant. I can help you with crop recommendations, pest control, irrigation advice, and farming techniques specific to Bengaluru. What would you like to know?",
-      sender: 'bot',
-      timestamp: new Date()
-    }
+      id: "1",
+      content:
+        "Hello! I'm your AI farming assistant. I can help you with crop recommendations, pest control, irrigation advice, and farming techniques specific to Bengaluru. What would you like to know?",
+      sender: "bot",
+      timestamp: new Date(),
+    },
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -74,18 +86,34 @@ export default function AIChat() {
 
   const generateBotResponse = (userMessage: string): string => {
     const message = userMessage.toLowerCase();
-    
-    if (message.includes('hello') || message.includes('hi')) {
+
+    if (message.includes("hello") || message.includes("hi")) {
       return botResponses.hello;
-    } else if (message.includes('crop') || message.includes('plant') || message.includes('grow')) {
+    } else if (
+      message.includes("crop") ||
+      message.includes("plant") ||
+      message.includes("grow")
+    ) {
       return botResponses.crops;
-    } else if (message.includes('water') || message.includes('irrigat')) {
+    } else if (message.includes("water") || message.includes("irrigat")) {
       return botResponses.irrigation;
-    } else if (message.includes('pest') || message.includes('insect') || message.includes('bug')) {
+    } else if (
+      message.includes("pest") ||
+      message.includes("insect") ||
+      message.includes("bug")
+    ) {
       return botResponses.pest;
-    } else if (message.includes('weather') || message.includes('climate') || message.includes('rain')) {
+    } else if (
+      message.includes("weather") ||
+      message.includes("climate") ||
+      message.includes("rain")
+    ) {
       return botResponses.weather;
-    } else if (message.includes('soil') || message.includes('fertilizer') || message.includes('compost')) {
+    } else if (
+      message.includes("soil") ||
+      message.includes("fertilizer") ||
+      message.includes("compost")
+    ) {
       return botResponses.soil;
     } else {
       return botResponses.default;
@@ -98,11 +126,11 @@ export default function AIChat() {
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputMessage,
-      sender: 'user',
-      timestamp: new Date()
+      sender: "user",
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
     setIsTyping(true);
 
@@ -111,11 +139,11 @@ export default function AIChat() {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
         content: generateBotResponse(inputMessage),
-        sender: 'bot',
-        timestamp: new Date()
+        sender: "bot",
+        timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, botResponse]);
+      setMessages((prev) => [...prev, botResponse]);
       setIsTyping(false);
     }, 1500);
   };
@@ -126,7 +154,7 @@ export default function AIChat() {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
@@ -143,10 +171,10 @@ export default function AIChat() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
-            {t('nav.aiAssistant')}
+            {t("nav.aiAssistant")}
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('nav.aiAssistant')}
+            {t("nav.aiAssistant")}
           </p>
         </div>
 
@@ -157,11 +185,9 @@ export default function AIChat() {
               <CardHeader>
                 <CardTitle className="flex items-center text-lg">
                   <Lightbulb className="h-5 w-5 mr-2" />
-                  {t('common.search')}
+                  {t("common.search")}
                 </CardTitle>
-                <CardDescription>
-                  {t('common.search')}
-                </CardDescription>
+                <CardDescription>{t("common.search")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {quickSuggestions.map((suggestion, index) => {
@@ -186,7 +212,9 @@ export default function AIChat() {
                           </div>
                         </div>
                       </button>
-                      {index < quickSuggestions.length - 1 && <Separator className="mt-3" />}
+                      {index < quickSuggestions.length - 1 && (
+                        <Separator className="mt-3" />
+                      )}
                     </div>
                   );
                 })}
@@ -205,10 +233,15 @@ export default function AIChat() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">AgriBot</h3>
-                      <p className="text-sm text-gray-600">Online • Expert in Bengaluru farming</p>
+                      <p className="text-sm text-gray-600">
+                        Online • Expert in Bengaluru farming
+                      </p>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  <Badge
+                    variant="secondary"
+                    className="bg-green-100 text-green-800"
+                  >
                     AI Assistant
                   </Badge>
                 </div>
@@ -223,37 +256,45 @@ export default function AIChat() {
                         key={message.id}
                         className={cn(
                           "flex items-start space-x-3",
-                          message.sender === 'user' ? "flex-row-reverse space-x-reverse" : ""
+                          message.sender === "user"
+                            ? "flex-row-reverse space-x-reverse"
+                            : "",
                         )}
                       >
-                        <div className={cn(
-                          "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
-                          message.sender === 'user' 
-                            ? "bg-primary text-white" 
-                            : "bg-blue-100 text-blue-600"
-                        )}>
-                          {message.sender === 'user' ? (
+                        <div
+                          className={cn(
+                            "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
+                            message.sender === "user"
+                              ? "bg-primary text-white"
+                              : "bg-blue-100 text-blue-600",
+                          )}
+                        >
+                          {message.sender === "user" ? (
                             <User className="h-4 w-4" />
                           ) : (
                             <Bot className="h-4 w-4" />
                           )}
                         </div>
-                        <div className={cn(
-                          "flex-1 max-w-xs lg:max-w-md",
-                          message.sender === 'user' ? "text-right" : ""
-                        )}>
-                          <div className={cn(
-                            "rounded-lg px-4 py-2 text-sm",
-                            message.sender === 'user'
-                              ? "bg-primary text-white"
-                              : "bg-gray-100 text-gray-900"
-                          )}>
+                        <div
+                          className={cn(
+                            "flex-1 max-w-xs lg:max-w-md",
+                            message.sender === "user" ? "text-right" : "",
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "rounded-lg px-4 py-2 text-sm",
+                              message.sender === "user"
+                                ? "bg-primary text-white"
+                                : "bg-gray-100 text-gray-900",
+                            )}
+                          >
                             {message.content}
                           </div>
                           <p className="text-xs text-gray-500 mt-1">
-                            {message.timestamp.toLocaleTimeString([], { 
-                              hour: '2-digit', 
-                              minute: '2-digit' 
+                            {message.timestamp.toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
                             })}
                           </p>
                         </div>
@@ -268,8 +309,14 @@ export default function AIChat() {
                         <div className="bg-gray-100 rounded-lg px-4 py-2">
                           <div className="flex space-x-1">
                             <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div
+                              className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                              style={{ animationDelay: "0.1s" }}
+                            ></div>
+                            <div
+                              className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                              style={{ animationDelay: "0.2s" }}
+                            ></div>
                           </div>
                         </div>
                       </div>
@@ -307,7 +354,8 @@ export default function AIChat() {
                     </Button>
                   </div>
                   <p className="text-xs text-gray-500 mt-2 text-center">
-                    AI responses are based on general agricultural knowledge. For specific issues, consult our experts.
+                    AI responses are based on general agricultural knowledge.
+                    For specific issues, consult our experts.
                   </p>
                 </div>
               </CardContent>

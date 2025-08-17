@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNewsController } from "../controllers/useNewsController";
@@ -28,65 +34,69 @@ import {
   ExternalLink,
   RefreshCw,
   Handshake,
-  Building2
+  Building2,
 } from "lucide-react";
 
 const getFeatures = (t: (key: string) => string) => [
   {
     icon: Scan,
-    title: t('home.features.diseaseDetection.title'),
-    description: t('home.features.diseaseDetection.description'),
+    title: t("home.features.diseaseDetection.title"),
+    description: t("home.features.diseaseDetection.description"),
     path: "/disease-detection",
     color: "bg-red-50 text-red-600",
-    benefits: ["200+ disease detection", "90%+ accuracy", "Instant results"]
+    benefits: ["200+ disease detection", "90%+ accuracy", "Instant results"],
   },
   {
     icon: Bot,
-    title: t('home.features.aiAssistant.title'),
-    description: t('home.features.aiAssistant.description'),
+    title: t("home.features.aiAssistant.title"),
+    description: t("home.features.aiAssistant.description"),
     path: "/ai-chat",
     color: "bg-blue-50 text-blue-600",
-    benefits: ["Instant responses", "Expert knowledge", "Personalized advice"]
+    benefits: ["Instant responses", "Expert knowledge", "Personalized advice"],
   },
   {
     icon: Users,
-    title: t('home.features.community.title'),
-    description: t('home.features.community.description'),
+    title: t("home.features.community.title"),
+    description: t("home.features.community.description"),
     path: "/community",
     color: "bg-purple-50 text-purple-600",
-    benefits: ["Global network", "Experience sharing", "Peer support"]
+    benefits: ["Global network", "Experience sharing", "Peer support"],
   },
   {
     icon: UserCheck,
-    title: t('home.features.expertConsultation.title'),
-    description: t('home.features.expertConsultation.description'),
+    title: t("home.features.expertConsultation.title"),
+    description: t("home.features.expertConsultation.description"),
     path: "/experts",
     color: "bg-green-50 text-green-600",
-    benefits: ["Certified experts", "Personalized advice", "Flexible scheduling"]
+    benefits: [
+      "Certified experts",
+      "Personalized advice",
+      "Flexible scheduling",
+    ],
   },
   {
     icon: Handshake,
-    title: t('home.features.contractFarming.title'),
-    description: t('home.features.contractFarming.description'),
+    title: t("home.features.contractFarming.title"),
+    description: t("home.features.contractFarming.description"),
     path: "/contract-farming",
     color: "bg-orange-50 text-orange-600",
-    benefits: ["Guaranteed purchase", "Input support", "Technical guidance"]
+    benefits: ["Guaranteed purchase", "Input support", "Technical guidance"],
   },
   {
     icon: Building2,
-    title: t('home.features.verticalFarming.title'),
-    description: t('home.features.verticalFarming.description'),
+    title: t("home.features.verticalFarming.title"),
+    description: t("home.features.verticalFarming.description"),
     path: "/vertical-farming",
     color: "bg-emerald-50 text-emerald-600",
-    benefits: ["Space efficient", "95% water saved", "Year-round harvest"]
-  }
+    benefits: ["Space efficient", "95% water saved", "Year-round harvest"],
+  },
 ];
 
 const stats = [
   { label: "Farmers Helped", value: "50K+", icon: Users },
   { label: "Diseases Detected", value: "200+", icon: Scan },
   { label: "Success Rate", value: "94%", icon: TrendingUp },
-  { label: "Countries", value: "25+", icon: Globe }
+  { label: "Countries", value: "25+", icon: Globe },
 ];
 
 export default function Index() {
@@ -117,17 +127,21 @@ export default function Index() {
               Powered by Advanced AI
             </Badge>
           </div>
-          
+
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl mb-6">
-            {t('home.title')}
+            {t("home.title")}
           </h1>
 
           <p className="text-lg leading-8 text-gray-600 mb-10 max-w-2xl mx-auto">
-            {t('home.heroDescription')}
+            {t("home.heroDescription")}
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" asChild className="bg-primary hover:bg-primary/90">
+            <Button
+              size="lg"
+              asChild
+              className="bg-primary hover:bg-primary/90"
+            >
               <Link to="/disease-detection">
                 <Camera className="h-4 w-4 mr-2" />
                 Start Disease Detection
@@ -152,7 +166,9 @@ export default function Index() {
                       <Icon className="h-6 w-6 text-primary" />
                     </div>
                   </div>
-                  <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {stat.value}
+                  </div>
                   <div className="text-sm text-gray-600">{stat.label}</div>
                 </div>
               );
@@ -169,7 +185,8 @@ export default function Index() {
               Complete Agricultural Solution
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Everything you need to optimize your farming operations, from disease detection to expert guidance.
+              Everything you need to optimize your farming operations, from
+              disease detection to expert guidance.
             </p>
           </div>
 
@@ -177,13 +194,21 @@ export default function Index() {
             {getFeatures(t).map((feature, index) => {
               const Icon = feature.icon;
               return (
-                <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+                <Card
+                  key={index}
+                  className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md"
+                >
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between mb-3">
                       <div className={`p-3 rounded-lg ${feature.color}`}>
                         <Icon className="h-6 w-6" />
                       </div>
-                      <Button variant="ghost" size="sm" asChild className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        asChild
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
                         <Link to={feature.path}>
                           <ArrowRight className="h-4 w-4" />
                         </Link>
@@ -197,7 +222,10 @@ export default function Index() {
                   <CardContent className="pt-0">
                     <div className="space-y-2">
                       {feature.benefits.map((benefit, benefitIndex) => (
-                        <div key={benefitIndex} className="flex items-center text-sm text-gray-600">
+                        <div
+                          key={benefitIndex}
+                          className="flex items-center text-sm text-gray-600"
+                        >
                           <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
                           {benefit}
                         </div>
@@ -225,7 +253,8 @@ export default function Index() {
               Agricultural Updates
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Stay updated with the latest agricultural news and market prices in Bengaluru
+              Stay updated with the latest agricultural news and market prices
+              in Bengaluru
             </p>
           </div>
 
@@ -235,7 +264,10 @@ export default function Index() {
                 <Newspaper className="h-4 w-4" />
                 <span>Latest News</span>
               </TabsTrigger>
-              <TabsTrigger value="prices" className="flex items-center space-x-2">
+              <TabsTrigger
+                value="prices"
+                className="flex items-center space-x-2"
+              >
                 <DollarSign className="h-4 w-4" />
                 <span>Market Prices</span>
               </TabsTrigger>
@@ -251,7 +283,10 @@ export default function Index() {
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {newsController.latestNews.slice(0, 3).map((article) => (
-                      <Card key={article.id} className="hover:shadow-md transition-shadow">
+                      <Card
+                        key={article.id}
+                        className="hover:shadow-md transition-shadow"
+                      >
                         <CardHeader className="pb-3">
                           <div className="flex items-start justify-between mb-2">
                             <Badge
@@ -260,15 +295,20 @@ export default function Index() {
                                 article.priority === "urgent"
                                   ? "border-red-200 text-red-700 bg-red-50"
                                   : article.priority === "high"
-                                  ? "border-orange-200 text-orange-700 bg-orange-50"
-                                  : "border-blue-200 text-blue-700 bg-blue-50"
+                                    ? "border-orange-200 text-orange-700 bg-orange-50"
+                                    : "border-blue-200 text-blue-700 bg-blue-50"
                               }`}
                             >
-                              {article.priority === "urgent" && <AlertTriangle className="h-3 w-3 mr-1" />}
+                              {article.priority === "urgent" && (
+                                <AlertTriangle className="h-3 w-3 mr-1" />
+                              )}
                               {article.category}
                             </Badge>
                             {article.priority === "urgent" && (
-                              <Badge variant="destructive" className="text-xs animate-pulse">
+                              <Badge
+                                variant="destructive"
+                                className="text-xs animate-pulse"
+                              >
                                 URGENT
                               </Badge>
                             )}
@@ -285,7 +325,9 @@ export default function Index() {
                             <div className="flex items-center space-x-3">
                               <div className="flex items-center">
                                 <Clock className="h-3 w-3 mr-1" />
-                                <span>{formatTimestamp(article.publishedAt)}</span>
+                                <span>
+                                  {formatTimestamp(article.publishedAt)}
+                                </span>
                               </div>
                               <div className="flex items-center">
                                 <MapPin className="h-3 w-3 mr-1" />
@@ -297,7 +339,9 @@ export default function Index() {
                             variant="outline"
                             size="sm"
                             className="w-full"
-                            onClick={() => newsController.incrementViews(article.id)}
+                            onClick={() =>
+                              newsController.incrementViews(article.id)
+                            }
                           >
                             <ExternalLink className="h-3 w-3 mr-1" />
                             Read More
@@ -328,37 +372,58 @@ export default function Index() {
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {priceController.marketPrices.slice(0, 6).map((price) => (
-                      <Card key={price.id} className="hover:shadow-md transition-shadow">
+                      <Card
+                        key={price.id}
+                        className="hover:shadow-md transition-shadow"
+                      >
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between mb-3">
                             <div>
-                              <h3 className="font-semibold text-gray-900 text-lg">{price.commodity}</h3>
-                              <p className="text-sm text-gray-600">{price.market}</p>
+                              <h3 className="font-semibold text-gray-900 text-lg">
+                                {price.commodity}
+                              </h3>
+                              <p className="text-sm text-gray-600">
+                                {price.market}
+                              </p>
                             </div>
-                            <div className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${priceController.getPriceChangeColor(price.trend)}`}>
+                            <div
+                              className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${priceController.getPriceChangeColor(price.trend)}`}
+                            >
                               {priceController.getPriceChangeIcon(price.trend)}
                               <span className="ml-1">
-                                {priceController.formatPriceChange(price.change)}
+                                {priceController.formatPriceChange(
+                                  price.change,
+                                )}
                               </span>
                             </div>
                           </div>
 
                           <div className="space-y-2">
                             <div className="flex items-baseline space-x-2">
-                              <span className="text-2xl font-bold text-gray-900">{priceController.formatPrice(price.currentPrice)}</span>
-                              <span className="text-sm text-gray-600">/{price.unit}</span>
+                              <span className="text-2xl font-bold text-gray-900">
+                                {priceController.formatPrice(
+                                  price.currentPrice,
+                                )}
+                              </span>
+                              <span className="text-sm text-gray-600">
+                                /{price.unit}
+                              </span>
                             </div>
 
                             <div className="flex items-center space-x-2 text-sm">
                               <span className="text-gray-600">Previous:</span>
-                              <span className={`font-medium ${
-                                price.currentPrice > price.previousPrice
-                                  ? "text-red-600"
-                                  : price.currentPrice < price.previousPrice
-                                  ? "text-green-600"
-                                  : "text-gray-600"
-                              }`}>
-                                {priceController.formatPrice(price.previousPrice)}
+                              <span
+                                className={`font-medium ${
+                                  price.currentPrice > price.previousPrice
+                                    ? "text-red-600"
+                                    : price.currentPrice < price.previousPrice
+                                      ? "text-green-600"
+                                      : "text-gray-600"
+                                }`}
+                              >
+                                {priceController.formatPrice(
+                                  price.previousPrice,
+                                )}
                               </span>
                             </div>
                           </div>
@@ -369,28 +434,33 @@ export default function Index() {
                   <div className="bg-leaf-50 rounded-lg p-6">
                     <div className="text-center">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-gray-900">Real-time Market Data</h3>
+                        <h3 className="font-semibold text-gray-900">
+                          Real-time Market Data
+                        </h3>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={priceController.refreshPrices}
                           disabled={priceController.loading}
                         >
-                          <RefreshCw className={`h-3 w-3 mr-1 ${priceController.loading ? 'animate-spin' : ''}`} />
+                          <RefreshCw
+                            className={`h-3 w-3 mr-1 ${priceController.loading ? "animate-spin" : ""}`}
+                          />
                           Refresh
                         </Button>
                       </div>
                       <p className="text-sm text-gray-600 mb-4">
-                        Prices updated every hour from major wholesale markets in Bengaluru
+                        Prices updated every hour from major wholesale markets
+                        in Bengaluru
                       </p>
                       <div className="flex items-center justify-center space-x-4 text-xs text-gray-500">
                         <div className="flex items-center">
                           <Clock className="h-3 w-3 mr-1" />
                           <span>
-                            Last updated: {priceController.lastUpdated
+                            Last updated:{" "}
+                            {priceController.lastUpdated
                               ? formatTimestamp(priceController.lastUpdated)
-                              : 'Never'
-                            }
+                              : "Never"}
                           </span>
                         </div>
                         <div className="flex items-center">
@@ -414,7 +484,8 @@ export default function Index() {
             Ready to Transform Your Farm?
           </h2>
           <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-            Join thousands of farmers who are already using DigiFarmer to improve their crop yields and make smarter farming decisions.
+            Join thousands of farmers who are already using DigiFarmer to
+            improve their crop yields and make smarter farming decisions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" asChild>
@@ -423,7 +494,12 @@ export default function Index() {
                 Get Started Free
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary" asChild>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white text-white hover:bg-white hover:text-primary"
+              asChild
+            >
               <Link to="/experts">
                 <UserCheck className="h-4 w-4 mr-2" />
                 Consult Expert

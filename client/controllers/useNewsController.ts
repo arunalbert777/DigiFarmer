@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { newsService } from '../services/NewsService';
-import { NewsArticle, NewsFilter, PaginatedResponse } from '../models/types';
+import { useState, useEffect, useCallback } from "react";
+import { newsService } from "../services/NewsService";
+import { NewsArticle, NewsFilter, PaginatedResponse } from "../models/types";
 
 export interface UseNewsControllerReturn {
   // State
@@ -10,7 +10,7 @@ export interface UseNewsControllerReturn {
   error: string | null;
   hasMore: boolean;
   totalCount: number;
-  
+
   // Actions
   loadNews: (filter?: NewsFilter, page?: number) => Promise<void>;
   loadLatestNews: (limit?: number) => Promise<void>;
@@ -18,7 +18,7 @@ export interface UseNewsControllerReturn {
   getNewsByCategory: (category: string) => Promise<void>;
   incrementViews: (id: string) => Promise<void>;
   refreshNews: () => Promise<void>;
-  
+
   // Computed
   urgentNews: NewsArticle[];
   categorizedNews: Record<string, NewsArticle[]>;
@@ -34,21 +34,22 @@ export const useNewsController = (): UseNewsControllerReturn => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentFilter, setCurrentFilter] = useState<NewsFilter | undefined>();
 
-  const loadNews = useCallback(async (filter?: NewsFilter, page: number = 1) => {
-    setLoading(true);
-    setError(null);
+  const loadNews = useCallback(
+    async (filter?: NewsFilter, page: number = 1) => {
+      setLoading(true);
+      setError(null);
 
-    // Use mock data by default for development
-    const mockNews = newsService.getNewsMock();
-    setNews(mockNews);
-    setHasMore(false);
-    setTotalCount(mockNews.length);
-    setCurrentPage(page);
-    setCurrentFilter(filter);
-    setLoading(false);
+      // Use mock data by default for development
+      const mockNews = newsService.getNewsMock();
+      setNews(mockNews);
+      setHasMore(false);
+      setTotalCount(mockNews.length);
+      setCurrentPage(page);
+      setCurrentFilter(filter);
+      setLoading(false);
 
-    // Commented out API call for now - uncomment when backend is ready
-    /*
+      // Commented out API call for now - uncomment when backend is ready
+      /*
     try {
       const response = await newsService.getNews(filter, page, 10);
 
@@ -75,7 +76,9 @@ export const useNewsController = (): UseNewsControllerReturn => {
       setLoading(false);
     }
     */
-  }, []);
+    },
+    [],
+  );
 
   const loadLatestNews = useCallback(async (limit: number = 5) => {
     // Use mock data by default for development
@@ -105,25 +108,30 @@ export const useNewsController = (): UseNewsControllerReturn => {
   const searchNews = useCallback(async (query: string) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await newsService.searchNews(query, 20);
-      
+
       if (response.success && response.data) {
         setNews(response.data);
         setHasMore(false);
       } else {
         // Fallback to filtered mock data
-        const mockNews = newsService.getNewsMock().filter(article =>
-          article.title.toLowerCase().includes(query.toLowerCase()) ||
-          article.summary.toLowerCase().includes(query.toLowerCase()) ||
-          article.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
-        );
+        const mockNews = newsService
+          .getNewsMock()
+          .filter(
+            (article) =>
+              article.title.toLowerCase().includes(query.toLowerCase()) ||
+              article.summary.toLowerCase().includes(query.toLowerCase()) ||
+              article.tags.some((tag) =>
+                tag.toLowerCase().includes(query.toLowerCase()),
+              ),
+          );
         setNews(mockNews);
         setHasMore(false);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to search news');
+      setError(err instanceof Error ? err.message : "Failed to search news");
     } finally {
       setLoading(false);
     }
@@ -132,23 +140,27 @@ export const useNewsController = (): UseNewsControllerReturn => {
   const getNewsByCategory = useCallback(async (category: string) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await newsService.getNewsByCategory(category, 20);
-      
+
       if (response.success && response.data) {
         setNews(response.data);
         setHasMore(false);
       } else {
         // Fallback to filtered mock data
-        const mockNews = newsService.getNewsMock().filter(article =>
-          article.category.toLowerCase().includes(category.toLowerCase())
-        );
+        const mockNews = newsService
+          .getNewsMock()
+          .filter((article) =>
+            article.category.toLowerCase().includes(category.toLowerCase()),
+          );
         setNews(mockNews);
         setHasMore(false);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load category news');
+      setError(
+        err instanceof Error ? err.message : "Failed to load category news",
+      );
     } finally {
       setLoading(false);
     }
@@ -158,15 +170,23 @@ export const useNewsController = (): UseNewsControllerReturn => {
     try {
       await newsService.incrementViews(id);
       // Update local state
-      setNews(prev => prev.map(article => 
-        article.id === id ? { ...article, views: article.views + 1 } : article
-      ));
-      setLatestNews(prev => prev.map(article => 
-        article.id === id ? { ...article, views: article.views + 1 } : article
-      ));
+      setNews((prev) =>
+        prev.map((article) =>
+          article.id === id
+            ? { ...article, views: article.views + 1 }
+            : article,
+        ),
+      );
+      setLatestNews((prev) =>
+        prev.map((article) =>
+          article.id === id
+            ? { ...article, views: article.views + 1 }
+            : article,
+        ),
+      );
     } catch (err) {
       // Silently fail for view increments
-      console.warn('Failed to increment views:', err);
+      console.warn("Failed to increment views:", err);
     }
   }, []);
 
@@ -181,16 +201,19 @@ export const useNewsController = (): UseNewsControllerReturn => {
   }, [loadNews, currentFilter, currentPage, hasMore, loading]);
 
   // Computed values
-  const urgentNews = news.filter(article => article.priority === 'urgent');
-  
-  const categorizedNews = news.reduce((acc, article) => {
-    const category = article.category;
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(article);
-    return acc;
-  }, {} as Record<string, NewsArticle[]>);
+  const urgentNews = news.filter((article) => article.priority === "urgent");
+
+  const categorizedNews = news.reduce(
+    (acc, article) => {
+      const category = article.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(article);
+      return acc;
+    },
+    {} as Record<string, NewsArticle[]>,
+  );
 
   // Initial load
   useEffect(() => {
@@ -206,7 +229,7 @@ export const useNewsController = (): UseNewsControllerReturn => {
     error,
     hasMore,
     totalCount,
-    
+
     // Actions
     loadNews,
     loadLatestNews,
@@ -214,7 +237,7 @@ export const useNewsController = (): UseNewsControllerReturn => {
     getNewsByCategory,
     incrementViews,
     refreshNews,
-    
+
     // Computed
     urgentNews,
     categorizedNews,

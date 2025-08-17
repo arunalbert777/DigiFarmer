@@ -15,7 +15,7 @@ import {
   Code,
   ShoppingCart,
   Handshake,
-  Building2
+  Building2,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -24,52 +24,52 @@ const getNavItems = (t: (key: string) => string) => [
   {
     name: t("nav.home"),
     path: "/",
-    icon: Leaf
+    icon: Leaf,
   },
   {
     name: t("nav.diseaseDetection"),
     path: "/disease-detection",
-    icon: Scan
+    icon: Scan,
   },
   {
     name: t("nav.aiAssistant"),
     path: "/ai-chat",
-    icon: Bot
+    icon: Bot,
   },
   {
     name: t("nav.community"),
     path: "/community",
-    icon: Users
+    icon: Users,
   },
   {
     name: t("nav.expertConsultation"),
     path: "/experts",
-    icon: UserCheck
+    icon: UserCheck,
   },
   {
     name: t("nav.news"),
     path: "/news",
-    icon: Newspaper
+    icon: Newspaper,
   },
   {
     name: t("nav.marketplace"),
     path: "/marketplace",
-    icon: ShoppingCart
+    icon: ShoppingCart,
   },
   {
     name: t("nav.contractFarming"),
     path: "/contract-farming",
-    icon: Handshake
+    icon: Handshake,
   },
   {
     name: t("nav.verticalFarming"),
     path: "/vertical-farming",
-    icon: Building2
+    icon: Building2,
   },
   {
     name: t("nav.developers"),
     path: "/developers",
-    icon: Code
+    icon: Code,
   },
 ];
 
@@ -104,7 +104,7 @@ export function Navigation() {
                     "flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                     isActive
                       ? "text-primary bg-leaf-50"
-                      : "text-gray-600 hover:text-primary hover:bg-leaf-50"
+                      : "text-gray-600 hover:text-primary hover:bg-leaf-50",
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -120,14 +120,14 @@ export function Navigation() {
               size="sm"
               className="bg-primary/5 hover:bg-primary/10 text-primary border-primary/20"
               onClick={() => {
-                if ('serviceWorker' in navigator && 'PushManager' in window) {
-                  alert('PWA features supported! Install button should work.');
+                if ("serviceWorker" in navigator && "PushManager" in window) {
+                  alert("PWA features supported! Install button should work.");
                 } else {
-                  alert('PWA not supported in this browser');
+                  alert("PWA not supported in this browser");
                 }
               }}
             >
-              📱 {t('pwa.install')}
+              📱 {t("pwa.install")}
             </Button>
           </div>
 
@@ -162,7 +162,7 @@ export function Navigation() {
                       "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                       isActive
                         ? "text-primary bg-leaf-50"
-                        : "text-gray-600 hover:text-primary hover:bg-leaf-50"
+                        : "text-gray-600 hover:text-primary hover:bg-leaf-50",
                     )}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

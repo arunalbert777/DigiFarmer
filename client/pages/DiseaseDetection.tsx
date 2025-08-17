@@ -1,9 +1,21 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "../contexts/LanguageContext";
 import { diseaseDetectionService } from "../services/DiseaseDetectionService";
@@ -21,7 +33,7 @@ import {
   Droplets,
   Shield,
   Zap,
-  Eye
+  Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +45,7 @@ const supportedCrops = [
   { name: "Eggplant", diseases: 38, icon: "🍆" },
   { name: "Cucumber", diseases: 30, icon: "🥒" },
   { name: "Lettuce", diseases: 25, icon: "🥬" },
-  { name: "Spinach", diseases: 28, icon: "🥬" }
+  { name: "Spinach", diseases: 28, icon: "🥬" },
 ];
 
 export default function DiseaseDetection() {
@@ -53,7 +65,7 @@ export default function DiseaseDetection() {
     // Validate file
     const validation = diseaseDetectionService.validateImageFile(file);
     if (!validation.valid) {
-      setError(validation.error || 'Invalid file');
+      setError(validation.error || "Invalid file");
       return;
     }
 
@@ -61,11 +73,14 @@ export default function DiseaseDetection() {
     const processedFile = await diseaseDetectionService.preprocessImage(file);
 
     // Analyze image quality
-    const quality = await diseaseDetectionService.analyzeImageQuality(processedFile);
+    const quality =
+      await diseaseDetectionService.analyzeImageQuality(processedFile);
     setImageQuality(quality);
 
     if (quality < 0.6) {
-      setError('Image quality is too low for accurate detection. Please capture a clearer image with better lighting.');
+      setError(
+        "Image quality is too low for accurate detection. Please capture a clearer image with better lighting.",
+      );
     }
 
     const reader = new FileReader();
@@ -76,14 +91,17 @@ export default function DiseaseDetection() {
     reader.readAsDataURL(processedFile);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0 && files[0].type.startsWith('image/')) {
-      handleImageUpload(files[0]);
-    }
-  }, [handleImageUpload]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragOver(false);
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length > 0 && files[0].type.startsWith("image/")) {
+        handleImageUpload(files[0]);
+      }
+    },
+    [handleImageUpload],
+  );
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -94,12 +112,12 @@ export default function DiseaseDetection() {
 
   const analyzeImage = async () => {
     if (!selectedImage) return;
-    
+
     setIsAnalyzing(true);
-    
+
     // Simulate AI analysis
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
     setResult({
       disease: "Early Blight",
       confidence: 92,
@@ -109,16 +127,16 @@ export default function DiseaseDetection() {
         "Remove affected leaves immediately",
         "Apply copper-based fungicide",
         "Improve air circulation",
-        "Avoid overhead watering"
+        "Avoid overhead watering",
       ],
       prevention: [
         "Crop rotation every 2-3 years",
         "Use disease-resistant varieties",
         "Maintain proper plant spacing",
-        "Regular inspection of plants"
-      ]
+        "Regular inspection of plants",
+      ],
     });
-    
+
     setIsAnalyzing(false);
   };
 
@@ -139,22 +157,26 @@ export default function DiseaseDetection() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
-            {t('disease.title')}
+            {t("disease.title")}
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('disease.subtitle')}
+            {t("disease.subtitle")}
           </p>
         </div>
 
         {/* Supported Crops */}
         <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Supported Crops</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Supported Crops
+          </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {supportedCrops.map((crop, index) => (
               <Card key={index} className="text-center p-4">
                 <div className="text-2xl mb-2">{crop.icon}</div>
                 <div className="font-medium text-gray-900">{crop.name}</div>
-                <div className="text-sm text-gray-600">{crop.diseases} diseases</div>
+                <div className="text-sm text-gray-600">
+                  {crop.diseases} diseases
+                </div>
               </Card>
             ))}
           </div>
@@ -166,11 +188,9 @@ export default function DiseaseDetection() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Upload className="h-5 w-5 mr-2" />
-                {t('disease.uploadImage')}
+                {t("disease.uploadImage")}
               </CardTitle>
-              <CardDescription>
-                {t('disease.subtitle')}
-              </CardDescription>
+              <CardDescription>{t("disease.subtitle")}</CardDescription>
             </CardHeader>
             <CardContent>
               {!selectedImage ? (
@@ -179,7 +199,7 @@ export default function DiseaseDetection() {
                     "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
                     dragOver
                       ? "border-primary bg-primary/5"
-                      : "border-gray-300 hover:border-gray-400"
+                      : "border-gray-300 hover:border-gray-400",
                   )}
                   onDrop={handleDrop}
                   onDragOver={(e) => {
@@ -203,7 +223,7 @@ export default function DiseaseDetection() {
                     <Button asChild>
                       <span>
                         <Camera className="h-4 w-4 mr-2" />
-                        {t('disease.uploadImage')}
+                        {t("disease.uploadImage")}
                       </span>
                     </Button>
                   </label>
@@ -225,19 +245,21 @@ export default function DiseaseDetection() {
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
-                  
+
                   {!isAnalyzing && !result && (
                     <Button onClick={analyzeImage} className="w-full" size="lg">
                       <Scan className="h-4 w-4 mr-2" />
-                      {t('disease.analyzing')}
+                      {t("disease.analyzing")}
                     </Button>
                   )}
-                  
+
                   {isAnalyzing && (
                     <div className="text-center space-y-4">
                       <Leaf className="h-8 w-8 mx-auto text-primary animate-pulse" />
                       <div>
-                        <p className="font-medium text-gray-900 mb-2">{t('disease.analyzing')}</p>
+                        <p className="font-medium text-gray-900 mb-2">
+                          {t("disease.analyzing")}
+                        </p>
                         <Progress value={66} className="w-full" />
                         <p className="text-sm text-gray-600 mt-2">
                           Using advanced CNN to detect diseases
@@ -255,7 +277,7 @@ export default function DiseaseDetection() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <CheckCircle className="h-5 w-5 mr-2" />
-                {t('disease.results')}
+                {t("disease.results")}
               </CardTitle>
               <CardDescription>
                 AI-powered disease identification and treatment recommendations
@@ -270,17 +292,30 @@ export default function DiseaseDetection() {
               ) : (
                 <div className="space-y-6">
                   {/* Disease Info */}
-                  <div className={cn(
-                    "p-4 rounded-lg border",
-                    result.severity === 'Critical' ? 'bg-red-50 border-red-200' :
-                    result.severity === 'High' ? 'bg-orange-50 border-orange-200' :
-                    result.severity === 'Moderate' ? 'bg-yellow-50 border-yellow-200' :
-                    'bg-green-50 border-green-200'
-                  )}>
+                  <div
+                    className={cn(
+                      "p-4 rounded-lg border",
+                      result.severity === "Critical"
+                        ? "bg-red-50 border-red-200"
+                        : result.severity === "High"
+                          ? "bg-orange-50 border-orange-200"
+                          : result.severity === "Moderate"
+                            ? "bg-yellow-50 border-yellow-200"
+                            : "bg-green-50 border-green-200",
+                    )}
+                  >
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold text-gray-900">{result.disease}</h3>
+                      <h3 className="font-semibold text-gray-900">
+                        {result.disease}
+                      </h3>
                       <Badge
-                        variant={result.confidence >= 90 ? "default" : result.confidence >= 80 ? "secondary" : "outline"}
+                        variant={
+                          result.confidence >= 90
+                            ? "default"
+                            : result.confidence >= 80
+                              ? "secondary"
+                              : "outline"
+                        }
                       >
                         {result.confidence}% confidence
                       </Badge>
@@ -297,7 +332,9 @@ export default function DiseaseDetection() {
                       {result.timeToTreat && (
                         <div className="flex items-center col-span-2">
                           <Clock className="h-4 w-4 mr-1 text-blue-600" />
-                          <span className="font-medium">{result.timeToTreat}</span>
+                          <span className="font-medium">
+                            {result.timeToTreat}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -315,7 +352,9 @@ export default function DiseaseDetection() {
                     <TabsContent value="treatment" className="space-y-3">
                       <div className="flex items-center mb-3">
                         <Zap className="h-5 w-5 text-orange-600 mr-2" />
-                        <h4 className="font-semibold text-gray-900">Treatment Plan</h4>
+                        <h4 className="font-semibold text-gray-900">
+                          Treatment Plan
+                        </h4>
                       </div>
                       <ul className="space-y-2">
                         {result.treatment.map((step: string, index: number) => (
@@ -330,7 +369,9 @@ export default function DiseaseDetection() {
                     <TabsContent value="prevention" className="space-y-3">
                       <div className="flex items-center mb-3">
                         <Shield className="h-5 w-5 text-blue-600 mr-2" />
-                        <h4 className="font-semibold text-gray-900">Prevention Strategies</h4>
+                        <h4 className="font-semibold text-gray-900">
+                          Prevention Strategies
+                        </h4>
                       </div>
                       <ul className="space-y-2">
                         {result.prevention.map((tip: string, index: number) => (
@@ -345,44 +386,66 @@ export default function DiseaseDetection() {
                     <TabsContent value="symptoms" className="space-y-3">
                       <div className="flex items-center mb-3">
                         <Eye className="h-5 w-5 text-purple-600 mr-2" />
-                        <h4 className="font-semibold text-gray-900">Key Symptoms</h4>
+                        <h4 className="font-semibold text-gray-900">
+                          Key Symptoms
+                        </h4>
                       </div>
                       {result.symptoms ? (
                         <ul className="space-y-2">
-                          {result.symptoms.map((symptom: string, index: number) => (
-                            <li key={index} className="flex items-start text-sm">
-                              <div className="h-2 w-2 bg-purple-600 rounded-full mr-2 mt-2 flex-shrink-0" />
-                              {symptom}
-                            </li>
-                          ))}
+                          {result.symptoms.map(
+                            (symptom: string, index: number) => (
+                              <li
+                                key={index}
+                                className="flex items-start text-sm"
+                              >
+                                <div className="h-2 w-2 bg-purple-600 rounded-full mr-2 mt-2 flex-shrink-0" />
+                                {symptom}
+                              </li>
+                            ),
+                          )}
                         </ul>
                       ) : (
-                        <p className="text-gray-600 text-sm">Symptom details not available for this disease.</p>
+                        <p className="text-gray-600 text-sm">
+                          Symptom details not available for this disease.
+                        </p>
                       )}
                     </TabsContent>
 
                     <TabsContent value="environment" className="space-y-3">
                       <div className="flex items-center mb-3">
                         <Thermometer className="h-5 w-5 text-red-600 mr-2" />
-                        <h4 className="font-semibold text-gray-900">Environmental Factors</h4>
+                        <h4 className="font-semibold text-gray-900">
+                          Environmental Factors
+                        </h4>
                       </div>
                       {result.environmentalFactors ? (
                         <ul className="space-y-2">
-                          {result.environmentalFactors.map((factor: string, index: number) => (
-                            <li key={index} className="flex items-start text-sm">
-                              <Droplets className="h-4 w-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
-                              {factor}
-                            </li>
-                          ))}
+                          {result.environmentalFactors.map(
+                            (factor: string, index: number) => (
+                              <li
+                                key={index}
+                                className="flex items-start text-sm"
+                              >
+                                <Droplets className="h-4 w-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+                                {factor}
+                              </li>
+                            ),
+                          )}
                         </ul>
                       ) : (
-                        <p className="text-gray-600 text-sm">Environmental factor details not available.</p>
+                        <p className="text-gray-600 text-sm">
+                          Environmental factor details not available.
+                        </p>
                       )}
                     </TabsContent>
                   </Tabs>
 
                   <div className="flex gap-2">
-                    <Button onClick={resetAnalysis} variant="outline" className="flex-1">
+                    <Button
+                      onClick={resetAnalysis}
+                      variant="outline"
+                      className="flex-1"
+                    >
                       Analyze Another Image
                     </Button>
                     <Button
@@ -401,22 +464,30 @@ export default function DiseaseDetection() {
 
         {/* Enhanced Features Info */}
         <div className="mt-12 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">Advanced AI Features</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">
+            Advanced AI Features
+          </h3>
           <div className="grid md:grid-cols-3 gap-4 text-sm">
             <div className="text-center p-4">
               <Zap className="h-8 w-8 mx-auto text-primary mb-2" />
               <h4 className="font-semibold mb-1">Enhanced Accuracy</h4>
-              <p className="text-gray-600">Ensemble CNN models with 95%+ accuracy for major crop diseases</p>
+              <p className="text-gray-600">
+                Ensemble CNN models with 95%+ accuracy for major crop diseases
+              </p>
             </div>
             <div className="text-center p-4">
               <Shield className="h-8 w-8 mx-auto text-primary mb-2" />
               <h4 className="font-semibold mb-1">Smart Detection</h4>
-              <p className="text-gray-600">Automated image quality assessment and preprocessing</p>
+              <p className="text-gray-600">
+                Automated image quality assessment and preprocessing
+              </p>
             </div>
             <div className="text-center p-4">
               <Clock className="h-8 w-8 mx-auto text-primary mb-2" />
               <h4 className="font-semibold mb-1">Real-time Analysis</h4>
-              <p className="text-gray-600">Fast processing with detailed treatment recommendations</p>
+              <p className="text-gray-600">
+                Fast processing with detailed treatment recommendations
+              </p>
             </div>
           </div>
         </div>
