@@ -62,6 +62,11 @@ const getNavItems = (t: (key: string) => string) => [
     icon: Handshake
   },
   {
+    name: t("nav.verticalFarming"),
+    path: "/vertical-farming",
+    icon: Building2
+  },
+  {
     name: t("nav.developers"),
     path: "/developers",
     icon: Code
