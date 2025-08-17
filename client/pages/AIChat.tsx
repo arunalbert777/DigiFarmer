@@ -5,11 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Bot, 
-  User, 
-  Send, 
-  Mic, 
+import { useLanguage } from "../contexts/LanguageContext";
+import {
+  Bot,
+  User,
+  Send,
+  Mic,
   Paperclip,
   Lightbulb,
   Leaf,
