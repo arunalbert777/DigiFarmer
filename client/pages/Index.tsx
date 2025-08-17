@@ -101,13 +101,11 @@ export default function Index() {
           </div>
           
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl mb-6">
-            Revolutionize Your
-            <span className="text-primary block">Agricultural Journey</span>
+            {t('home.title')}
           </h1>
-          
+
           <p className="text-lg leading-8 text-gray-600 mb-10 max-w-2xl mx-auto">
-            Empower your farming with AI-driven disease detection, expert consultation, and a thriving community. 
-            Make data-driven decisions to maximize your crop yield and productivity.
+            {t('home.heroDescription')}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
