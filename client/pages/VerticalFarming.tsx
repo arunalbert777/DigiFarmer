@@ -187,11 +187,31 @@ export function VerticalFarming() {
   ];
 
   const setupSteps = [
-    t('verticalFarming.setupGuide.step1'),
-    t('verticalFarming.setupGuide.step2'),
-    t('verticalFarming.setupGuide.step3'),
-    t('verticalFarming.setupGuide.step4'),
-    t('verticalFarming.setupGuide.step5')
+    {
+      title: t('verticalFarming.setupGuide.step1.title'),
+      description: t('verticalFarming.setupGuide.step1.description'),
+      details: t('verticalFarming.setupGuide.step1.details')
+    },
+    {
+      title: t('verticalFarming.setupGuide.step2.title'),
+      description: t('verticalFarming.setupGuide.step2.description'),
+      details: t('verticalFarming.setupGuide.step2.details')
+    },
+    {
+      title: t('verticalFarming.setupGuide.step3.title'),
+      description: t('verticalFarming.setupGuide.step3.description'),
+      details: t('verticalFarming.setupGuide.step3.details')
+    },
+    {
+      title: t('verticalFarming.setupGuide.step4.title'),
+      description: t('verticalFarming.setupGuide.step4.description'),
+      details: t('verticalFarming.setupGuide.step4.details')
+    },
+    {
+      title: t('verticalFarming.setupGuide.step5.title'),
+      description: t('verticalFarming.setupGuide.step5.description'),
+      details: t('verticalFarming.setupGuide.step5.details')
+    }
   ];
 
   return (
