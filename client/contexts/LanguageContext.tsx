@@ -32,10 +32,12 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   });
 
   const [translations, setTranslations] = useState<Record<string, any>>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load translations when language changes
   useEffect(() => {
     const loadTranslations = async () => {
+      setIsLoading(true);
       try {
         const translationModule = await import(
           `../translations/${language}.ts`
@@ -53,8 +55,16 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
               "Failed to load fallback translations:",
               fallbackError,
             );
+            // Provide minimal fallback translations
+            setTranslations({
+              nav: { home: 'Home', diseaseDetection: 'Disease Detection' },
+              common: { loading: 'Loading...' },
+              home: { title: 'DigiFarmer' }
+            });
           }
         }
+      } finally {
+        setIsLoading(false);
       }
     };
 
