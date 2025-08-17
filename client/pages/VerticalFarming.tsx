@@ -260,7 +260,7 @@ export function VerticalFarming() {
           <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="overview" className="flex items-center space-x-2">
               <Leaf className="h-4 w-4" />
-              <span className="hidden sm:inline">{t('verticalFarming.benefits')}</span>
+              <span className="hidden sm:inline">{t('verticalFarming.benefitsLabel')}</span>
             </TabsTrigger>
             <TabsTrigger value="systems" className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
