@@ -75,6 +75,7 @@ export default function Index() {
   // Initialize MVC controllers
   const newsController = useNewsController();
   const priceController = useMarketPriceController();
+  const { t } = useLanguage();
 
   const formatTimestamp = (date: Date) => {
     const now = new Date();
