@@ -17,7 +17,7 @@ export default {
     loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ...',
     error: 'ದೋಷ',
     success: 'ಯಶಸ್ಸು',
-    cancel: 'ರ��್ದು ಮಾಡಿ',
+    cancel: 'ರದ್ದು ಮಾಡಿ',
     save: 'ಉಳಿಸಿ',
     edit: 'ಸಂಪಾದಿಸಿ',
     delete: 'ಅಳಿಸಿ',
@@ -33,7 +33,7 @@ export default {
     getStarted: 'ಪ್ರಾರಂಭಿಸಿ',
     contact: 'ಸಂಪರ್ಕಿಸಿ',
     phone: 'ಫೋನ್',
-    email: 'ಇಮೇಲ್',
+    email: 'ಇಮೇ��್',
     location: 'ಸ್ಥಳ',
     date: 'ದಿನಾಂಕ',
     time: 'ಸಮಯ',
@@ -66,7 +66,7 @@ export default {
       },
       expertConsultation: {
         title: 'ತಜ್ಞರ ಸಲಹೆ',
-        description: 'ನಿಮ್ಮ ಕೃಷಿ ಸವಾಲುಗಳಿಗೆ ವೈಯಕ್ತಿಕ ಸಲಹೆ ಮತ್ತು ಪರಿಹಾರಗಳಿಗಾಗಿ ಕೃಷಿ ತಜ್ಞರೊಂದಿಗೆ ಸಂಪ��್ಕ ಸಾಧಿಸಿ.',
+        description: 'ನಿಮ್ಮ ಕೃಷಿ ಸವಾಲುಗಳಿಗೆ ವೈಯಕ್ತಿಕ ಸಲಹೆ ಮತ್ತು ಪರಿಹಾರಗಳಿಗಾಗಿ ಕೃಷಿ ತಜ್ಞರೊಂದಿಗೆ ಸಂಪರ್ಕ ಸಾಧಿಸಿ.',
       },
       community: {
         title: 'ಸಮುದಾಯ ಬೆಂಬಲ',
@@ -83,14 +83,14 @@ export default {
     },
     stats: {
       farmers: 'ಸಂಪರ್ಕಿತ ರೈತರು',
-      experts: 'ಕ��ಷಿ ತಜ್ಞರು',
+      experts: 'ಕೃಷಿ ತಜ್ಞರು',
       consultations: 'ಪೂರ್ಣಗೊಂಡ ಸಲಹೆಗಳು',
       success: 'ಯಶಸ್ಸಿನ ಪ್ರಮಾಣ',
     },
     cta: {
       title: 'ನಿಮ್ಮ ಡಿಜಿಟಲ್ ಕೃಷಿ ಪ್ರಯಾಣವನ್ನು ಪ್ರಾರಂಭಿಸಲು ಸಿದ್ಧರಿದ್ದೀರಾ?',
       description: 'ನಮ್ಮ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್‌ನಿಂದ ಈಗಾಗಲೇ ಪ್ರಯೋಜನ ಪಡೆಯುತ್ತಿರುವ ಸಾವಿರಾರು ರೈತರೊಂದಿಗೆ ಸೇರಿ.',
-      button: 'ಇಂದೇ ಪ್ರಾರಂಭಿಸಿ',
+      button: 'ಇಂದೇ ಪ್ರಾ���ಂಭಿಸಿ',
     },
   },
 
@@ -105,7 +105,7 @@ export default {
       direct: 'ನೇರ',
     },
     featured: 'ವಿಶೇಷ ಉತ್ಪನ್ನಗಳು',
-    premiumSelection: 'ಪ್ರೀಮಿಯಂ ಆಯ್ಕ���',
+    premiumSelection: 'ಪ್ರೀಮಿಯಂ ಆಯ್ಕೆ',
     searchPlaceholder: 'ಉತ್ಪನ್ನಗಳನ್ನು ಹುಡುಕಿ...',
     sortBy: {
       latest: 'ಇತ್ತೀಚಿನ',
@@ -118,7 +118,7 @@ export default {
       search: 'ಉತ್ಪನ್ನಗಳನ್ನು ಹುಡುಕಿ',
       searchPlaceholder: 'ಶೀರ್ಷಿಕೆ, ವಿವರಣೆ ಅಥವಾ ಟ್ಯಾಗ್‌ಗಳಿಂದ ಹುಡುಕಿ',
       category: 'ವರ್ಗ',
-      allCategories: 'ಎಲ್ಲಾ ವರ್ಗಗಳು',
+      allCategories: 'ಎಲ್ಲಾ ವರ್ಗಗಳ��',
       priceRange: 'ಬೆಲೆ ವ್ಯಾಪ್ತಿ (₹)',
       minPrice: 'ಕನಿಷ್ಠ',
       maxPrice: 'ಗರಿಷ್ಠ',
@@ -131,7 +131,7 @@ export default {
       activeFilters: 'ಸಕ್ರಿಯ ಫಿಲ್ಟರ್‌ಗಳು:',
     },
     product: {
-      viewDetails: 'ವಿವರಗಳನ್��ು ನೋಡಿ',
+      viewDetails: 'ವಿವರಗಳನ್ನು ನೋಡಿ',
       contact: 'ಸಂಪರ್ಕಿಸಿ',
       likes: 'ಇಷ್ಟಗಳು',
       views: 'ವೀಕ್ಷಣೆಗಳು',
@@ -144,12 +144,12 @@ export default {
     },
     addProduct: {
       title: 'ಹೊಸ ಉತ್ಪನ್ನವನ್ನು ಸೇರಿಸಿ',
-      subtitle: 'ಮಾರುಕಟ್ಟೆಯಲ್ಲಿ ನಿಮ್ಮ ಕೃಷಿ ಉತ್ಪನ್ನಗಳನ್ನು ಪಟ್ಟಿ ಮಾಡಿ',
+      subtitle: 'ಮಾರು��ಟ್ಟೆಯಲ್ಲಿ ನಿಮ್ಮ ಕೃಷಿ ಉತ್ಪನ್ನಗಳನ್ನು ಪಟ್ಟಿ ಮಾಡಿ',
       button: 'ಉತ್ಪನ್ನ ಮಾರಾಟ',
       success: 'ಉತ್ಪನ್ನವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ!',
       successDescription: 'ನಿಮ್ಮ ಉತ್ಪನ್ನವು ಈಗ ಮಾರುಕಟ್ಟೆಯಲ್ಲಿ ಲಭ್ಯವಿದೆ.',
       error: 'ಉತ್ಪನ್ನವನ್ನು ಸೇರಿಸಲು ವಿಫಲವಾಗಿದೆ',
-      errorDescription: 'ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ಬೆಂಬಲವನ್ನ�� ಸಂಪರ್ಕಿಸಿ.',
+      errorDescription: 'ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸಿ.',
       form: {
         basicInfo: 'ಮೂಲಭೂತ ಮಾಹಿತಿ',
         productTitle: 'ಉತ್ಪನ್ನದ ಶೀರ್ಷಿಕೆ',
@@ -162,7 +162,7 @@ export default {
         price: 'ಬೆಲೆ (₹)',
         unit: 'ಘಟಕ',
         quantity: 'ಪ್ರಮಾಣ',
-        minOrder: 'ಕನಿಷ್ಠ ಆರ್ಡರ್',
+        minOrder: 'ಕನಿಷ್ಠ ಆರ್���ರ್',
         optional: 'ಐಚ್ಛಿಕ',
         location: 'ಸ್ಥಳ',
         locationPlaceholder: 'ಉದಾ., ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ',
@@ -170,7 +170,7 @@ export default {
         contactEmail: 'ಸಂಪರ್ಕ ಇಮೇಲ್',
         harvestDate: 'ಸುಗ್ಗಿ ದಿನಾಂಕ',
         expiryDate: 'ಅವಧಿ ಮೀರುವ ದಿನಾಂಕ',
-        qualityGrade: 'ಗುಣಮಟ್ಟದ ದರ���ಜೆ',
+        qualityGrade: 'ಗುಣಮಟ್ಟದ ದರ್ಜೆ',
         organicProduct: 'ಸಾವಯವ ಉತ್ಪನ್ನ',
         priceNegotiable: 'ಬೆಲೆ ಚರ್ಚಿಸಬಹುದು',
         tags: 'ಟ್ಯಾಗ್‌ಗಳು',
@@ -185,7 +185,7 @@ export default {
     },
     empty: {
       title: 'ಯಾವುದೇ ಉತ್ಪನ್ನಗಳು ಕಂಡುಬಂದಿಲ್ಲ',
-      description: 'ನಿಮ್ಮ ಫಿಲ್ಟರ್‌ಗಳು ಅಥವಾ ಹುಡುಕಾಟ ಪದಗಳನ್ನು ಸರಿ���ೊಂದಿಸಲು ಪ್ರಯತ್ನಿಸಿ',
+      description: 'ನಿಮ್ಮ ಫಿಲ್ಟರ್‌ಗಳು ಅಥವಾ ಹುಡುಕಾಟ ಪದಗಳನ್ನು ಸರಿಹೊಂದಿಸಲು ಪ್ರಯತ್ನಿಸಿ',
       noProducts: 'ಮಾರುಕಟ್ಟೆಯಲ್ಲಿ ಉತ್ಪನ್ನವನ್ನು ಪಟ್ಟಿ ಮಾಡುವ ಮೊದಲಿಗರಾಗಿ!',
       addProduct: 'ನಿಮ್ಮ ಉತ್ಪನ್ನವನ್ನು ಸೇರಿಸಿ',
     },
@@ -202,7 +202,7 @@ export default {
       market: 'ಮಾರುಕಟ್ಟೆ ಸುದ್ದಿ',
       technology: 'ತಂತ್ರಜ್ಞಾನ',
       education: 'ಶಿಕ್ಷಣ',
-      success: 'ಯಶಸ್ಸಿನ ಕಥೆ',
+      success: '���ಶಸ್ಸಿನ ಕಥೆ',
       event: 'ಕಾರ್ಯಕ್ರಮ',
     },
     readTime: '{{time}} ನಿಮಿಷಗಳ ಓದುವಿಕೆ',
@@ -231,7 +231,7 @@ export default {
     specialization: 'ವಿಶೇಷತೆ',
     languages: 'ಭಾಷೆಗಳು',
     consultations: '{{count}} ಸಲಹೆಗಳು',
-    verified: 'ಪರಿಶೀಲಿಸಿದ ತಜ್ಞ',
+    verified: 'ಪರಿಶೀಲ���ಸಿದ ತಜ್ಞ',
   },
 
   // Disease Detection
@@ -239,7 +239,7 @@ export default {
     title: 'AI ರೋಗ ಪತ್ತೆ',
     subtitle: 'ತ್ವರಿತ ರೋಗ ಗುರುತಿಸುವಿಕೆಗಾಗಿ ಬೆಳೆ ಚಿತ್ರಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ',
     uploadImage: 'ಬೆಳೆ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ',
-    analyzing: 'ಚಿತ್ರವನ್ನು ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿ���ೆ...',
+    analyzing: 'ಚಿತ್ರವನ್ನು ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...',
     results: 'ಪತ್ತೆ ಫಲಿತಾಂಶಗಳು',
     disease: 'ರೋಗ',
     confidence: 'ವಿಶ್ವಾಸ',
@@ -259,7 +259,7 @@ export default {
   community: {
     title: 'ರೈತರ ಸಮುದಾಯ',
     subtitle: 'ಸಹ ರೈತರೊಂದಿಗೆ ಸಂಪರ್ಕ ಸಾಧಿಸಿ, ಹಂಚಿಕೊಳ್ಳಿ ಮತ್ತು ಕಲಿಯಿರಿ',
-    createPost: 'ಪೋಸ್ಟ್ ರಚಿಸಿ',
+    createPost: 'ಪೋಸ್ಟ್ ���ಚಿಸಿ',
     posts: 'ಪೋಸ್ಟ್‌ಗಳು',
     discussions: 'ಚರ್ಚೆಗಳು',
     questions: 'ಪ್ರಶ್ನೆಗಳು',
@@ -268,7 +268,7 @@ export default {
     likes: '{{count}} ಇಷ್ಟಗಳು',
     comments: '{{count}} ಕಾಮೆಂಟ್‌ಗಳು',
     shares: '{{count}} ಹಂಚಿಕೆಗಳು',
-    postedBy: '{{name}} ಪೋಸ್ಟ್ ಮಾಡಿದ��ದಾರೆ',
+    postedBy: '{{name}} ಪೋಸ್ಟ್ ಮಾಡಿದ್ದಾರೆ',
     timeAgo: '{{time}} ಹಿಂದೆ',
   },
 
@@ -279,7 +279,7 @@ export default {
     installButton: 'ಈಗ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ',
     installLater: 'ಬಹುಶಃ ನಂತರ',
     installInstructions: 'ಹಂಚಿಕೆ ಬಟನ್ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು "ಮುಖ್ಯ ಪರದೆಗೆ ಸೇರಿಸಿ" ಆಯ್ಕೆಮಾಡಿ',
-    offlineMessage: 'ನೀವು ಪ್ರಸ್ತುತ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದೀರಿ. ಕೆಲವು ವೈಶಿಷ್ಟ್ಯಗಳು ಲಭ್ಯವಿಲ್ಲದಿರಬಹುದು.',
+    offlineMessage: 'ನೀವು ಪ್ರಸ್ತುತ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದೀ���ಿ. ಕೆಲವು ವೈಶಿಷ್ಟ್ಯಗಳು ಲಭ್ಯವಿಲ್ಲದಿರಬಹುದು.',
   },
 
   // Language
@@ -290,12 +290,88 @@ export default {
     select: 'ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ',
   },
 
+  // Contract Farming
+  contractFarming: {
+    title: 'ಗುತ್ತಿಗೆ ಕೃಷಿ',
+    subtitle: 'ಖಾತರಿಪಡಿಸಿದ ಖರೀದಿ ಮತ್ತು ಕೃಷಿ ಬೆಂಬಲಕ್ಕಾಗಿ ಸ್ಥಳೀಯ ಕಂಪನಿಗಳೊಂದಿಗೆ ಪಾಲುದಾರಿಕೆ ಮಾಡಿ',
+    partnerships: 'ಸ್ಥಳೀಯ ಪಾಲುದಾರಿಕೆಗಳು',
+    contracts: 'ಲಭ್ಯವಿರುವ ಗುತ್ತಿಗೆಗಳು',
+    benefits: 'ಗುತ್ತಿಗೆ ಪ್ರಯೋಜನಗಳು',
+    requirements: 'ಅವಶ್ಯಕತೆಗಳು',
+    apply: 'ಗುತ್ತಿಗೆಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ',
+    viewDetails: 'ಗುತ್ತಿಗೆ ವಿವರಗಳನ್ನು ನೋಡಿ',
+    companies: {
+      title: 'ಪಾಲುದಾರ ಕಂಪನಿಗಳು',
+      subtitle: 'ಗುತ್ತಿಗೆ ಕೃಷಿ ಅವಕಾಶಗಳನ್ನು ನೀಡುವ ವಿಶ್ವಾಸಾರ್ಹ ಸ್ಥಳೀಯ ಕಂಪನಿಗಳು',
+    },
+    crops: {
+      vegetables: 'ತರಕಾರಿಗಳು',
+      fruits: 'ಹಣ್ಣುಗಳು',
+      grains: 'ಧಾನ್ಯಗಳು',
+      spices: 'ಮಸಾಲೆಗಳು',
+      flowers: 'ಹೂವುಗಳು',
+    },
+    contractTypes: {
+      seasonal: 'ಋತುವಿನ ಗುತ್ತಿಗೆ',
+      annual: 'ವಾರ್ಷಿಕ ಗುತ್ತಿಗೆ',
+      multiYear: 'ಬಹು-ವರ್ಷದ ಗುತ್ತಿಗೆ',
+    },
+    support: {
+      title: 'ಒದಗಿಸಲಾಗುವ ಬೆಂಬಲ',
+      seeds: 'ಗುಣಮಟ್ಟದ ಬೀಜಗಳು ಮತ್ತು ಸಸಿಗಳು',
+      fertilizers: 'ರಸಗೊಬ್ಬರಗಳು ಮತ್ತು ಕೀಟನಾಶಕಗಳು',
+      technical: 'ತಾಂತ್ರಿಕ ಮಾರ್ಗದರ್ಶನ',
+      equipment: 'ಉಪಕರಣ ಬೆಂಬಲ',
+      training: 'ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳು',
+      guaranteed: 'ಖಾತರಿಪಡಿಸಿದ ಖರೀದಿ',
+    },
+    localCompanies: {
+      iffco: {
+        name: 'ಇಫ್ಕೋ ಕಿಸಾನ್',
+        description: 'ತರಕಾರಿ ಮತ್ತು ಧಾನ್ಯ ಗುತ್ತಿಗೆಗಳಿಗೆ ಪ್ರಮುಖ ಸಹಕಾರಿ ಸಂಸ್ಥೆ',
+        crops: 'ಟೊಮೇಟೊ, ಈರುಳ್ಳಿ, ಆಲೂಗಡ್ಡೆ, ಗೋಧಿ',
+        minArea: 'ಕನಿಷ್ಠ 2 ಎಕರೆ',
+        support: 'ಬೀಜಗಳು, ರಸಗೊಬ್ಬರಗಳು, ತಾಂತ್ರಿಕ ಮಾರ್ಗದರ್ಶನ',
+      },
+      reliance: {
+        name: 'ರಿಲಯನ್ಸ್ ಫ್ರೆಶ್',
+        description: 'ನೇರ ರೈತ ಪಾಲುದಾರಿಕೆಯೊಂದಿಗೆ ತಾಜಾ ಉತ್ಪನ್ನ ಪೂರೈಕೆ ಸರಪಳಿ',
+        crops: 'ಹಸಿರು ತರಕಾರಿಗಳು, ಹಣ್ಣುಗಳು, ಗಿಡಮೂಲಿಕೆಗಳು',
+        minArea: 'ಕನಿಷ್ಠ 1 ಎಕರೆ',
+        support: 'ಇನ್‌ಪುಟ್ ಪೂರೈಕೆ, ಕೋಲ್ಡ್ ಸ್ಟೋರೇಜ್, ಸಾರಿಗೆ',
+      },
+      bigBasket: {
+        name: 'ಬಿಗ್‌ಬಾಸ್ಕೆಟ್ ಫಾರ್ಮ್',
+        description: 'ರೈತರನ್ನು ನಗರ ಗ್ರಾಹಕರಿಗೆ ಸಂಪರ್ಕಿಸುವ ಇ-ಕಾಮರ್ಸ್ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್',
+        crops: 'ಸಾವಯವ ತರಕಾರಿಗಳು, ಹಣ್ಣುಗಳು',
+        minArea: 'ಕನಿಷ್ಠ 0.5 ಎಕರೆ',
+        support: 'ಸಾವಯವ ಪ್ರಮಾಣೀ���ರಣ, ಪ್ರೀಮಿಯಂ ಬೆಲೆ',
+      },
+      heritage: {
+        name: 'ಹೆರಿಟೇಜ್ ಫುಡ್ಸ್',
+        description: 'ಡೈರಿ ಮತ್ತು ಆಹಾರ ಸಂಸ್ಕರಣಾ ಕಂಪನಿ ಗುತ್ತಿಗೆ ಕೃಷಿ',
+        crops: 'ಮೇವು ಬೆಳೆಗಳು, ರಾಗಿ, ದಾಲ್‌ಗಳು',
+        minArea: 'ಕನಿಷ್ಠ 3 ಎಕರೆ',
+        support: 'ಉಪಕರಣ ಬಾಡಿಗೆ, ಮರುಖರೀದಿ ಖಾತರಿ',
+      },
+    },
+    applications: {
+      title: 'ನಿಮ್ಮ ಅರ್ಜಿಗಳು',
+      status: {
+        pending: 'ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ',
+        approved: 'ಅನುಮೋದಿಸಲಾಗಿದೆ',
+        rejected: 'ತಿರಸ್ಕರಿಸಲಾಗಿದೆ',
+        active: 'ಸಕ್ರಿಯ ಗುತ್ತಿಗೆ',
+      },
+    },
+  },
+
   // Notifications
   notifications: {
     error: 'ದೋಷ ಸಂಭವಿಸಿದೆ',
     success: 'ಕಾರ್ಯಾಚರಣೆ ಯಶಸ್ವಿಯಾಗಿ ಪೂರ್ಣಗೊಂಡಿದೆ',
     networkError: 'ನೆಟ್‌ವರ್ಕ್ ದೋಷ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.',
-    permissionDenied: 'ಅನುಮತಿ ನಿರಾಕರಿಸಲಾಗಿದೆ',
+    permissionDenied: 'ಅನ���ಮತಿ ನಿರಾಕರಿಸಲಾಗಿದೆ',
     fileUploadError: 'ಫೈಲ್ ಅಪ್‌ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ',
     invalidInput: 'ಅಮಾನ್ಯ ಇನ್‌ಪುಟ್ ಒದಗಿಸಲಾಗಿದೆ',
   },
