@@ -178,6 +178,7 @@ const mockWeather: WeatherData = {
 };
 
 export default function News() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
