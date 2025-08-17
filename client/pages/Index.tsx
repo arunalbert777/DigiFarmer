@@ -26,7 +26,8 @@ import {
   AlertTriangle,
   Calendar,
   ExternalLink,
-  RefreshCw
+  RefreshCw,
+  Handshake
 } from "lucide-react";
 
 const features = [
