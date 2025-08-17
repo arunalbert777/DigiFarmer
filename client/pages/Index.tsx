@@ -165,7 +165,7 @@ export default function Index() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {features.map((feature, index) => {
+            {getFeatures(t).map((feature, index) => {
               const Icon = feature.icon;
               return (
                 <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md">
