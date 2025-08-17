@@ -9,6 +9,7 @@ export default {
     news: 'News',
     marketplace: 'Marketplace',
     contractFarming: 'Contract Farming',
+    verticalFarming: 'Vertical Farming',
     developers: 'Developers',
   },
 
