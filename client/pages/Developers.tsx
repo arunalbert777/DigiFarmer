@@ -1,15 +1,23 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Code, 
-  Github, 
-  Linkedin, 
+import {
+  Code,
+  Github,
+  Linkedin,
   Mail,
   Star,
   Coffee,
   Heart,
-  Users
+  Users,
+  Layers,
+  Database,
+  Cloud,
+  Smartphone,
+  Brain,
+  Shield,
+  Zap,
+  Globe
 } from "lucide-react";
 
 const developers = [
