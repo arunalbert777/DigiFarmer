@@ -9,15 +9,7 @@ import {
   Star,
   Coffee,
   Heart,
-  Users,
-  Layers,
-  Database,
-  Cloud,
-  Smartphone,
-  Brain,
-  Shield,
-  Zap,
-  Globe
+  Users
 } from "lucide-react";
 
 const developers = [
