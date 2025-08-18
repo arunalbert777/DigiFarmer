@@ -3,7 +3,7 @@
 **Version:** 1.0  
 **Date:** January 2025  
 **Project:** DigiFarmer - AI-Powered Agricultural Platform  
-**Repository:** https://github.com/arunalbert777/DigiFarmer  
+**Repository:** https://github.com/arunalbert777/DigiFarmer
 
 ---
 
@@ -199,6 +199,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 ```
 
 ### Disease Detection Features:
+
 - **Advanced Image Analysis** - Quality assessment and preprocessing
 - **Ensemble CNN Models** - Multiple neural networks for accuracy
 - **95%+ Accuracy Rate** - High-precision disease identification
@@ -212,52 +213,52 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 
 ### **Frontend Technologies:**
 
-| Category | Technology | Version | Purpose |
-|----------|------------|---------|---------|
-| **Framework** | React | 18.3.1 | Component-based UI |
-| **Language** | TypeScript | 5.9.2 | Type-safe development |
-| **Build Tool** | Vite | 7.1.2 | Fast compilation with SWC |
-| **Styling** | TailwindCSS | 3.4.17 | Utility-first CSS |
-| **UI Library** | Radix UI | Latest | Accessible primitives |
-| **Icons** | Lucide React | 0.539.0 | Icon system |
-| **Animation** | Framer Motion | 12.23.12 | Smooth animations |
-| **Routing** | React Router DOM | 6.30.1 | Client-side navigation |
-| **State Management** | TanStack Query | 5.84.2 | Server state management |
-| **Forms** | React Hook Form | 7.62.0 | Form validation |
-| **Charts** | Recharts | 2.12.7 | Data visualization |
-| **3D Graphics** | Three.js + R3F | 0.176.0 | 3D visualizations |
+| Category             | Technology       | Version  | Purpose                   |
+| -------------------- | ---------------- | -------- | ------------------------- |
+| **Framework**        | React            | 18.3.1   | Component-based UI        |
+| **Language**         | TypeScript       | 5.9.2    | Type-safe development     |
+| **Build Tool**       | Vite             | 7.1.2    | Fast compilation with SWC |
+| **Styling**          | TailwindCSS      | 3.4.17   | Utility-first CSS         |
+| **UI Library**       | Radix UI         | Latest   | Accessible primitives     |
+| **Icons**            | Lucide React     | 0.539.0  | Icon system               |
+| **Animation**        | Framer Motion    | 12.23.12 | Smooth animations         |
+| **Routing**          | React Router DOM | 6.30.1   | Client-side navigation    |
+| **State Management** | TanStack Query   | 5.84.2   | Server state management   |
+| **Forms**            | React Hook Form  | 7.62.0   | Form validation           |
+| **Charts**           | Recharts         | 2.12.7   | Data visualization        |
+| **3D Graphics**      | Three.js + R3F   | 0.176.0  | 3D visualizations         |
 
 ### **Backend Technologies:**
 
-| Category | Technology | Version | Purpose |
-|----------|------------|---------|---------|
-| **Runtime** | Node.js | Latest LTS | JavaScript runtime |
-| **Framework** | Express.js | 5.1.0 | Web application framework |
-| **Language** | TypeScript | 5.9.2 | Type safety |
-| **Validation** | Zod | 3.25.76 | Schema validation |
-| **CORS** | cors | 2.8.5 | Cross-origin requests |
-| **Serverless** | serverless-http | 3.2.0 | Netlify functions |
+| Category       | Technology      | Version    | Purpose                   |
+| -------------- | --------------- | ---------- | ------------------------- |
+| **Runtime**    | Node.js         | Latest LTS | JavaScript runtime        |
+| **Framework**  | Express.js      | 5.1.0      | Web application framework |
+| **Language**   | TypeScript      | 5.9.2      | Type safety               |
+| **Validation** | Zod             | 3.25.76    | Schema validation         |
+| **CORS**       | cors            | 2.8.5      | Cross-origin requests     |
+| **Serverless** | serverless-http | 3.2.0      | Netlify functions         |
 
 ### **Development Tools:**
 
-| Category | Technology | Version | Purpose |
-|----------|------------|---------|---------|
-| **Package Manager** | PNPM | 10.14.0 | Dependency management |
-| **Testing** | Vitest | 3.2.4 | Unit testing framework |
-| **Formatting** | Prettier | 3.6.2 | Code formatting |
-| **Build** | SWC | Latest | Fast compilation |
-| **PostCSS** | PostCSS | 8.5.6 | CSS processing |
+| Category            | Technology | Version | Purpose                |
+| ------------------- | ---------- | ------- | ---------------------- |
+| **Package Manager** | PNPM       | 10.14.0 | Dependency management  |
+| **Testing**         | Vitest     | 3.2.4   | Unit testing framework |
+| **Formatting**      | Prettier   | 3.6.2   | Code formatting        |
+| **Build**           | SWC        | Latest  | Fast compilation       |
+| **PostCSS**         | PostCSS    | 8.5.6   | CSS processing         |
 
 ### **Deployment & Infrastructure:**
 
-| Category | Technology | Purpose |
-|----------|------------|---------|
-| **Hosting** | Netlify | Static site hosting |
-| **CDN** | Netlify Edge | Global content delivery |
-| **Functions** | Netlify Functions | Serverless backend |
-| **Version Control** | GitHub | Source code management |
-| **Domain** | Custom Domain | Production URL |
-| **SSL** | Auto SSL | HTTPS encryption |
+| Category            | Technology        | Purpose                 |
+| ------------------- | ----------------- | ----------------------- |
+| **Hosting**         | Netlify           | Static site hosting     |
+| **CDN**             | Netlify Edge      | Global content delivery |
+| **Functions**       | Netlify Functions | Serverless backend      |
+| **Version Control** | GitHub            | Source code management  |
+| **Domain**          | Custom Domain     | Production URL          |
+| **SSL**             | Auto SSL          | HTTPS encryption        |
 
 ---
 
@@ -286,6 +287,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 ```
 
 ### PWA Capabilities:
+
 - **Installable** - Add to homescreen on mobile and desktop
 - **Offline Support** - Core functionality works without internet
 - **Push Notifications** - Real-time alerts and updates
@@ -320,6 +322,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 ```
 
 ### Security Features:
+
 - **Input Validation** - Comprehensive data validation with Zod
 - **Type Safety** - End-to-end TypeScript for runtime safety
 - **CORS Protection** - Controlled cross-origin resource sharing
@@ -354,6 +357,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 ```
 
 ### i18n Features:
+
 - **Dual Language Support** - English and Kannada (regional language)
 - **Dynamic Loading** - Translations loaded asynchronously
 - **Type Safety** - TypeScript interfaces for translation keys
@@ -374,6 +378,7 @@ UI Re-render → Component Update → Error Handle → Validation → Result →
 ```
 
 ### Data Flow Principles:
+
 1. **Unidirectional Flow** - Data flows down, events bubble up
 2. **Immutable Updates** - State changes through immutable patterns
 3. **Error Boundaries** - Graceful error handling at each layer
@@ -386,6 +391,7 @@ UI Re-render → Component Update → Error Handle → Validation → Result →
 ## 📊 Performance Architecture
 
 ### Frontend Optimizations:
+
 - **Code Splitting** - Dynamic imports for route-based splitting
 - **Lazy Loading** - Components loaded on demand
 - **Tree Shaking** - Dead code elimination
@@ -394,6 +400,7 @@ UI Re-render → Component Update → Error Handle → Validation → Result →
 - **Progressive Loading** - Critical resources first
 
 ### Backend Optimizations:
+
 - **Serverless Functions** - Auto-scaling compute
 - **Edge Computing** - Geographically distributed processing
 - **Caching Headers** - Proper cache control
@@ -402,6 +409,7 @@ UI Re-render → Component Update → Error Handle → Validation → Result →
 - **API Rate Limiting** - Prevent abuse and ensure stability
 
 ### Infrastructure Optimizations:
+
 - **CDN Distribution** - Global content delivery network
 - **Load Balancing** - Traffic distribution
 - **Auto Scaling** - Automatic resource scaling
@@ -475,6 +483,7 @@ digifarmer/
 ## 🚀 Deployment Pipeline
 
 ### Development Workflow:
+
 ```
 Developer → Git Push → GitHub → Netlify Build → Production Deployment
     │           │          │          │              │
@@ -486,6 +495,7 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 ```
 
 ### Build Process:
+
 1. **Source Code** - TypeScript compilation
 2. **Asset Processing** - Image optimization, CSS processing
 3. **Bundle Creation** - Vite build with code splitting
@@ -498,6 +508,7 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 ## 🎯 Feature Architecture
 
 ### Core Features:
+
 - **🔬 AI Disease Detection** - Advanced CNN models for crop disease identification
 - **🤖 AI Assistant** - Intelligent farming guidance and Q&A
 - **👥 Community** - Farmer networking and knowledge sharing
@@ -508,6 +519,7 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 - **🏢 Vertical Farming** - Modern farming techniques and equipment
 
 ### Enhanced Features:
+
 - **📱 PWA Support** - Mobile app-like experience
 - **🌍 Multi-language** - English and Kannada support
 - **📊 Analytics** - Usage and performance tracking
@@ -520,18 +532,21 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 ## 🎨 Design System Architecture
 
 ### Color Palette:
+
 - **Primary Green** - Agricultural theme (HSL: 142, 71%, 45%)
 - **Earth Tones** - Natural, farming-inspired colors
 - **Semantic Colors** - Success, warning, error, info states
 - **Neutral Grays** - Text and background variations
 
 ### Typography:
+
 - **System Fonts** - OS-native font stack for performance
 - **Font Weights** - 400, 500, 600, 700 for hierarchy
 - **Font Sizes** - Responsive scale from 12px to 48px
 - **Line Heights** - Optimized for readability
 
 ### Component Library:
+
 - **30+ UI Components** - Built on Radix UI primitives
 - **Consistent API** - Standardized props and behaviors
 - **Accessibility** - WCAG 2.1 compliance
@@ -543,6 +558,7 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 ## 📈 Scalability Considerations
 
 ### Frontend Scalability:
+
 - **Component Architecture** - Modular, reusable components
 - **Code Splitting** - Route and feature-based splitting
 - **State Management** - Scalable context and hook patterns
@@ -550,6 +566,7 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 - **Bundle Size** - Tree shaking and dead code elimination
 
 ### Backend Scalability:
+
 - **Serverless Architecture** - Auto-scaling compute
 - **Microservices Ready** - Service-based architecture
 - **API Design** - RESTful with potential GraphQL migration
@@ -557,6 +574,7 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 - **Caching** - Multi-level caching strategy
 
 ### Infrastructure Scalability:
+
 - **CDN** - Global content distribution
 - **Edge Computing** - Distributed processing
 - **Auto Scaling** - Dynamic resource allocation
@@ -568,6 +586,7 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 ## 🔮 Future Enhancements
 
 ### Technical Roadmap:
+
 - **Real AI Integration** - Connect to actual ML models
 - **Database Implementation** - PostgreSQL or MongoDB
 - **GraphQL API** - Enhanced data querying
@@ -576,6 +595,7 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 - **IoT Integration** - Smart farming device connectivity
 
 ### Feature Roadmap:
+
 - **Weather Integration** - Real-time weather data
 - **Market Price Tracking** - Live commodity prices
 - **Crop Planning** - AI-powered planting recommendations
@@ -588,13 +608,14 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 ## 📞 Contact & Support
 
 **Development Team:**
+
 - **Naveen** - Full Stack Developer (Frontend Architecture)
 - **Arun** - Backend Developer (API Development)
 - **Avinash** - AI/ML Engineer (Disease Detection)
 
 **Repository:** https://github.com/arunalbert777/DigiFarmer  
 **Documentation:** Available in repository  
-**Support:** Technical documentation and code comments  
+**Support:** Technical documentation and code comments
 
 ---
 
@@ -603,6 +624,7 @@ Developer → Git Push → GitHub → Netlify Build → Production Deployment
 This architecture documentation is proprietary to the DigiFarmer project. The technical implementation follows modern web development best practices and is designed for scalability, maintainability, and performance.
 
 **Technology Stack Summary:**
+
 - ✅ **Modern** - Latest versions of all technologies
 - ✅ **Type Safe** - End-to-end TypeScript
 - ✅ **Performant** - Optimized for speed and efficiency
@@ -613,4 +635,4 @@ This architecture documentation is proprietary to the DigiFarmer project. The te
 
 ---
 
-*This document provides a complete technical overview of the DigiFarmer system architecture. For implementation details, refer to the source code and individual component documentation.*
+_This document provides a complete technical overview of the DigiFarmer system architecture. For implementation details, refer to the source code and individual component documentation._

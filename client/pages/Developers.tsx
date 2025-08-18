@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,7 +15,7 @@ import {
   Star,
   Coffee,
   Heart,
-  Users
+  Users,
 } from "lucide-react";
 
 const developers = [
@@ -24,7 +30,7 @@ const developers = [
     github: "https://github.com/naveen",
     linkedin: "https://linkedin.com/in/naveen",
     email: "naveen@digifarmer.com",
-    contributions: "Frontend Architecture & UI/UX Design"
+    contributions: "Frontend Architecture & UI/UX Design",
   },
   {
     id: 2,
@@ -37,7 +43,7 @@ const developers = [
     github: "https://github.com/arun",
     linkedin: "https://linkedin.com/in/arun",
     email: "arun@digifarmer.com",
-    contributions: "API Development & Database Design"
+    contributions: "API Development & Database Design",
   },
   {
     id: 3,
@@ -50,8 +56,8 @@ const developers = [
     github: "https://github.com/avinash",
     linkedin: "https://linkedin.com/in/avinash",
     email: "avinash@digifarmer.com",
-    contributions: "AI Models & Disease Detection System"
-  }
+    contributions: "AI Models & Disease Detection System",
+  },
 ];
 
 export default function Developers() {
@@ -69,7 +75,8 @@ export default function Developers() {
             Meet Our Development Team
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            The talented developers behind DigiFarmer - building the future of agricultural technology
+            The talented developers behind DigiFarmer - building the future of
+            agricultural technology
           </p>
         </div>
 
@@ -116,7 +123,10 @@ export default function Developers() {
         {/* Developer Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {developers.map((dev) => (
-            <Card key={dev.id} className="hover:shadow-lg transition-all duration-300">
+            <Card
+              key={dev.id}
+              className="hover:shadow-lg transition-all duration-300"
+            >
               <CardHeader className="text-center pb-4">
                 <div className="flex justify-center mb-4">
                   <Avatar className="h-24 w-24">
@@ -126,33 +136,43 @@ export default function Developers() {
                     </AvatarFallback>
                   </Avatar>
                 </div>
-                <CardTitle className="text-xl text-gray-900">{dev.name}</CardTitle>
+                <CardTitle className="text-xl text-gray-900">
+                  {dev.name}
+                </CardTitle>
                 <CardDescription className="text-primary font-medium">
                   {dev.role}
                 </CardDescription>
               </CardHeader>
-              
+
               <CardContent className="space-y-4">
                 <p className="text-sm text-gray-600 leading-relaxed">
                   {dev.bio}
                 </p>
-                
+
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Key Contributions</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    Key Contributions
+                  </h4>
                   <p className="text-sm text-gray-600">{dev.contributions}</p>
                 </div>
-                
+
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Tech Stack</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    Tech Stack
+                  </h4>
                   <div className="flex flex-wrap gap-1">
                     {dev.skills.map((skill, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="text-xs"
+                      >
                         {skill}
                       </Badge>
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="flex justify-center space-x-4 pt-4 border-t">
                   <a
                     href={dev.github}
@@ -190,13 +210,17 @@ export default function Developers() {
           <CardContent>
             <div className="text-center max-w-3xl mx-auto">
               <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                We're passionate about leveraging technology to revolutionize agriculture. Our team combines 
-                expertise in software development, artificial intelligence, and agricultural science to create 
-                solutions that help farmers make data-driven decisions and improve crop yields.
+                We're passionate about leveraging technology to revolutionize
+                agriculture. Our team combines expertise in software
+                development, artificial intelligence, and agricultural science
+                to create solutions that help farmers make data-driven decisions
+                and improve crop yields.
               </p>
               <div className="flex justify-center items-center space-x-2 text-gray-600">
                 <Star className="h-5 w-5 text-yellow-500" />
-                <span className="text-sm">Built with passion for farmers, by developers who care</span>
+                <span className="text-sm">
+                  Built with passion for farmers, by developers who care
+                </span>
                 <Star className="h-5 w-5 text-yellow-500" />
               </div>
             </div>
