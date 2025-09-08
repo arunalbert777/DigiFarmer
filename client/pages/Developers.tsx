@@ -75,7 +75,7 @@ export default function Developers() {
             Meet Our Development Team
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            The talented developers behind DigiFarmer - building the future of
+            The talented developers behind Agro-Mentor - building the future of
             agricultural technology
           </p>
         </div>
