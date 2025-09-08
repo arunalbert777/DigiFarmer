@@ -29,7 +29,7 @@ const developers = [
     skills: ["React", "TypeScript", "Node.js", "MongoDB", "AI/ML"],
     github: "https://github.com/naveen",
     linkedin: "https://linkedin.com/in/naveen",
-    email: "naveen@digifarmer.com",
+    email: "naveen@agro-mentor.com",
     contributions: "Frontend Architecture & UI/UX Design",
   },
   {
