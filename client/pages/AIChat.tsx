@@ -143,36 +143,60 @@ export default function AIChat() {
       { id: botId, content: "", sender: "bot", timestamp: new Date() },
     ]);
 
-    // Attempt SSE streaming
+    // Attempt SSE streaming (try local /api then Netlify functions path)
     try {
-      const url = `/api/gemini-chat-stream?message=${encodeURIComponent(currentInput)}`;
-      const es = new EventSource(url);
+      const endpoints = [
+        `/api/gemini-chat-stream?message=${encodeURIComponent(currentInput)}`,
+        `/.netlify/functions/api/gemini-chat-stream?message=${encodeURIComponent(currentInput)}`,
+      ];
 
-      es.onmessage = (e) => {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === botId ? { ...m, content: m.content + e.data } : m,
-          ),
-        );
-      };
+      let es: EventSource | null = null;
+      let connected = false;
 
-      es.addEventListener("done", () => {
-        setIsTyping(false);
-        es.close();
-      });
+      for (const url of endpoints) {
+        try {
+          es = new EventSource(url);
 
-      es.onerror = () => {
-        es.close();
-        setIsTyping(false);
-        // Replace with fallback response
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === botId
-              ? { ...m, content: generateBotResponse(currentInput) }
-              : m,
-          ),
-        );
-      };
+          es.onmessage = (e) => {
+            setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: m.content + e.data } : m)));
+          };
+
+          es.addEventListener("done", () => {
+            setIsTyping(false);
+            es?.close();
+          });
+
+          es.onerror = () => {
+            // try next endpoint or fallback
+            es?.close();
+          };
+
+          // optimistic: assume connection works; wait a short moment to confirm
+          await new Promise((resolve) => setTimeout(resolve, 150));
+
+          // If EventSource readyState is OPEN (1) or CONNECTING (0), consider connected
+          if ((es as any).readyState === 1 || (es as any).readyState === 0) {
+            connected = true;
+            break;
+          } else {
+            es.close();
+            es = null;
+          }
+        } catch (e) {
+          // try next endpoint
+          if (es) {
+            try {
+              es.close();
+            } catch {}
+            es = null;
+          }
+        }
+      }
+
+      if (!connected) {
+        // no SSE available, throw to go to POST fallback
+        throw new Error("No SSE available");
+      }
     } catch (err) {
       // Fallback to non-streaming POST
       try {
