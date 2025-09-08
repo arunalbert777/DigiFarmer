@@ -137,9 +137,9 @@ export default function AIChat() {
     setIsTyping(true);
 
     try {
-      const res = await fetch('/api/gemini-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/gemini-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: currentInput }),
       });
 
@@ -148,7 +148,7 @@ export default function AIChat() {
         const botResponse: Message = {
           id: (Date.now() + 1).toString(),
           content: generateBotResponse(currentInput),
-          sender: 'bot',
+          sender: "bot",
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, botResponse]);
@@ -157,12 +157,13 @@ export default function AIChat() {
       }
 
       const data = await res.json();
-      const botText = typeof data?.bot === 'string' ? data.bot : JSON.stringify(data);
+      const botText =
+        typeof data?.bot === "string" ? data.bot : JSON.stringify(data);
 
       const botMessage: Message = {
         id: (Date.now() + 2).toString(),
         content: botText,
-        sender: 'bot',
+        sender: "bot",
         timestamp: new Date(),
       };
 
@@ -171,7 +172,7 @@ export default function AIChat() {
       const botMessage: Message = {
         id: (Date.now() + 3).toString(),
         content: generateBotResponse(currentInput),
-        sender: 'bot',
+        sender: "bot",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botMessage]);
