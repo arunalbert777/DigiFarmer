@@ -158,7 +158,11 @@ export default function AIChat() {
           es = new EventSource(url);
 
           es.onmessage = (e) => {
-            setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: m.content + e.data } : m)));
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === botId ? { ...m, content: m.content + e.data } : m,
+              ),
+            );
           };
 
           es.addEventListener("done", () => {
@@ -201,7 +205,10 @@ export default function AIChat() {
       // Fallback to non-streaming POST
       try {
         // try local POST then Netlify functions POST
-        const postEndpoints = ["/api/gemini-chat", "/.netlify/functions/api/gemini-chat"];
+        const postEndpoints = [
+          "/api/gemini-chat",
+          "/.netlify/functions/api/gemini-chat",
+        ];
         let successful = false;
         for (const endpoint of postEndpoints) {
           try {
@@ -214,8 +221,13 @@ export default function AIChat() {
             if (!res.ok) continue;
 
             const data = await res.json();
-            const botText = typeof data?.bot === "string" ? data.bot : JSON.stringify(data);
-            setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: botText } : m)));
+            const botText =
+              typeof data?.bot === "string" ? data.bot : JSON.stringify(data);
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === botId ? { ...m, content: botText } : m,
+              ),
+            );
             successful = true;
             break;
           } catch (e) {
