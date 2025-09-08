@@ -57,7 +57,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       success: "Success",
     },
     home: {
-      title: "DigiFarmer",
+      title: "Agro-Mentor",
       subtitle: "Empowering farmers with modern agricultural technology",
     },
     disease: {
