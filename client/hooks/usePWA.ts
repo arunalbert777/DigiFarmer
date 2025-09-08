@@ -94,8 +94,8 @@ export function usePWA() {
     url?: string;
   }) => {
     const shareData = {
-      title: data?.title || 'DigiFarmer - Agricultural AI Platform',
-      text: data?.text || 'Check out DigiFarmer - AI-powered farming assistance!',
+      title: data?.title || 'Agro-Mentor - Agricultural AI Platform',
+      text: data?.text || 'Check out Agro-Mentor - AI-powered farming assistance!',
       url: data?.url || window.location.href,
     };
 
