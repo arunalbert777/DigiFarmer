@@ -55,7 +55,7 @@ const developers = [
     skills: ["Python", "TensorFlow", "Computer Vision", "Data Science", "CNN"],
     github: "https://github.com/avinash",
     linkedin: "https://linkedin.com/in/avinash",
-    email: "avinash@digifarmer.com",
+    email: "avinash@agro-mentor.com",
     contributions: "AI Models & Disease Detection System",
   },
 ];
