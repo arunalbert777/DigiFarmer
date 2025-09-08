@@ -1,22 +1,31 @@
-import { useState, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Download, X, Smartphone, Monitor } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Button } from "./ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Download, X, Smartphone, Monitor } from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
 export function InstallPrompt() {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
     // Check if app is already installed
-    if (window.matchMedia('(display-mode: standalone)').matches || 
-        (window.navigator as any).standalone === true) {
+    if (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone === true
+    ) {
       setIsInstalled(true);
     }
 
@@ -37,12 +46,15 @@ export function InstallPrompt() {
       setDeferredPrompt(null);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
+      window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
 
@@ -55,10 +67,10 @@ export function InstallPrompt() {
     // Wait for the user to respond to the prompt
     const { outcome } = await deferredPrompt.userChoice;
 
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
+    if (outcome === "accepted") {
+      console.log("User accepted the install prompt");
     } else {
-      console.log('User dismissed the install prompt');
+      console.log("User dismissed the install prompt");
     }
 
     // Clear the deferredPrompt
@@ -69,18 +81,23 @@ export function InstallPrompt() {
   const handleDismiss = () => {
     setShowInstallPrompt(false);
     // Don't show again for this session
-    sessionStorage.setItem('installPromptDismissed', 'true');
+    sessionStorage.setItem("installPromptDismissed", "true");
   };
 
   // Don't show if already installed or dismissed this session
-  if (isInstalled || 
-      showInstallPrompt === false || 
-      sessionStorage.getItem('installPromptDismissed') ||
-      !deferredPrompt) {
+  if (
+    isInstalled ||
+    showInstallPrompt === false ||
+    sessionStorage.getItem("installPromptDismissed") ||
+    !deferredPrompt
+  ) {
     return null;
   }
 
-  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isMobile =
+    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    );
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 sm:left-auto sm:right-4 sm:w-96">
@@ -123,7 +140,7 @@ export function InstallPrompt() {
                 <li>• Market updates</li>
               </ul>
             </div>
-            
+
             <div className="flex space-x-2">
               <Button
                 onClick={handleInstallClick}
@@ -133,15 +150,11 @@ export function InstallPrompt() {
                 <Download className="h-4 w-4 mr-2" />
                 Install App
               </Button>
-              <Button
-                variant="outline"
-                onClick={handleDismiss}
-                size="sm"
-              >
+              <Button variant="outline" onClick={handleDismiss} size="sm">
                 Not Now
               </Button>
             </div>
-            
+
             {isMobile && (
               <p className="text-xs text-gray-500 text-center">
                 Works offline • Fast loading • Native feel
