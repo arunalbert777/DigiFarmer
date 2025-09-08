@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <style>
+    .bg{fill:#f7fafc}
+    .box{fill:#ffffff;stroke:#0f172a;stroke-width:1;rx:8}
+    .headline{font:700 20px/1.1 'Inter',sans-serif;fill:#0f172a}
+    .label{font:500 14px/1.2 'Inter',sans-serif;fill:#0f172a}
+    .small{font:400 12px/1.2 'Inter',sans-serif;fill:#475569}
+    .arrow{stroke:#0f172a;stroke-width:2;fill:none;marker-end:url(#arrow)}
+  </style>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0f172a" />
+    </marker>
+  </defs>
+
+  <rect width="1200" height="700" fill="#f1f5f9" />
+
+  <!-- Client -->
+  <g transform="translate(60,40)">
+    <rect class="box" width="300" height="140" rx="10"/>
+    <text x="20" y="32" class="headline">Client (Browser / Mobile)</text>
+    <text x="20" y="60" class="label">React + Vite SPA</text>
+    <text x="20" y="82" class="small">- UI: AIChat.tsx</text>
+    <text x="20" y="100" class="small">- Sends messages to /api/*</text>
+  </g>
+
+  <!-- Netlify CDN / Static -->
+  <g transform="translate(420,40)">
+    <rect class="box" width="320" height="100" rx="10"/>
+    <text x="20" y="32" class="headline">Netlify (Hosting + CDN)</text>
+    <text x="20" y="60" class="small">- Hosts static site (/.netlify/functions)</text>
+  </g>
+
+  <!-- Arrow client -> netlify -->
+  <path class="arrow" d="M360 110 L420 80" />
+
+  <!-- Netlify Functions -->
+  <g transform="translate(420,170)">
+    <rect class="box" width="320" height="160" rx="10"/>
+    <text x="20" y="32" class="headline">Netlify Functions (Serverless)</text>
+    <text x="20" y="60" class="label">api/gemini-chat (proxy)</text>
+    <text x="20" y="80" class="small">- Holds GOOGLE_API_KEY (env var)</text>
+    <text x="20" y="100" class="small">- Streams via SSE (gemini-chat-stream)</text>
+    <text x="20" y="120" class="small">- Performs auth, rate-limit, sanitization</text>
+  </g>
+
+  <!-- Arrow netlify functions -> Gemini -->
+  <path class="arrow" d="M740 250 L880 250" />
+
+  <!-- Gemini API -->
+  <g transform="translate(880,200)">
+    <rect class="box" width="260" height="120" rx="10"/>
+    <text x="20" y="36" class="headline">Google Gemini (Generative AI)</text>
+    <text x="20" y="64" class="small">v1beta generateContent</text>
+    <text x="20" y="82" class="small">- Returns model outputs</text>
+  </g>
+
+  <!-- Optional services -->
+  <g transform="translate(60,220)">
+    <rect class="box" width="300" height="160" rx="10"/>
+    <text x="20" y="32" class="headline">Optional Backend Services</text>
+    <text x="20" y="60" class="small">- Neon / Supabase (DB, auth)</text>
+    <text x="20" y="82" class="small">- Sentry (monitoring)</text>
+    <text x="20" y="104" class="small">- Builder.io (CMS)</text>
+    <text x="20" y="126" class="small">- Zapier (integrations)</text>
+  </g>
+
+  <!-- Arrows between functions and optional services -->
+  <path class="arrow" d="M580 230 L430 230" />
+  <path class="arrow" d="M560 300 L430 300" />
+
+  <!-- CI/CD / Secrets -->
+  <g transform="translate(420,360)">
+    <rect class="box" width="320" height="100" rx="10"/>
+    <text x="20" y="36" class="headline">CI / CD & Secrets</text>
+    <text x="20" y="64" class="small">- GitHub → Netlify builds</text>
+    <text x="20" y="82" class="small">- Store GOOGLE_API_KEY in Netlify env</text>
+  </g>
+
+  <!-- Flow labels -->
+  <text x="380" y="30" class="small">1. User → Client</text>
+  <text x="560" y="170" class="small">2. Client → Netlify Functions (/api/gemini-chat)</text>
+  <text x="980" y="170" class="small">3. Functions → Google Gemini</text>
+  <text x="560" y="430" class="small">4. CI/CD & Secrets manage deploys and keys</text>
+
+  <!-- Footer note -->
+  <text x="20" y="690" class="small">Diagram: DigiFarmer - Simple System Architecture (Client → Netlify → Serverless → Gemini)</text>
+</svg>
