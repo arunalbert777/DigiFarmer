@@ -200,20 +200,30 @@ export default function AIChat() {
     } catch (err) {
       // Fallback to non-streaming POST
       try {
-        const res = await fetch("/api/gemini-chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: currentInput }),
-        });
+        // try local POST then Netlify functions POST
+        const postEndpoints = ["/api/gemini-chat", "/.netlify/functions/api/gemini-chat"];
+        let successful = false;
+        for (const endpoint of postEndpoints) {
+          try {
+            const res = await fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message: currentInput }),
+            });
 
-        if (!res.ok) throw new Error("Upstream error");
+            if (!res.ok) continue;
 
-        const data = await res.json();
-        const botText =
-          typeof data?.bot === "string" ? data.bot : JSON.stringify(data);
-        setMessages((prev) =>
-          prev.map((m) => (m.id === botId ? { ...m, content: botText } : m)),
-        );
+            const data = await res.json();
+            const botText = typeof data?.bot === "string" ? data.bot : JSON.stringify(data);
+            setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: botText } : m)));
+            successful = true;
+            break;
+          } catch (e) {
+            continue;
+          }
+        }
+
+        if (!successful) throw new Error("Upstream error");
       } catch (e) {
         // Final fallback: call Google Generative API directly from browser if VITE_GOOGLE_API_KEY is set
         try {
