@@ -108,7 +108,7 @@ export function PWAInstallButtonMobile() {
       navigator.userAgent.includes("iPad")
     ) {
       alert(
-        'To install DigiFarmer on iOS:\n\n1. Tap the Share button at the bottom\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" to confirm',
+        'To install Agro-Mentor on iOS:\n\n1. Tap the Share button at the bottom\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" to confirm',
       );
     } else {
       alert(
