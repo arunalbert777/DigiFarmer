@@ -57,7 +57,7 @@ export default {
 
   // Home Page
   home: {
-    title: "Welcome to DigiFarmer",
+    title: "Welcome to Agro-Mentor",
     subtitle:
       "Empowering farmers with modern agricultural technology and expert guidance",
     heroDescription:
