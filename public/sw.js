@@ -1,4 +1,4 @@
-const CACHE_NAME = 'digifarmer-v1';
+const CACHE_NAME = 'agro-mentor-v1';
 const urlsToCache = [
   '/',
   '/disease-detection',
