@@ -1,4 +1,4 @@
-# 🌾 DigiFarmer - Complete System Architecture Documentation
+# 🌾 Agro-Mentor - Complete System Architecture Documentation
 
 **Version:** 1.0  
 **Date:** January 2025  
@@ -18,7 +18,7 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                                 USER LAYER                                     │
-├──────────────────────────────────────────────────────────────────────────────���──┤
+├─────────────────────────────────────────────────────────────────────────────────┤
 │  👨‍🌾 Farmers     📱 Mobile Devices     💻 Desktop     🌐 Web Browsers        │
 └─────────────────────────────────────────────────────────────────────────────────┘
                                       │
@@ -32,7 +32,7 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │  │   Components    │  │   Type Safety   │  │   Build Tool    │                │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘                │
 │                                                                                 │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐                │
+│  ┌────────────���────┐  ┌─────────────────┐  ┌─────────────────┐                │
 │  │ TailwindCSS 3.4 │  │  Radix UI       │  │ Framer Motion   │                │
 │  │   Styling       │  │   Components    │  │   Animations    │                │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘                │
@@ -41,13 +41,13 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                             COMPONENT LAYER                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├─────────────────────────────────────���───────────────────────────────────────────┤
 │  🏠 Pages                    🧩 Components               🎛️ UI Library         │
 │  ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐      │
 │  │ • Index         │       │ • Navigation    │       │ • Button        │      │
 │  │ • DiseaseDetect │  ↔    │ • ProductCard   │  ↔    │ • Card          │      │
 │  │ • AIChat        │       │ • ProductFilter │       │ • Badge         │      │
-│  │ • Community     │       │ • LanguageSelect│       │ ��� Dialog        │      │
+│  │ • Community     │       │ • LanguageSelect│       │ • Dialog        │      │
 │  │ • Experts       │       │ • InstallPrompt │       │ • Tabs          │      │
 │  │ • News          │       │ • PWAButton     │       │ • Progress      │      │
 │  │ • Marketplace   │       └─────────────────┘       │ • Select        │      │
@@ -62,7 +62,7 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │                            STATE MANAGEMENT                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │  🎯 Context Providers        🔄 State Hooks           📊 Data Management       │
-│  ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐      │
+│  ┌─���───────────────┐       ┌─────────────────┐       ┌─────────────────┐      │
 │  │ LanguageContext │       │ React Hook Form │       │ TanStack Query  │      │
 │  │ • Language: en/kn│  ↔    │ • Form Control │  ↔    │ • Server State  │      │
 │  │ • Translations  │       │ • Validation    │       │ • Caching       │      │
@@ -88,7 +88,7 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │  │ • MarketPrice   │       │ • Error Handle  │       │ • CNN Models    │      │
 │  │ • News          │       │ • Request/Resp  │       │ • Pattern Recog │      │
 │  │ • Expert        │       │ • Auth Header   │       │ • Confidence    │      │
-│  └──────────────���──┘       └─────────────────┘       └─────────────────┘      │
+│  └─────────────────┘       └─────────────────┘       └─────────────────┘      │
 │                                                                                 │
 │  ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐      │
 │  │ Data Services   │       │ Validation      │       │ Utils & Helpers │      │
@@ -102,7 +102,7 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                              BACKEND LAYER                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├────────��────────────────────────────────────────────────────────────────────────┤
 │  🖥️ Server Architecture     🔌 API Endpoints         📡 External APIs          │
 │  ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐      │
 │  │ Express.js 5.1  │       │ REST API Routes │       │ Third-party APIs│      │
@@ -112,16 +112,16 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │  │ • JSON Parser   │       │ • /api/market   │       │ • Maps API      │      │
 │  └─────────────────┘       └─────────────────┘       └─────────────────┘      │
 │                                                                                 │
-│  ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐      │
+│  ┌─��───────────────┐       ┌─────────────────┐       ┌─────────────────┐      │
 │  │ Serverless Func │       │ Middleware      │       │ Environment     │      │
 │  │ • Netlify Funcs │       │ • Error Handler │       │ • Env Variables │      │
 │  │ • Auto-scaling  │       │ • Request Logger│       │ • Config Mgmt   │      │
 │  │ • Edge Computing│       │ • Rate Limiting │       │ • Security      │      │
 │  └─────────────────┘       └─────────────────┘       └─────────────────┘      │
-└────────────────────────────────────────────────────────────────────────────��────┘
+└─────────────────────────────────────────────────────────────────────────────────┘
                                       │
                                       ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────────��─────────────┐
 │                              DATA LAYER                                        │
 ├──────────────────────────────��──────────────────────────────────────────────────┤
 │  🗄️ Data Storage           📝 Data Models            🔄 Data Flow              │
@@ -133,13 +133,13 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │  │                 │       │ • Disease       │       │ • Error Handling│      │
 │  └─────────────────┘       └─────────────────┘       └─────────────────┘      │
 │                                                                                 │
-│  ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐      │
+│  ┌─────────────────┐       ┌───���─────────────┐       ┌─────────────────┐      │
 │  │ Future: Database│       │ Schemas         │       │ Caching Strategy│      │
 │  │ • PostgreSQL    │       │ • Zod Validation│       │ • Browser Cache │      │
 │  │ • MongoDB       │       │ • API Contracts │       │ • Service Worker│      │
 │  │ • Redis Cache   │       │ • Data Relations│       │ • Memory Cache  │      │
 │  └─────────────────┘       └─────────────────┘       └─────────────────┘      │
-└────────────────────���────────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────────────────────────────┘
                                       │
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -169,12 +169,12 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 ## 🔬 AI/ML Disease Detection Pipeline
 
 ```
-┌───────���─────────────────────────────────────────────────────────┐
+┌───────����─────────────────────────────────────────────────────────┐
 │                    AI/ML PROCESSING PIPELINE                   │
 ├─────────────────────────────────────────────────────────────────┤
 │  📸 Image Input        🔍 Preprocessing       🧠 AI Analysis     │
 │  ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐ │
-│  │ • File Upload   │──→│ • Quality Check │──→│ ��� CNN Models    │ │
+│  │ • File Upload   │──→│ • Quality Check │──→│ • CNN Models    │ │
 │  │ • Drag & Drop   │   │ • Resize/Crop   │   │ • Feature Extract│ │
 │  │ • Camera Capture│   │ • Enhancement   │   │ • Pattern Match │ │
 │  │ • Validation    │   │ • Normalization │   │ • Classification│ │
@@ -186,7 +186,7 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │  │ • Size Limit    │   │ • Contrast      │   │ • Confidence    │ │
 │  │ • Type Filter   │   │ • Sharpness     │   │ • Severity      │ │
 │  │ • Error Handle  │   │ • Color Balance │   │ • Crop Match    │ │
-│  └─────────────────┘   └─────────────────┘   └────���────────────┘ │
+│  └─────────────────┘   └─────────────────┘   └─────────────────┘ │
 │                                                                 │
 │  📊 Results           💡 Recommendations     📋 Reports          │
 │  ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐ │
@@ -269,12 +269,12 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │                        PWA FEATURES                            │
 ├─────────────────────────────────────────────────────────────────┤
 │  📱 App Shell          🔄 Service Worker      📦 Cache Strategy  │
-│  ┌─────────────────┐   ┌──────���──────────┐   ┌─────────────────┐ │
+│  ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐ │
 │  │ • manifest.json │   │ • sw.js         │   │ • Static Assets │ │
 │  │ • App Icons     │   │ • Offline Cache │   │ • API Responses │ │
 │  │ • Launch Screen │   │ • Background    │   │ • User Data     │ │
 │  │ • Install Prompt│   │   Sync          │   │ • Images        │ │
-│  └─────────────────┘   └─────────────────┘   └─────────────────┘ │
+│  └─────────────────┘   └────���────────────┘   └─────────────────┘ │
 │                                                                 │
 │  📲 Installation       🔔 Notifications      🌐 Offline Mode    │
 │  ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐ │
@@ -309,7 +309,7 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │  │ • Type Checking │   │ • Session Mgmt  │   │ • Route Guards  │ │
 │  │ • Sanitization  │   │ • Secure Storage│   │ • API Limits    │ │
 │  │ • File Filters  │   │ • Refresh Logic │   │ • Rate Limiting │ │
-│  └─────────────────┘   └─────────────────┘   └─────────────────┘ │
+│  └─────────────────┘   └─────────────────┘   └─────���───────────┘ │
 │                                                                 │
 │  🔒 Data Protection     🌐 Network Security   📊 Monitoring      │
 │  ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐ │
@@ -317,7 +317,7 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │  │ • Secure Headers│   │ • CORS Policy   │   │ • Performance   │ │
 │  │ • XSS Prevention│   │ • CSP Headers   │   │ • User Activity │ │
 │  │ • CSRF Protection│   │ • Input Filters │   │ • Audit Logs   │ │
-│  └─────────────────┘   └��───────��────────┘   └─────────────────┘ │
+│  └─────────────────┘   └��────────────────┘   └─────────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -339,11 +339,11 @@ Agro-Mentor is a modern, Progressive Web Application (PWA) built with cutting-ed
 │                  INTERNATIONALIZATION (i18n)                   │
 ├─────────────────────────────────────────────────────────────────┤
 │  🌐 Language Support    📝 Translation Files   🔄 Dynamic Loading │
-│  ┌���──────��─────────┐   ┌─────────────────┐   ┌─────────────────┐ │
+│  ┌���────────────────┐   ┌─────────────────┐   ┌─────────────────┐ │
 │  │ • English (en)  │   │ • en.ts         │   │ • Async Import  │ │
 │  │ • Kannada (kn)  │   │ • kn.ts         │   │ • Lazy Loading  │ │
 │  │ • Auto Detect   │   │ • Structured    │   │ • Fallback      │ │
-│  │ • User Pref     │   │ • Type Safe     │   │ • Error Handle  │ │
+│  │ • User Pref     │   │ • Type Safe     ��   │ • Error Handle  │ │
 │  └─────────────────┘   └─────────────────┘   └─────────────────┘ │
 │                                                                 │
 │  🎯 Context Provider    🔧 Translation Hook   💾 Persistence     │
@@ -464,7 +464,7 @@ digifarmer/
 │   └── api.ts             # Shared API types
 ├── netlify/               # Netlify-specific files
 │   └── functions/         # Serverless functions
-├��─ public/                # Static assets
+├── public/                # Static assets
 │   ├── icons/             # PWA icons
 │   ├── manifest.json      # PWA manifest
 │   └── sw.js              # Service worker
