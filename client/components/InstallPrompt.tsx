@@ -96,7 +96,7 @@ export function InstallPrompt() {
                 )}
               </div>
               <div>
-                <CardTitle className="text-lg">Install DigiFarmer</CardTitle>
+                <CardTitle className="text-lg">Install Agro-Mentor</CardTitle>
                 <CardDescription className="text-sm">
                   Add to home screen for easy access
                 </CardDescription>
