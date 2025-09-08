@@ -196,21 +196,58 @@ export default function AIChat() {
           const key = (import.meta as any).env?.VITE_GOOGLE_API_KEY;
           if (key) {
             const url = `https://generativelanguage.googleapis.com/v1/models/text-bison-001:generateText?key=${key}`;
-            const payload = { prompt: { text: currentInput }, temperature: 0.2, maxOutputTokens: 512 };
-            const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const payload = {
+              prompt: { text: currentInput },
+              temperature: 0.2,
+              maxOutputTokens: 512,
+            };
+            const r = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
             if (r.ok) {
               const d = await r.json();
-              const candidate = d?.candidates?.[0]?.output || d?.output?.[0]?.content || d?.result || null;
-              const botText = typeof candidate === 'string' ? candidate : JSON.stringify(candidate);
-              setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: botText } : m)));
+              const candidate =
+                d?.candidates?.[0]?.output ||
+                d?.output?.[0]?.content ||
+                d?.result ||
+                null;
+              const botText =
+                typeof candidate === "string"
+                  ? candidate
+                  : JSON.stringify(candidate);
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === botId ? { ...m, content: botText } : m,
+                ),
+              );
             } else {
-              setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: generateBotResponse(currentInput) } : m)));
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === botId
+                    ? { ...m, content: generateBotResponse(currentInput) }
+                    : m,
+                ),
+              );
             }
           } else {
-            setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: generateBotResponse(currentInput) } : m)));
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === botId
+                  ? { ...m, content: generateBotResponse(currentInput) }
+                  : m,
+              ),
+            );
           }
         } catch (err2) {
-          setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: generateBotResponse(currentInput) } : m)));
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === botId
+                ? { ...m, content: generateBotResponse(currentInput) }
+                : m,
+            ),
+          );
         }
       } finally {
         setIsTyping(false);
