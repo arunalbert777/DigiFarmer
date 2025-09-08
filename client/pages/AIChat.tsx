@@ -118,14 +118,16 @@ export default function AIChat() {
     } else {
       return botResponses.default;
     }
-  };
+  }; // fallback local responses
 
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
 
+    const currentInput = inputMessage;
+
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: inputMessage,
+      content: currentInput,
       sender: "user",
       timestamp: new Date(),
     };
@@ -134,18 +136,48 @@ export default function AIChat() {
     setInputMessage("");
     setIsTyping(true);
 
-    // Simulate AI thinking time
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content: generateBotResponse(inputMessage),
-        sender: "bot",
+    try {
+      const res = await fetch('/api/gemini-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: currentInput }),
+      });
+
+      if (!res.ok) {
+        // fallback to local responder
+        const botResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          content: generateBotResponse(currentInput),
+          sender: 'bot',
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, botResponse]);
+        setIsTyping(false);
+        return;
+      }
+
+      const data = await res.json();
+      const botText = typeof data?.bot === 'string' ? data.bot : JSON.stringify(data);
+
+      const botMessage: Message = {
+        id: (Date.now() + 2).toString(),
+        content: botText,
+        sender: 'bot',
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, botResponse]);
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (err) {
+      const botMessage: Message = {
+        id: (Date.now() + 3).toString(),
+        content: generateBotResponse(currentInput),
+        sender: 'bot',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, botMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
