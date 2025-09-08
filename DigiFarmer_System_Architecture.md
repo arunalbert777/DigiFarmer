@@ -2,7 +2,7 @@
 
 **Version:** 1.0  
 **Date:** January 2025  
-**Project:** DigiFarmer - AI-Powered Agricultural Platform  
+**Project:** Agro-Mentor - AI-Powered Agricultural Platform  
 **Repository:** https://github.com/arunalbert777/DigiFarmer
 
 ---
@@ -18,7 +18,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                                 USER LAYER                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├───────────────────────────���─────────────────────────────────────────────────────┤
 │  👨‍🌾 Farmers     📱 Mobile Devices     💻 Desktop     🌐 Web Browsers        │
 └─────────────────────────────────────────────────────────────────────────────────┘
                                       │
@@ -36,7 +36,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 │  │ TailwindCSS 3.4 │  │  Radix UI       │  │ Framer Motion   │                │
 │  │   Styling       │  │   Components    │  │   Animations    │                │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘                │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────��──────────────────────────────────────────┘
                                       │
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -118,7 +118,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 │  │ • Auto-scaling  │       │ • Request Logger│       │ • Config Mgmt   │      │
 │  │ • Edge Computing│       │ • Rate Limiting │       │ • Security      │      │
 │  └─────────────────┘       └─────────────────┘       └─────────────────┘      │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└───────────────────────────────────���─────────────────────────────────────────────┘
                                       │
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -138,7 +138,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 │  │ • PostgreSQL    │       │ • Zod Validation│       │ • Browser Cache │      │
 │  │ • MongoDB       │       │ • API Contracts │       │ • Service Worker│      │
 │  │ • Redis Cache   │       │ • Data Relations│       │ • Memory Cache  │      │
-│  └─────────────────┘       └─────────────────┘       └─────────────────┘      │
+│  └─────────────────┘       └─────────────────┘       └─��───────────────┘      │
 └─────────────────────────────────────────────────────────────────────────────────┘
                                       │
                                       ▼
@@ -173,7 +173,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 │                    AI/ML PROCESSING PIPELINE                   │
 ├─────────────────────────────────────────────────────────────────┤
 │  📸 Image Input        🔍 Preprocessing       🧠 AI Analysis     │
-│  ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐ │
+│  ┌─────────────────┐   ┌─────────────────┐   ┌────��────────────┐ │
 │  │ • File Upload   │──→│ • Quality Check │──→│ • CNN Models    │ │
 │  │ • Drag & Drop   │   │ • Resize/Crop   │   │ • Feature Extract│ │
 │  │ • Camera Capture│   │ • Enhancement   │   │ • Pattern Match │ │
@@ -304,7 +304,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 │                      SECURITY LAYERS                           │
 ├─────────────────────────────────────────────────────────────────┤
 │  🛡️ Input Validation    🔐 Authentication     🚫 Access Control  │
-│  ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐ │
+│  ┌────────────────���┐   ┌─────────────────┐   ┌─────────────────┐ │
 │  │ • Zod Schemas   │   │ • JWT Tokens    │   │ • Role-based    │ │
 │  │ • Type Checking │   │ • Session Mgmt  │   │ • Route Guards  │ │
 │  │ • Sanitization  │   │ • Secure Storage│   │ • API Limits    │ │
@@ -316,7 +316,7 @@ DigiFarmer is a modern, Progressive Web Application (PWA) built with cutting-edg
 │  │ • Encryption    │   │ • HTTPS/TLS     │   │ • Error Tracking│ │
 │  │ • Secure Headers│   │ • CORS Policy   │   │ • Performance   │ │
 │  │ • XSS Prevention│   │ • CSP Headers   │   │ • User Activity │ │
-│  │ • CSRF Protection│   │ • Input Filters │   │ • Audit Logs   │ │
+│  │ • CSRF Protection│   �� • Input Filters │   │ • Audit Logs   │ │
 │  └─────────────────┘   └��────────────────┘   └─────────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
 ```
