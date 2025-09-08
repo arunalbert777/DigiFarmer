@@ -185,7 +185,7 @@ export default function AIChat() {
     inputRef.current?.focus();
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
@@ -368,11 +368,12 @@ export default function AIChat() {
                         ref={inputRef}
                         value={inputMessage}
                         onChange={(e) => setInputMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
+                        onKeyDown={handleKeyPress}
                         placeholder="Ask about crops, pests, irrigation, or any farming question..."
                         className="pr-12"
                       />
                       <Button
+                        type="button"
                         size="sm"
                         onClick={sendMessage}
                         disabled={!inputMessage.trim() || isTyping}
