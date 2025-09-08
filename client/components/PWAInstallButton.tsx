@@ -112,7 +112,7 @@ export function PWAInstallButtonMobile() {
       );
     } else {
       alert(
-        'To install DigiFarmer:\n\n• Use "Add to Home Screen" from your browser menu\n• Or look for the install icon in your browser',
+        'To install Agro-Mentor:\n\n• Use "Add to Home Screen" from your browser menu\n• Or look for the install icon in your browser',
       );
     }
   };
