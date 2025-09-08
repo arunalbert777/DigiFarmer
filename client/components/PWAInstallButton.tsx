@@ -53,7 +53,7 @@ export function PWAInstallButton() {
     if (!deferredPrompt) {
       // Fallback for browsers that don't support the install prompt
       alert(
-        'To install DigiFarmer:\n\n• Chrome: Click the install icon in the address bar\n• Mobile: Use "Add to Home Screen" from browser menu\n• Edge: Look for the app available notification',
+        'To install Agro-Mentor:\n\n• Chrome: Click the install icon in the address bar\n• Mobile: Use "Add to Home Screen" from browser menu\n• Edge: Look for the app available notification',
       );
       return;
     }
