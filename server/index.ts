@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleGeminiChat } from "./routes/gemini";
+import { handleGeminiChatStream } from "./routes/geminiStream";
 
 export function createServer() {
   const app = express();
@@ -22,6 +23,9 @@ export function createServer() {
 
   // Gemini AI proxy endpoint
   app.post("/api/gemini-chat", handleGeminiChat);
+
+  // Gemini AI streaming (SSE) endpoint
+  app.get("/api/gemini-chat-stream", handleGeminiChatStream);
 
   return app;
 }
