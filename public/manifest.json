@@ -1,6 +1,6 @@
 {
   "name": "Agro-Mentor - Agricultural AI Platform",
-  "short_name": "DigiFarmer",
+  "short_name": "Agro-Mentor",
   "description": "AI-powered agricultural platform for disease detection, expert consultation, and farming guidance",
   "start_url": "/",
   "display": "standalone",
