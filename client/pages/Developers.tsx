@@ -42,7 +42,7 @@ const developers = [
     skills: ["Python", "Django", "PostgreSQL", "AWS", "Docker"],
     github: "https://github.com/arun",
     linkedin: "https://linkedin.com/in/arun",
-    email: "arun@digifarmer.com",
+    email: "arun@agro-mentor.com",
     contributions: "API Development & Database Design",
   },
   {
