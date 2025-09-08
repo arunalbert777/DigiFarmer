@@ -30,4 +30,4 @@ You can generate these icons from a single high-resolution logo using online PWA
 - https://realfavicongenerator.net/
 - https://maskable.app/ (for maskable icons)
 
-The icons should feature the DigiFarmer leaf logo with appropriate sizing and padding for different contexts.
+The icons should feature the Agro-Mentor leaf logo with appropriate sizing and padding for different contexts.
