@@ -296,7 +296,7 @@ export default {
   // PWA
   pwa: {
     install: "Install App",
-    installPrompt: "Install DigiFarmer app on your device for quick access",
+    installPrompt: "Install Agro-Mentor app on your device for quick access",
     installButton: "Install Now",
     installLater: "Maybe Later",
     installInstructions: 'Tap the share button and select "Add to Home Screen"',
