@@ -91,7 +91,7 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification('DigiFarmer', options)
+    self.registration.showNotification('Agro-Mentor', options)
   );
 });
 
