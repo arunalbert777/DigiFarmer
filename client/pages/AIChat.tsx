@@ -136,48 +136,49 @@ export default function AIChat() {
     setInputMessage("");
     setIsTyping(true);
 
+    // Create a placeholder bot message to stream into
+    const botId = (Date.now() + 1).toString();
+    setMessages((prev) => [...prev, { id: botId, content: "", sender: "bot", timestamp: new Date() }]);
+
+    // Attempt SSE streaming
     try {
-      const res = await fetch("/api/gemini-chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: currentInput }),
+      const url = `/api/gemini-chat-stream?message=${encodeURIComponent(currentInput)}`;
+      const es = new EventSource(url);
+
+      es.onmessage = (e) => {
+        setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: m.content + e.data } : m)));
+      };
+
+      es.addEventListener("done", () => {
+        setIsTyping(false);
+        es.close();
       });
 
-      if (!res.ok) {
-        // fallback to local responder
-        const botResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          content: generateBotResponse(currentInput),
-          sender: "bot",
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, botResponse]);
+      es.onerror = () => {
+        es.close();
         setIsTyping(false);
-        return;
-      }
-
-      const data = await res.json();
-      const botText =
-        typeof data?.bot === "string" ? data.bot : JSON.stringify(data);
-
-      const botMessage: Message = {
-        id: (Date.now() + 2).toString(),
-        content: botText,
-        sender: "bot",
-        timestamp: new Date(),
+        // Replace with fallback response
+        setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: generateBotResponse(currentInput) } : m)));
       };
-
-      setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
-      const botMessage: Message = {
-        id: (Date.now() + 3).toString(),
-        content: generateBotResponse(currentInput),
-        sender: "bot",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, botMessage]);
-    } finally {
-      setIsTyping(false);
+      // Fallback to non-streaming POST
+      try {
+        const res = await fetch("/api/gemini-chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: currentInput }),
+        });
+
+        if (!res.ok) throw new Error("Upstream error");
+
+        const data = await res.json();
+        const botText = typeof data?.bot === "string" ? data.bot : JSON.stringify(data);
+        setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: botText } : m)));
+      } catch (e) {
+        setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, content: generateBotResponse(currentInput) } : m)));
+      } finally {
+        setIsTyping(false);
+      }
     }
   };
 
