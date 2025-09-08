@@ -68,7 +68,7 @@ function doBackgroundSync() {
 // Handle push notifications
 self.addEventListener('push', (event) => {
   const options = {
-    body: event.data ? event.data.text() : 'New update from DigiFarmer!',
+    body: event.data ? event.data.text() : 'New update from Agro-Mentor!',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/badge-72x72.png',
     vibrate: [100, 50, 100],
