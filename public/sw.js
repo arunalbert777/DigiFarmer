@@ -79,7 +79,7 @@ self.addEventListener('push', (event) => {
     actions: [
       {
         action: 'explore',
-        title: 'Open DigiFarmer',
+        title: 'Open Agro-Mentor',
         icon: '/icons/icon-192x192.png'
       },
       {
