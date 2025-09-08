@@ -10,7 +10,7 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
     }
 
     const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
-    const model = process.env.GEMINI_MODEL || "text-bison-001";
+    const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
     if (!apiKey) {
       return res
@@ -18,21 +18,26 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
         .json({ error: "Server misconfiguration: missing API key" });
     }
 
-    // Google Generative Language API endpoint (v1)
-    const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateText?key=${apiKey}`;
+    // Google Generative Language API endpoint (v1beta generateContent)
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
     const payload = {
-      prompt: {
-        text: message,
-      },
-      temperature: 0.2,
-      maxOutputTokens: 512,
+      contents: [
+        {
+          parts: [
+            {
+              text: message,
+            },
+          ],
+        },
+      ],
     };
 
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-goog-api-key": apiKey,
       },
       body: JSON.stringify(payload),
     });
@@ -46,16 +51,27 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
 
     const data = await response.json();
 
-    // Expected response shape: { candidates: [{ output: string }] } or { output: ... }
-    const candidate =
-      data?.candidates?.[0]?.output ||
-      data?.output?.[0]?.content ||
-      data?.result ||
+    // Try to extract text from known response shapes
+    let candidate: string | null = null;
+
+    // common: candidates[index].content.parts[0].text
+    candidate =
+      candidate ||
+      data?.candidates?.[0]?.content?.[0]?.text ||
+      data?.candidates?.[0]?.content?.[0]?.raw ||
+      data?.candidates?.[0]?.output?.[0]?.content?.[0]?.text ||
+      data?.outputs?.[0]?.content?.[0]?.text ||
+      data?.results?.[0]?.output?.[0]?.content?.[0]?.text ||
       null;
 
-    if (!candidate || typeof candidate !== "string") {
-      // If the response structure is different, send entire data to client
-      return res.status(200).json({ bot: JSON.stringify(data) });
+    if (!candidate) {
+      // As a fallback, try to stringify potentially useful fields
+      try {
+        if (typeof data === "string") candidate = data;
+        else candidate = JSON.stringify(data);
+      } catch (e) {
+        candidate = null;
+      }
     }
 
     return res.status(200).json({ bot: candidate });
