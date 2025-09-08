@@ -20,7 +20,9 @@ export const handleGeminiChatStream: RequestHandler = async (req, res) => {
     const model = process.env.GEMINI_MODEL || "text-bison-001";
 
     if (!apiKey) {
-      res.status(500).json({ error: "Server misconfiguration: missing API key" });
+      res
+        .status(500)
+        .json({ error: "Server misconfiguration: missing API key" });
       return;
     }
 
@@ -50,8 +52,13 @@ export const handleGeminiChatStream: RequestHandler = async (req, res) => {
     }
 
     const data = await upstream.json();
-    const candidate = data?.candidates?.[0]?.output || data?.output?.[0]?.content || data?.result || null;
-    const botText = typeof candidate === "string" ? candidate : JSON.stringify(candidate);
+    const candidate =
+      data?.candidates?.[0]?.output ||
+      data?.output?.[0]?.content ||
+      data?.result ||
+      null;
+    const botText =
+      typeof candidate === "string" ? candidate : JSON.stringify(candidate);
 
     // Begin SSE
     res.setHeader("Content-Type", "text/event-stream");
