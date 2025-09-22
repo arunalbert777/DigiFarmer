@@ -130,6 +130,28 @@ export default function GeminiVoice() {
 
       if (!res) throw new Error("Network error calling Gemini endpoints");
 
+      // If body was already consumed (rare), try to re-fetch fallback endpoint
+      try {
+        // Debug info
+        console.debug("[gemini] response bodyUsed", res.bodyUsed, "status", res.status);
+      } catch (e) {
+        console.debug("[gemini] response inspect failed", e);
+      }
+
+      if ((res as any).bodyUsed) {
+        // Attempt to re-fetch fallback endpoint once
+        try {
+          console.warn("[gemini] response body already used, retrying fallback");
+          res = await fetch(fallback, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+        } catch (e) {
+          throw new Error("Response body already consumed and fallback retry failed");
+        }
+      }
+
       // Read response text exactly once and parse
       let rawText = "";
       try {
