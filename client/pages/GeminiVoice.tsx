@@ -59,9 +59,16 @@ export default function GeminiVoice() {
 
     rec.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
-      addMessage(transcript, "user");
-      setStatus("Thinking...");
-      getGeminiResponse(transcript);
+      // Validate transcript before sending
+      if (transcript && transcript.trim().length > 0) {
+        addMessage(transcript, "user");
+        setStatus("Thinking...");
+        getGeminiResponse(transcript);
+      } else {
+        addMessage("Sorry, I didn't catch that. Please try again.", "gemini");
+        speakText("Sorry, I didn't catch that. Please try again.");
+        setStatus("Click the mic to start speaking.");
+      }
     };
 
     rec.onerror = (e: any) => {
