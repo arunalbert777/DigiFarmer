@@ -608,6 +608,7 @@ export default function AIChat() {
                     <Button size="sm" variant="ghost">
                       <Paperclip className="h-4 w-4" />
                     </Button>
+
                     <div className="flex-1 relative">
                       <Input
                         ref={inputRef}
@@ -627,9 +628,38 @@ export default function AIChat() {
                         <Send className="h-4 w-4" />
                       </Button>
                     </div>
-                    <Button size="sm" variant="ghost">
-                      <Mic className="h-4 w-4" />
-                    </Button>
+
+                    {/* Voice controls: language selector, speak toggle, mic */}
+                    <div className="flex items-center space-x-2">
+                      <select
+                        value={selectedVoice}
+                        onChange={(e) => setSelectedVoice(e.target.value as any)}
+                        className="text-sm rounded-md border px-2 py-1"
+                        title="Voice language"
+                      >
+                        <option value="en">English</option>
+                        <option value="kn">Kannada</option>
+                      </select>
+
+                      <Button
+                        size="sm"
+                        variant={voiceEnabled ? "default" : "ghost"}
+                        onClick={() => setVoiceEnabled((s) => !s)}
+                        title={voiceEnabled ? "Voice ON" : "Voice OFF"}
+                      >
+                        <Volume className="h-4 w-4" />
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant={isRecording ? "destructive" : "ghost"}
+                        onClick={toggleRecording}
+                        title={isRecording ? "Stop recording" : recognitionSupported ? "Start voice input" : "Voice input not supported"}
+                        disabled={!recognitionSupported}
+                      >
+                        <Mic className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                   <p className="text-xs text-gray-500 mt-2 text-center">
                     AI responses are based on general agricultural knowledge.
