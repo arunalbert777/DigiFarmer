@@ -15,8 +15,8 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
-    console.error("useLanguage hook called outside of LanguageProvider");
-    // Return a fallback context instead of throwing
+    // Avoid throwing in environments where provider isn't mounted (e.g., preview renderers).
+    // Return a safe fallback implementation so components can render without crashing.
     return {
       language: "en" as Language,
       setLanguage: () => {},
