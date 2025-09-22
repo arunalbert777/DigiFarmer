@@ -145,7 +145,8 @@ export default function AIChat() {
 
     // Attempt SSE streaming (try local /api then Netlify functions path)
     try {
-      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const origin =
+        typeof window !== "undefined" ? window.location.origin : "";
       const endpoints = [
         `${origin}/api/gemini-chat-stream?message=${encodeURIComponent(currentInput)}`,
         `/api/gemini-chat-stream?message=${encodeURIComponent(currentInput)}`,
@@ -207,7 +208,8 @@ export default function AIChat() {
       // Fallback to non-streaming POST
       try {
         // try local POST then Netlify functions POST
-        const origin = typeof window !== "undefined" ? window.location.origin : "";
+        const origin =
+          typeof window !== "undefined" ? window.location.origin : "";
         const postEndpoints = [
           `${origin}/api/gemini-chat`,
           `/api/gemini-chat`,
