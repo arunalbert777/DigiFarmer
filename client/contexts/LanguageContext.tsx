@@ -32,9 +32,16 @@ interface LanguageProviderProps {
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const [language, setLanguage] = useState<Language>(() => {
-    // Check localStorage for saved language preference
-    const saved = localStorage.getItem("preferred-language");
-    return (saved as Language) || "en";
+    // Check localStorage for saved language preference (guarded for SSR/preview)
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        const saved = localStorage.getItem("preferred-language");
+        return (saved as Language) || "en";
+      }
+    } catch (e) {
+      // ignore and fall back to English
+    }
+    return "en";
   });
 
   // Initialize with basic fallback translations to prevent undefined context
