@@ -127,11 +127,14 @@ export default function GeminiVoice() {
         data = await res.json();
       } catch (jsonErr) {
         const text = await res.text().catch(() => null);
-        throw new Error(`Invalid JSON response from server: ${String(jsonErr)} ${text || ""}`);
+        throw new Error(
+          `Invalid JSON response from server: ${String(jsonErr)} ${text || ""}`,
+        );
       }
 
       if (!res.ok) {
-        const details = data?.error || data?.details || data?.message || JSON.stringify(data);
+        const details =
+          data?.error || data?.details || data?.message || JSON.stringify(data);
         throw new Error(`Upstream error: ${details}`);
       }
 
@@ -143,9 +146,17 @@ export default function GeminiVoice() {
         if (typeof obj.bot === "string") return obj.bot;
         if (Array.isArray(obj.candidates) && obj.candidates.length) {
           const c0 = obj.candidates[0];
-          const parts = c0?.content?.parts || c0?.content?.[0]?.parts || c0?.content?.[0]?.content?.parts;
-          if (Array.isArray(parts) && parts.length) return parts.map((p: any) => p?.text || p?.raw || "").join(" ").trim();
-          const maybeText = c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text;
+          const parts =
+            c0?.content?.parts ||
+            c0?.content?.[0]?.parts ||
+            c0?.content?.[0]?.content?.parts;
+          if (Array.isArray(parts) && parts.length)
+            return parts
+              .map((p: any) => p?.text || p?.raw || "")
+              .join(" ")
+              .trim();
+          const maybeText =
+            c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text;
           if (maybeText) return maybeText;
         }
         if (obj?.raw && typeof obj.raw === "string") return obj.raw;
@@ -226,7 +237,7 @@ export default function GeminiVoice() {
       if (loaderEl) loaderEl.style.display = "none";
       setStatus("Click the mic to start speaking.");
     }
-  };
+  }
 
   return (
     <div className="p-6 flex justify-center">
@@ -278,7 +289,9 @@ export default function GeminiVoice() {
             <button
               id="send-button"
               onClick={() => {
-                const el = document.getElementById("user-input") as HTMLInputElement | null;
+                const el = document.getElementById(
+                  "user-input",
+                ) as HTMLInputElement | null;
                 const val = el?.value?.trim();
                 if (val) {
                   sendTextMessage(val);
