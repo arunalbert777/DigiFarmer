@@ -6,9 +6,26 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
     console.log("[gemini] Incoming request headers:", req.headers);
     console.log("[gemini] Incoming request body:", req.body);
 
-    const { message } = req.body;
+    // Accept multiple payload shapes for 'message' (prompt, input, contents)
+    let message: string | undefined = undefined;
+    if (req.body) {
+      if (typeof req.body.message === "string") message = req.body.message;
+      else if (typeof req.body.prompt === "string") message = req.body.prompt;
+      else if (typeof req.body.input === "string") message = req.body.input;
+      else if (req.body.input && typeof req.body.input.text === "string") message = req.body.input.text;
+      else if (req.body.contents && Array.isArray(req.body.contents)) {
+        // contents: [{ parts: [{ text }] }]
+        try {
+          const first = req.body.contents[0];
+          message = first?.parts?.[0]?.text || first?.text || undefined;
+        } catch (e) {
+          message = undefined;
+        }
+      }
+    }
+
     if (!message || typeof message !== "string") {
-      return res.status(400).json({ error: "Missing 'message' in request body", received: req.body });
+      return res.status(400).json({ error: "Missing 'message' (or 'prompt') in request body", received: req.body });
     }
 
     const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
