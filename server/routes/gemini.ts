@@ -60,7 +60,12 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
         // candidates[].content[].parts[].text (generateContent)
         const parts = obj?.candidates?.[0]?.content?.[0]?.parts;
         if (Array.isArray(parts)) {
-          return parts.map((p: any) => p?.text || "").join(" ").trim() || null;
+          return (
+            parts
+              .map((p: any) => p?.text || "")
+              .join(" ")
+              .trim() || null
+          );
         }
 
         // outputs or output arrays with content.parts
@@ -71,14 +76,20 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
             if (Array.isArray(cont)) {
               for (const c of cont) {
                 const p = c?.parts || c?.content || c;
-                if (Array.isArray(p)) return p.map((x: any) => x?.text || x?.raw || "").join(" ").trim();
+                if (Array.isArray(p))
+                  return p
+                    .map((x: any) => x?.text || x?.raw || "")
+                    .join(" ")
+                    .trim();
               }
             }
           }
         }
 
         // legacy: candidates[0].content[0].text or raw
-        const legacy = obj?.candidates?.[0]?.content?.[0]?.text || obj?.candidates?.[0]?.content?.[0]?.raw;
+        const legacy =
+          obj?.candidates?.[0]?.content?.[0]?.text ||
+          obj?.candidates?.[0]?.content?.[0]?.raw;
         if (legacy && typeof legacy === "string") return legacy;
       } catch (e) {
         // ignore
@@ -108,7 +119,9 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
     }
 
     if (!botText) {
-      return res.status(502).json({ error: "Failed to parse upstream response" });
+      return res
+        .status(502)
+        .json({ error: "Failed to parse upstream response" });
     }
 
     return res.status(200).json({ bot: botText });
