@@ -94,8 +94,12 @@ export default function AIChat() {
   // Detect speech APIs availability
   useEffect(() => {
     const win = typeof window !== "undefined" ? (window as any) : undefined;
-    setRecognitionSupported(!!(win && (win.SpeechRecognition || win.webkitSpeechRecognition)));
-    setSynthesisSupported(!!(win && win.speechSynthesis && win.SpeechSynthesisUtterance));
+    setRecognitionSupported(
+      !!(win && (win.SpeechRecognition || win.webkitSpeechRecognition)),
+    );
+    setSynthesisSupported(
+      !!(win && win.speechSynthesis && win.SpeechSynthesisUtterance),
+    );
   }, []);
 
   // Stop recording when component unmounts
@@ -117,20 +121,25 @@ export default function AIChat() {
   useEffect(() => {
     if (!voiceEnabled || !synthesisSupported) return;
     if (isTyping) return;
-    const last = [...messages].reverse().find((m) => m.sender === "bot" && m.content.trim());
+    const last = [...messages]
+      .reverse()
+      .find((m) => m.sender === "bot" && m.content.trim());
     if (last) {
       speak(last.content);
     }
   }, [isTyping]);
 
   const speak = (text: string) => {
-    if (typeof window === "undefined" || !synthesisSupported || !voiceEnabled) return;
+    if (typeof window === "undefined" || !synthesisSupported || !voiceEnabled)
+      return;
     try {
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = selectedVoice === "kn" ? "kn-IN" : "en-IN";
       // choose a matching voice if possible
       const voices = window.speechSynthesis.getVoices() || [];
-      const match = voices.find((v: SpeechSynthesisVoice) => v.lang && v.lang.startsWith(utter.lang));
+      const match = voices.find(
+        (v: SpeechSynthesisVoice) => v.lang && v.lang.startsWith(utter.lang),
+      );
       if (match) utter.voice = match as any;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utter);
@@ -160,13 +169,15 @@ export default function AIChat() {
         }
         setInputMessage((prev) => {
           // prefer the final text if present
-          return (prev && final) ? final : (final || interim || prev);
+          return prev && final ? final : final || interim || prev;
         });
         if (final) {
           // auto-send on final
           setTimeout(() => {
             if (recognitionRef.current) {
-              try { recognitionRef.current.stop(); } catch (e) {}
+              try {
+                recognitionRef.current.stop();
+              } catch (e) {}
               setIsRecording(false);
             }
             sendMessage();
@@ -175,7 +186,9 @@ export default function AIChat() {
       };
       rec.onerror = (e: any) => {
         setIsRecording(false);
-        try { rec.stop(); } catch (e) {}
+        try {
+          rec.stop();
+        } catch (e) {}
       };
       rec.onend = () => {
         setIsRecording(false);
@@ -633,7 +646,9 @@ export default function AIChat() {
                     <div className="flex items-center space-x-2">
                       <select
                         value={selectedVoice}
-                        onChange={(e) => setSelectedVoice(e.target.value as any)}
+                        onChange={(e) =>
+                          setSelectedVoice(e.target.value as any)
+                        }
                         className="text-sm rounded-md border px-2 py-1"
                         title="Voice language"
                       >
@@ -654,7 +669,13 @@ export default function AIChat() {
                         size="sm"
                         variant={isRecording ? "destructive" : "ghost"}
                         onClick={toggleRecording}
-                        title={isRecording ? "Stop recording" : recognitionSupported ? "Start voice input" : "Voice input not supported"}
+                        title={
+                          isRecording
+                            ? "Stop recording"
+                            : recognitionSupported
+                              ? "Start voice input"
+                              : "Voice input not supported"
+                        }
                         disabled={!recognitionSupported}
                       >
                         <Mic className="h-4 w-4" />
