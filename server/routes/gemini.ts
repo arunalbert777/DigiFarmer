@@ -52,30 +52,66 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
 
     const data = await response.json();
 
-    // Try to extract text from known response shapes
-    let candidate: string | null = null;
+    // Try to extract text from known response shapes robustly
+    let botText: string | null = null;
 
-    // common: candidates[index].content.parts[0].text
-    candidate =
-      candidate ||
-      data?.candidates?.[0]?.content?.[0]?.text ||
-      data?.candidates?.[0]?.content?.[0]?.raw ||
-      data?.candidates?.[0]?.output?.[0]?.content?.[0]?.text ||
-      data?.outputs?.[0]?.content?.[0]?.text ||
-      data?.results?.[0]?.output?.[0]?.content?.[0]?.text ||
-      null;
-
-    if (!candidate) {
-      // As a fallback, try to stringify potentially useful fields
+    const tryExtractFromParts = (obj: any) => {
       try {
-        if (typeof data === "string") candidate = data;
-        else candidate = JSON.stringify(data);
+        // candidates[].content[].parts[].text (generateContent)
+        const parts = obj?.candidates?.[0]?.content?.[0]?.parts;
+        if (Array.isArray(parts)) {
+          return parts.map((p: any) => p?.text || "").join(" ").trim() || null;
+        }
+
+        // outputs or output arrays with content.parts
+        const outputs = obj?.outputs || obj?.output || obj?.results;
+        if (Array.isArray(outputs)) {
+          for (const out of outputs) {
+            const cont = out?.content || out?.output || out;
+            if (Array.isArray(cont)) {
+              for (const c of cont) {
+                const p = c?.parts || c?.content || c;
+                if (Array.isArray(p)) return p.map((x: any) => x?.text || x?.raw || "").join(" ").trim();
+              }
+            }
+          }
+        }
+
+        // legacy: candidates[0].content[0].text or raw
+        const legacy = obj?.candidates?.[0]?.content?.[0]?.text || obj?.candidates?.[0]?.content?.[0]?.raw;
+        if (legacy && typeof legacy === "string") return legacy;
       } catch (e) {
-        candidate = null;
+        // ignore
+      }
+      return null;
+    };
+
+    botText = tryExtractFromParts(data);
+
+    if (!botText) {
+      // If we still have structured fields, try to serialize a user-friendly summary
+      try {
+        if (typeof data === "string") botText = data;
+        else {
+          // attempt to locate any plain strings in common places
+          const maybe =
+            data?.candidates?.[0]?.content?.[0]?.text ||
+            data?.candidates?.[0]?.output?.[0]?.content?.[0]?.text ||
+            data?.outputs?.[0]?.content?.[0]?.text ||
+            null;
+          if (maybe && typeof maybe === "string") botText = maybe;
+          else botText = JSON.stringify(data);
+        }
+      } catch (e) {
+        botText = null;
       }
     }
 
-    return res.status(200).json({ bot: candidate });
+    if (!botText) {
+      return res.status(502).json({ error: "Failed to parse upstream response" });
+    }
+
+    return res.status(200).json({ bot: botText });
   } catch (err: any) {
     return res
       .status(500)
