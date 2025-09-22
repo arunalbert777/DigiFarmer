@@ -103,8 +103,9 @@ export default function GeminiVoice() {
 
   async function getGeminiResponse(prompt: string) {
     try {
-      const payload = { message: prompt };
-      const res = await fetchWithRetry("/api/gemini-chat", {
+      const apiPath = typeof window !== 'undefined' ? `${window.location.origin}/.netlify/functions/gemini-chat` : "/api/gemini-chat";
+      const payload = { prompt: prompt };
+      const res = await fetchWithRetry(apiPath, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
