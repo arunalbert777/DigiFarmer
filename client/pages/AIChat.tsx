@@ -91,6 +91,117 @@ export default function AIChat() {
     scrollToBottom();
   }, [messages]);
 
+  // Detect speech APIs availability
+  useEffect(() => {
+    const win = typeof window !== "undefined" ? (window as any) : undefined;
+    setRecognitionSupported(!!(win && (win.SpeechRecognition || win.webkitSpeechRecognition)));
+    setSynthesisSupported(!!(win && win.speechSynthesis && win.SpeechSynthesisUtterance));
+  }, []);
+
+  // Stop recording when component unmounts
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.onresult = null;
+          recognitionRef.current.onend = null;
+          recognitionRef.current.onerror = null;
+          recognitionRef.current.stop();
+        } catch (e) {}
+        recognitionRef.current = null;
+      }
+    };
+  }, []);
+
+  // When typing stops and voiceEnabled, speak last bot response
+  useEffect(() => {
+    if (!voiceEnabled || !synthesisSupported) return;
+    if (isTyping) return;
+    const last = [...messages].reverse().find((m) => m.sender === "bot" && m.content.trim());
+    if (last) {
+      speak(last.content);
+    }
+  }, [isTyping]);
+
+  const speak = (text: string) => {
+    if (typeof window === "undefined" || !synthesisSupported || !voiceEnabled) return;
+    try {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = selectedVoice === "kn" ? "kn-IN" : "en-IN";
+      // choose a matching voice if possible
+      const voices = window.speechSynthesis.getVoices() || [];
+      const match = voices.find((v: SpeechSynthesisVoice) => v.lang && v.lang.startsWith(utter.lang));
+      if (match) utter.voice = match as any;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const startRecognition = () => {
+    if (typeof window === "undefined") return;
+    const Win: any = window as any;
+    const SR = Win.SpeechRecognition || Win.webkitSpeechRecognition;
+    if (!SR) return;
+    try {
+      const rec = new SR();
+      recognitionRef.current = rec;
+      rec.lang = selectedVoice === "kn" ? "kn-IN" : "en-IN";
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+      rec.onresult = (event: any) => {
+        let interim = "";
+        let final = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const res = event.results[i];
+          if (res.isFinal) final += res[0].transcript;
+          else interim += res[0].transcript;
+        }
+        setInputMessage((prev) => {
+          // prefer the final text if present
+          return (prev && final) ? final : (final || interim || prev);
+        });
+        if (final) {
+          // auto-send on final
+          setTimeout(() => {
+            if (recognitionRef.current) {
+              try { recognitionRef.current.stop(); } catch (e) {}
+              setIsRecording(false);
+            }
+            sendMessage();
+          }, 150);
+        }
+      };
+      rec.onerror = (e: any) => {
+        setIsRecording(false);
+        try { rec.stop(); } catch (e) {}
+      };
+      rec.onend = () => {
+        setIsRecording(false);
+      };
+      rec.start();
+      setIsRecording(true);
+    } catch (e) {
+      setIsRecording(false);
+    }
+  };
+
+  const stopRecognition = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
+      recognitionRef.current = null;
+    }
+    setIsRecording(false);
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) stopRecognition();
+    else startRecognition();
+  };
+
   const generateBotResponse = (userMessage: string): string => {
     const message = userMessage.toLowerCase();
 
