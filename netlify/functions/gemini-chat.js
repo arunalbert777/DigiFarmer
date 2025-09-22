@@ -27,7 +27,8 @@ exports.handler = async function (event, context) {
     let prompt = undefined;
     if (typeof body.prompt === "string") prompt = body.prompt;
     else if (typeof body.message === "string") prompt = body.message;
-    else if (body.input && typeof body.input.text === "string") prompt = body.input.text;
+    else if (body.input && typeof body.input.text === "string")
+      prompt = body.input.text;
     else if (body.contents && Array.isArray(body.contents)) {
       try {
         const first = body.contents[0];
@@ -41,7 +42,9 @@ exports.handler = async function (event, context) {
       return {
         statusCode: 400,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "Missing 'prompt' or 'message' in request body" }),
+        body: JSON.stringify({
+          message: "Missing 'prompt' or 'message' in request body",
+        }),
       };
     }
 
@@ -50,7 +53,9 @@ exports.handler = async function (event, context) {
       return {
         statusCode: 500,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "Server misconfiguration: missing API key" }),
+        body: JSON.stringify({
+          message: "Server misconfiguration: missing API key",
+        }),
       };
     }
 
@@ -112,7 +117,11 @@ exports.handler = async function (event, context) {
       try {
         // generateContent -> candidates[].content[].parts[].text
         const parts = obj?.candidates?.[0]?.content?.[0]?.parts;
-        if (Array.isArray(parts)) return parts.map((p) => p?.text || p?.raw || "").join(" ").trim();
+        if (Array.isArray(parts))
+          return parts
+            .map((p) => p?.text || p?.raw || "")
+            .join(" ")
+            .trim();
 
         // outputs -> content -> parts
         const outputs = obj?.outputs || obj?.output || obj?.results;
@@ -122,14 +131,20 @@ exports.handler = async function (event, context) {
             if (Array.isArray(cont)) {
               for (const c of cont) {
                 const p = c?.parts || c?.content || c;
-                if (Array.isArray(p)) return p.map((x) => x?.text || x?.raw || "").join(" ").trim();
+                if (Array.isArray(p))
+                  return p
+                    .map((x) => x?.text || x?.raw || "")
+                    .join(" ")
+                    .trim();
               }
             }
           }
         }
 
         // candidates[].content[0].text
-        const legacy = obj?.candidates?.[0]?.content?.[0]?.text || obj?.candidates?.[0]?.content?.[0]?.raw;
+        const legacy =
+          obj?.candidates?.[0]?.content?.[0]?.text ||
+          obj?.candidates?.[0]?.content?.[0]?.raw;
         if (legacy && typeof legacy === "string") return legacy;
 
         // if raw text field exists
@@ -158,7 +173,10 @@ exports.handler = async function (event, context) {
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: "Internal server error", details: String(err) }),
+      body: JSON.stringify({
+        message: "Internal server error",
+        details: String(err),
+      }),
     };
   }
 };
