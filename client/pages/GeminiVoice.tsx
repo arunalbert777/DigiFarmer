@@ -43,7 +43,9 @@ export default function GeminiVoice() {
     const win: any = window as any;
     const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
     if (!SR) {
-      showMessage("Speech recognition not supported in this browser. Use Chrome/Edge.");
+      showMessage(
+        "Speech recognition not supported in this browser. Use Chrome/Edge.",
+      );
       return null;
     }
     const rec = new SR();
@@ -85,7 +87,12 @@ export default function GeminiVoice() {
     return rec;
   }
 
-  async function fetchWithRetry(url: string, options: any, retries = 3, delay = 1000) {
+  async function fetchWithRetry(
+    url: string,
+    options: any,
+    retries = 3,
+    delay = 1000,
+  ) {
     for (let i = 0; i < retries; i++) {
       try {
         const res = await fetch(url, options);
@@ -103,7 +110,10 @@ export default function GeminiVoice() {
 
   async function getGeminiResponse(prompt: string) {
     try {
-      const primary = typeof window !== 'undefined' ? `${window.location.origin}/.netlify/functions/gemini-chat` : `/api/gemini-chat`;
+      const primary =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/.netlify/functions/gemini-chat`
+          : `/api/gemini-chat`;
       const fallback = `/api/gemini-chat`;
       const payload = { prompt: prompt };
 
@@ -133,7 +143,12 @@ export default function GeminiVoice() {
       // If body was already consumed (rare), try to re-fetch fallback endpoint
       try {
         // Debug info
-        console.debug("[gemini] response bodyUsed", res.bodyUsed, "status", res.status);
+        console.debug(
+          "[gemini] response bodyUsed",
+          res.bodyUsed,
+          "status",
+          res.status,
+        );
       } catch (e) {
         console.debug("[gemini] response inspect failed", e);
       }
@@ -141,14 +156,18 @@ export default function GeminiVoice() {
       if ((res as any).bodyUsed) {
         // Attempt to re-fetch fallback endpoint once
         try {
-          console.warn("[gemini] response body already used, retrying fallback");
+          console.warn(
+            "[gemini] response body already used, retrying fallback",
+          );
           res = await fetch(fallback, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
         } catch (e) {
-          throw new Error("Response body already consumed and fallback retry failed");
+          throw new Error(
+            "Response body already consumed and fallback retry failed",
+          );
         }
       }
 
@@ -159,7 +178,10 @@ export default function GeminiVoice() {
         try {
           rawText = await res.text();
         } catch (readErr) {
-          console.warn("[gemini] reading response.text() failed, attempting fallback fetch", readErr);
+          console.warn(
+            "[gemini] reading response.text() failed, attempting fallback fetch",
+            readErr,
+          );
           // Try to re-fetch fallback once and read its body
           try {
             const retryRes = await fetch(fallback, {
@@ -189,7 +211,11 @@ export default function GeminiVoice() {
         throw new Error(`Status ${res.status}: ${details}`);
       }
 
-      const text = data?.response || data?.bot || data?.message || (typeof data === 'string' ? data : data?.raw || '');
+      const text =
+        data?.response ||
+        data?.bot ||
+        data?.message ||
+        (typeof data === "string" ? data : data?.raw || "");
       if (!text) {
         addMessage("Sorry, no response from the AI.", "gemini");
         speakText("Sorry, no response from the AI.");
@@ -206,8 +232,8 @@ export default function GeminiVoice() {
 
   function speakText(text: string) {
     try {
-      if (!('speechSynthesis' in window)) {
-        showMessage('Text-to-speech not supported in this browser.');
+      if (!("speechSynthesis" in window)) {
+        showMessage("Text-to-speech not supported in this browser.");
         return;
       }
       const utt = new SpeechSynthesisUtterance(text);
@@ -215,9 +241,9 @@ export default function GeminiVoice() {
       const voices = window.speechSynthesis.getVoices() || [];
       const match = voices.find((v) => v.lang && v.lang.startsWith(language));
       if (match) utt.voice = match as any;
-      utt.onstart = () => setStatus('Speaking...');
-      utt.onend = () => setStatus('Click the mic to start speaking.');
-      utt.onerror = () => setStatus('Error during speech synthesis.');
+      utt.onstart = () => setStatus("Speaking...");
+      utt.onend = () => setStatus("Click the mic to start speaking.");
+      utt.onerror = () => setStatus("Error during speech synthesis.");
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utt);
     } catch (e) {
@@ -227,7 +253,9 @@ export default function GeminiVoice() {
 
   const onMicClick = () => {
     if (isListening) {
-      try { recognitionRef.current?.stop(); } catch (e) {}
+      try {
+        recognitionRef.current?.stop();
+      } catch (e) {}
       setIsListening(false);
       return;
     }
@@ -246,11 +274,17 @@ export default function GeminiVoice() {
   return (
     <div className="p-6 flex justify-center">
       <div className="container w-full flex flex-col h-[80vh]">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">Gemini Voice Assistant</h1>
-        <p className="text-center text-gray-600 mb-4">Click the mic to speak in English or Kannada.</p>
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
+          Gemini Voice Assistant
+        </h1>
+        <p className="text-center text-gray-600 mb-4">
+          Click the mic to speak in English or Kannada.
+        </p>
 
         <div className="mb-4 text-center">
-          <label htmlFor="language" className="font-semibold text-gray-700">Select Language:</label>
+          <label htmlFor="language" className="font-semibold text-gray-700">
+            Select Language:
+          </label>
           <select
             id="language"
             value={language}
@@ -275,10 +309,24 @@ export default function GeminiVoice() {
             className={`bg-blue-600 text-white w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50`}
             aria-pressed={isListening}
           >
-            <svg className={`h-10 w-10 ${isListening ? "hidden" : ""}`} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.41-3.59c.14-.14.28-.29.41-.44L17 10.97V11c0 2.76-2.24 5-5 5s-5-2.24-5-5v-.03l.18.23c.13.14.27.29.41.44C7.79 12.26 9.87 13 12 13s4.21-.74 5.41-1.59zM12 17c-2.32 0-4.49-1.07-5.91-2.74L6 14.15V19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4.85l-.09.11C16.49 15.93 14.32 17 12 17z"/></svg>
-            <svg className={`h-10 w-10 text-red-500 ${isListening ? "" : "hidden"}`} viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.41-3.59c.14-.14.28-.29.41-.44L17 10.97V11c0 2.76-2.24 5-5 5s-5-2.24-5-5v-.03l.18.23c.13.14.27.29.41.44C7.79 12.26 9.87 13 12 13s4.21-.74 5.41-1.59zM12 17c-2.32 0-4.49-1.07-5.91-2.74L6 14.15V19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4.85l-.09.11C16.49 15.93 14.32 17 12 17z"/></svg>
+            <svg
+              className={`h-10 w-10 ${isListening ? "hidden" : ""}`}
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.41-3.59c.14-.14.28-.29.41-.44L17 10.97V11c0 2.76-2.24 5-5 5s-5-2.24-5-5v-.03l.18.23c.13.14.27.29.41.44C7.79 12.26 9.87 13 12 13s4.21-.74 5.41-1.59zM12 17c-2.32 0-4.49-1.07-5.91-2.74L6 14.15V19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4.85l-.09.11C16.49 15.93 14.32 17 12 17z" />
+            </svg>
+            <svg
+              className={`h-10 w-10 text-red-500 ${isListening ? "" : "hidden"}`}
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.41-3.59c.14-.14.28-.29.41-.44L17 10.97V11c0 2.76-2.24 5-5 5s-5-2.24-5-5v-.03l.18.23c.13.14.27.29.41.44C7.79 12.26 9.87 13 12 13s4.21-.74 5.41-1.59zM12 17c-2.32 0-4.49-1.07-5.91-2.74L6 14.15V19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4.85l-.09.11C16.49 15.93 14.32 17 12 17z" />
+            </svg>
           </button>
-          <p id="status" className="mt-4 text-gray-600 text-sm font-semibold">{status}</p>
+          <p id="status" className="mt-4 text-gray-600 text-sm font-semibold">
+            {status}
+          </p>
         </div>
 
         <div id="messageBox" className="message-box" />
