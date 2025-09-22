@@ -13,6 +13,7 @@ import { Marketplace } from "./pages/Marketplace";
 import { ContractFarming } from "./pages/ContractFarming";
 import { VerticalFarming } from "./pages/VerticalFarming";
 import Developers from "./pages/Developers";
+import GeminiVoice from "./pages/GeminiVoice";
 import NotFound from "./pages/NotFound";
 
 function App() {
