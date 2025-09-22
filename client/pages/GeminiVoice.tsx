@@ -211,11 +211,37 @@ export default function GeminiVoice() {
         throw new Error(`Status ${res.status}: ${details}`);
       }
 
-      const text =
-        data?.response ||
-        data?.bot ||
-        data?.message ||
-        (typeof data === "string" ? data : data?.raw || "");
+      // Robust extraction: handle netlify proxy ({response}) and raw Gemini API ({candidates})
+      const extractClientText = (obj: any) => {
+        try {
+          if (!obj) return null;
+          if (typeof obj === "string") return obj;
+          if (typeof obj.response === "string" && obj.response.trim()) return obj.response;
+          if (typeof obj.bot === "string" && obj.bot.trim()) return obj.bot;
+          // direct Gemini API shape
+          if (Array.isArray(obj.candidates) && obj.candidates.length > 0) {
+            const c0 = obj.candidates[0];
+            const parts = c0?.content?.parts || c0?.content?.[0]?.parts || c0?.content?.parts;
+            if (Array.isArray(parts) && parts.length > 0) return parts.map((p: any) => p?.text || p?.raw || "").join(" ").trim();
+            // sometimes content is array with content[0].parts
+            const cont = c0?.content || obj?.content || obj?.outputs?.[0]?.content;
+            if (Array.isArray(cont)) {
+              for (const item of cont) {
+                const p = item?.parts || item?.content?.[0]?.parts;
+                if (Array.isArray(p)) return p.map((x: any) => x?.text || x?.raw || "").join(" ").trim();
+              }
+            }
+          }
+          // fallback fields
+          if (obj?.raw && typeof obj.raw === "string") return obj.raw;
+          if (obj?.message && typeof obj.message === "string") return obj.message;
+          return JSON.stringify(obj);
+        } catch (e) {
+          return null;
+        }
+      };
+
+      const text = extractClientText(data);
       if (!text) {
         addMessage("Sorry, no response from the AI.", "gemini");
         speakText("Sorry, no response from the AI.");
