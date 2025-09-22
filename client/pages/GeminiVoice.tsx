@@ -125,29 +125,30 @@ export default function GeminiVoice() {
         });
       }
 
-      // Use clone() to avoid "body stream already read" errors
-      let textBody: string;
+      // Read response safely: prefer json(), fallback to text
+      let data: any = null;
       try {
-        textBody = await res.clone().text();
-      } catch (e) {
-        // if clone/text fails, try reading once
-        textBody = await res.text();
+        data = await res.json();
+      } catch (jsonErr) {
+        try {
+          const txt = await res.text();
+          try {
+            data = JSON.parse(txt);
+          } catch (e) {
+            data = { raw: txt };
+          }
+        } catch (textErr) {
+          // If both fail, rethrow original error
+          throw new Error(`Failed to read response body: ${String(jsonErr || textErr)}`);
+        }
       }
 
       if (!res.ok) {
-        // try to parse JSON body for useful details
-        let details = textBody;
-        try {
-          const parsed = JSON.parse(textBody);
-          details = parsed.error || parsed.details || parsed.message || JSON.stringify(parsed);
-        } catch (e) {
-          /* keep textBody */
-        }
+        let details = data?.error || data?.details || data?.message || JSON.stringify(data);
         throw new Error(`Status ${res.status}: ${details}`);
       }
 
-      const data = textBody ? JSON.parse(textBody) : {};
-      const text = data?.response || data?.bot || data?.message || "";
+      const text = data?.response || data?.bot || data?.message || (typeof data === 'string' ? data : '');
       if (!text) {
         addMessage("Sorry, no response from the AI.", "gemini");
         speakText("Sorry, no response from the AI.");
