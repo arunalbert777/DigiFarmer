@@ -207,9 +207,11 @@ export default function AIChat() {
       // Fallback to non-streaming POST
       try {
         // try local POST then Netlify functions POST
+        const origin = typeof window !== "undefined" ? window.location.origin : "";
         const postEndpoints = [
-          "/api/gemini-chat",
-          "/.netlify/functions/api/gemini-chat",
+          `${origin}/api/gemini-chat`,
+          `/api/gemini-chat`,
+          `/.netlify/functions/api/gemini-chat`,
         ];
         let successful = false;
         for (const endpoint of postEndpoints) {
