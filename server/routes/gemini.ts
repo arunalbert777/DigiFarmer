@@ -2,20 +2,20 @@ import { RequestHandler } from "express";
 
 export const handleGeminiChat: RequestHandler = async (req, res) => {
   try {
+    // Log incoming request for debugging
+    console.log("[gemini] Incoming request headers:", req.headers);
+    console.log("[gemini] Incoming request body:", req.body);
+
     const { message } = req.body;
     if (!message || typeof message !== "string") {
-      return res
-        .status(400)
-        .json({ error: "Missing 'message' in request body" });
+      return res.status(400).json({ error: "Missing 'message' in request body", received: req.body });
     }
 
     const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
     const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
     if (!apiKey) {
-      return res
-        .status(500)
-        .json({ error: "Server misconfiguration: missing API key" });
+      return res.status(500).json({ error: "Server misconfiguration: missing API key" });
     }
 
     // Google Generative Language API endpoint (v1beta generateContent)
