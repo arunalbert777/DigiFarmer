@@ -31,6 +31,7 @@ function App() {
                   element={<DiseaseDetection />}
                 />
                 <Route path="/ai-chat" element={<AIChat />} />
+                <Route path="/gemini-voice" element={<GeminiVoice />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/experts" element={<ExpertConsultation />} />
                 <Route path="/news" element={<News />} />
