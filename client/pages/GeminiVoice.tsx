@@ -152,30 +152,26 @@ export default function GeminiVoice() {
         }
       }
 
-      // Read response text exactly once and parse (use clone() to avoid "body stream already read")
+      // Read response text exactly once and parse.
+      // Avoid using res.clone(), which can throw in some environments when the underlying stream isn't clonable.
       let rawText = "";
       try {
-        // Prefer reading from a clone so we don't consume the original body unexpectedly
-        if ((res as any).bodyUsed) {
-          // If body is already used, try reading from a clone; if that fails, retry the fallback endpoint once
+        try {
+          rawText = await res.text();
+        } catch (readErr) {
+          console.warn("[gemini] reading response.text() failed, attempting fallback fetch", readErr);
+          // Try to re-fetch fallback once and read its body
           try {
-            rawText = await (res.clone ? res.clone().text() : res.text());
-          } catch (errClone) {
-            console.warn("[gemini] response body already used and clone failed; retrying fallback", errClone);
-            try {
-              const retryRes = await fetch(fallback, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-              });
-              res = retryRes as Response;
-              rawText = await (retryRes.clone ? retryRes.clone().text() : retryRes.text());
-            } catch (retryErr) {
-              throw retryErr;
-            }
+            const retryRes = await fetch(fallback, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            res = retryRes as Response;
+            rawText = await retryRes.text();
+          } catch (retryErr) {
+            throw retryErr;
           }
-        } else {
-          rawText = await (res.clone ? res.clone().text() : res.text());
         }
       } catch (e) {
         throw new Error(`Failed to read response body: ${String(e)}`);
