@@ -38,6 +38,11 @@ const getNavItems = (t: (key: string) => string) => [
     icon: Bot,
   },
   {
+    name: t("nav.geminiVoice"),
+    path: "/gemini-voice",
+    icon: Volume,
+  },
+  {
     name: t("nav.community"),
     path: "/community",
     icon: Users,
