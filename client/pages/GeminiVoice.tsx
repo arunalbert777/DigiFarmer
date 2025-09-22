@@ -103,21 +103,43 @@ export default function GeminiVoice() {
 
   async function getGeminiResponse(prompt: string) {
     try {
-      const apiPath = typeof window !== 'undefined' ? `${window.location.origin}/.netlify/functions/gemini-chat` : "/api/gemini-chat";
+      const primary = typeof window !== 'undefined' ? `${window.location.origin}/.netlify/functions/gemini-chat` : `/api/gemini-chat`;
+      const fallback = `/api/gemini-chat`;
       const payload = { prompt: prompt };
-      const res = await fetchWithRetry(apiPath, {
+
+      // Try primary endpoint first, fallback on 404
+      let res = await fetchWithRetry(primary, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+      }).catch((e) => {
+        // network error, we'll rethrow later if fallback also fails
+        return null as any;
       });
 
-      const textBody = await res.text();
+      if (!res || res.status === 404) {
+        res = await fetchWithRetry(fallback, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      // Use clone() to avoid "body stream already read" errors
+      let textBody: string;
+      try {
+        textBody = await res.clone().text();
+      } catch (e) {
+        // if clone/text fails, try reading once
+        textBody = await res.text();
+      }
+
       if (!res.ok) {
         // try to parse JSON body for useful details
         let details = textBody;
         try {
           const parsed = JSON.parse(textBody);
-          details = parsed.error || parsed.details || JSON.stringify(parsed);
+          details = parsed.error || parsed.details || parsed.message || JSON.stringify(parsed);
         } catch (e) {
           /* keep textBody */
         }
@@ -125,7 +147,7 @@ export default function GeminiVoice() {
       }
 
       const data = textBody ? JSON.parse(textBody) : {};
-      const text = data?.bot || "";
+      const text = data?.response || data?.bot || data?.message || "";
       if (!text) {
         addMessage("Sorry, no response from the AI.", "gemini");
         speakText("Sorry, no response from the AI.");
