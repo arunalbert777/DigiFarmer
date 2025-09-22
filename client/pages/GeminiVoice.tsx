@@ -102,8 +102,21 @@ export default function GeminiVoice() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      const data = await res.json();
+
+      const textBody = await res.text();
+      if (!res.ok) {
+        // try to parse JSON body for useful details
+        let details = textBody;
+        try {
+          const parsed = JSON.parse(textBody);
+          details = parsed.error || parsed.details || JSON.stringify(parsed);
+        } catch (e) {
+          /* keep textBody */
+        }
+        throw new Error(`Status ${res.status}: ${details}`);
+      }
+
+      const data = textBody ? JSON.parse(textBody) : {};
       const text = data?.bot || "";
       if (!text) {
         addMessage("Sorry, no response from the AI.", "gemini");
