@@ -124,25 +124,73 @@ export default function GeminiVoice() {
     let finalRes: Response | null = null;
     let bodyText: string | null = null;
 
+    const opts = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    } as RequestInit;
+
     for (const url of endpoints) {
       try {
-        const r = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+        const r = await fetch(url, { ...opts, cache: "no-store" });
 
-        // Try to read body exactly once
+        // If opaque (no-access), skip
+        if ((r as any).type === "opaque") {
+          lastErr = new Error("Opaque response (CORS) from " + url);
+          console.warn("[gemini] opaque response from", url);
+          continue;
+        }
+
+        // Read body handling bodyUsed / clone / retry
         try {
-          bodyText = await r.text();
-          finalRes = r;
-          break; // success
-        } catch (readErr) {
-          console.warn(`[gemini] failed to read body from ${url}:`, readErr, "responseType=", (r as any).type, "status=", r.status);
-          lastErr = readErr;
-          // If response is opaque (CORS), skip to next endpoint
-          if ((r as any).type === "opaque") continue;
-          // otherwise try next endpoint
+          if ((r as any).bodyUsed) {
+            // try clone first
+            try {
+              bodyText = await (r.clone ? r.clone().text() : Promise.reject(new Error("no clone")));
+              finalRes = r;
+              break;
+            } catch (cloneErr) {
+              console.warn(`[gemini] clone failed for ${url}:`, cloneErr);
+              // retry fetching fresh copy
+              try {
+                const retryUrl = url + (url.includes("?") ? "&" : "?") + "_retry=1";
+                const rr = await fetch(retryUrl, { ...opts, cache: "no-store" });
+                if ((rr as any).type === "opaque") {
+                  lastErr = new Error("Opaque on retry " + retryUrl);
+                  continue;
+                }
+                bodyText = await rr.text();
+                finalRes = rr;
+                break;
+              } catch (retryErr) {
+                console.warn(`[gemini] retry fetch failed for ${url}:`, retryErr);
+                lastErr = retryErr;
+                continue;
+              }
+            }
+          } else {
+            // body not used, read normally
+            try {
+              bodyText = await r.text();
+              finalRes = r;
+              break;
+            } catch (readErr) {
+              console.warn(`[gemini] read failed for ${url}:`, readErr);
+              // try clone as last resort
+              try {
+                bodyText = await (r.clone ? r.clone().text() : Promise.reject(new Error("no clone")));
+                finalRes = r;
+                break;
+              } catch (cloneErr2) {
+                console.warn(`[gemini] clone fallback failed for ${url}:`, cloneErr2);
+                lastErr = cloneErr2;
+                continue;
+              }
+            }
+          }
+        } catch (innerErr) {
+          console.warn(`[gemini] unexpected error reading body from ${url}:`, innerErr);
+          lastErr = innerErr;
           continue;
         }
       } catch (fetchErr) {
