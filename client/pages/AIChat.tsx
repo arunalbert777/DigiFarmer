@@ -25,6 +25,7 @@ import {
   Sun,
   Cloud,
   Thermometer,
+  Volume,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
