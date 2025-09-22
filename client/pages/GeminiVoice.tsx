@@ -210,6 +210,24 @@ export default function GeminiVoice() {
     }
   };
 
+  // Send text messages from the input box
+  async function sendTextMessage(message: string) {
+    if (!message || !message.trim()) return;
+    addMessage(message, "user");
+    setStatus("Thinking...");
+    // show loader
+    const loaderEl = document.getElementById("loader");
+    if (loaderEl) loaderEl.style.display = "block";
+    try {
+      await getGeminiResponse(message);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      if (loaderEl) loaderEl.style.display = "none";
+      setStatus("Click the mic to start speaking.");
+    }
+  };
+
   return (
     <div className="p-6 flex justify-center">
       <div className="container w-full flex flex-col h-[80vh]">
