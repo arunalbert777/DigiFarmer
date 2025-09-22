@@ -59,22 +59,18 @@ exports.handler = async function (event, context) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
     const payload = {
-      // generateContent shape
+      // generateContent expected shape: contents -> parts -> text
       // See: https://developers.generativeai.google/reference/rest/v1beta/models/generateContent
-      // We send contents -> parts -> text
       contents: [
         {
-          content: {
-            // Some endpoints expect content.parts, some expect parts directly. Provide common shape.
-            parts: [
-              {
-                text: prompt,
-              },
-            ],
-          },
+          parts: [
+            {
+              text: prompt,
+            },
+          ],
         },
       ],
-      // Optionally you can tune safety, temperature, etc in other fields (not included here)
+      // Optionally include other parameters like safetySettings, temperature, etc.
     };
 
     // Call upstream API
