@@ -11,6 +11,7 @@ export default {
     contractFarming: "Contract Farming",
     verticalFarming: "Vertical Farming",
     developers: "Developers",
+    geminiVoice: "Gemini Voice",
   },
 
   // Common
