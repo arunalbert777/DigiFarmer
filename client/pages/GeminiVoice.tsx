@@ -118,7 +118,7 @@ export default function GeminiVoice() {
       const payload = { prompt: prompt };
 
       // Try primary endpoint first, fallback on 404
-      let res = null as Response | null;
+      let res: Response | null = null;
       try {
         res = await fetch(primary, {
           method: "POST",
@@ -140,113 +140,69 @@ export default function GeminiVoice() {
 
       if (!res) throw new Error("Network error calling Gemini endpoints");
 
-      // If body was already consumed (rare), try to re-fetch fallback endpoint
-      try {
-        // Debug info
-        console.debug(
-          "[gemini] response bodyUsed",
-          res.bodyUsed,
-          "status",
-          res.status,
-        );
-      } catch (e) {
-        console.debug("[gemini] response inspect failed", e);
-      }
+      // Read the response body exactly once into a variable
+      const raw = await res.text().catch((err) => {
+        console.warn("[gemini] failed to read body, retrying fallback", err);
+        return null as string | null;
+      });
 
-      if ((res as any).bodyUsed) {
-        // Attempt to re-fetch fallback endpoint once
+      // If we couldn't read primary body, try fallback once
+      let bodyText = raw;
+      if (bodyText === null) {
         try {
-          console.warn(
-            "[gemini] response body already used, retrying fallback",
-          );
-          res = await fetch(fallback, {
+          const retry = await fetch(fallback, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-        } catch (e) {
-          throw new Error(
-            "Response body already consumed and fallback retry failed",
-          );
+          bodyText = await retry.text();
+          res = retry;
+        } catch (err) {
+          throw new Error("Failed to read response body from server");
         }
       }
 
-      // Read response text exactly once and parse.
-      // Avoid using res.clone(), which can throw in some environments when the underlying stream isn't clonable.
-      let rawText = "";
+      // Parse body once
+      let data: any = {};
       try {
-        try {
-          rawText = await res.text();
-        } catch (readErr) {
-          console.warn(
-            "[gemini] reading response.text() failed, attempting fallback fetch",
-            readErr,
-          );
-          // Try to re-fetch fallback once and read its body
-          try {
-            const retryRes = await fetch(fallback, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            res = retryRes as Response;
-            rawText = await retryRes.text();
-          } catch (retryErr) {
-            throw retryErr;
-          }
-        }
+        data = bodyText ? JSON.parse(bodyText) : {};
       } catch (e) {
-        throw new Error(`Failed to read response body: ${String(e)}`);
+        data = { raw: bodyText };
       }
 
-      let data: any = null;
-      try {
-        data = rawText ? JSON.parse(rawText) : {};
-      } catch (e) {
-        data = { raw: rawText };
-      }
-
+      // If status not ok, surface upstream details
       if (!res.ok) {
-        let details = data?.error || data?.details || data?.message || rawText;
-        throw new Error(`Status ${res.status}: ${details}`);
+        const details = data?.error || data?.details || data?.message || bodyText;
+        throw new Error(`Status ${res.status}: ${JSON.stringify(details)}`);
       }
 
-      // Robust extraction: handle netlify proxy ({response}) and raw Gemini API ({candidates})
-      const extractClientText = (obj: any) => {
-        try {
-          if (!obj) return null;
-          if (typeof obj === "string") return obj;
-          if (typeof obj.response === "string" && obj.response.trim()) return obj.response;
-          if (typeof obj.bot === "string" && obj.bot.trim()) return obj.bot;
-          // direct Gemini API shape
-          if (Array.isArray(obj.candidates) && obj.candidates.length > 0) {
-            const c0 = obj.candidates[0];
-            const parts = c0?.content?.parts || c0?.content?.[0]?.parts || c0?.content?.parts;
-            if (Array.isArray(parts) && parts.length > 0) return parts.map((p: any) => p?.text || p?.raw || "").join(" ").trim();
-            // sometimes content is array with content[0].parts
-            const cont = c0?.content || obj?.content || obj?.outputs?.[0]?.content;
-            if (Array.isArray(cont)) {
-              for (const item of cont) {
-                const p = item?.parts || item?.content?.[0]?.parts;
-                if (Array.isArray(p)) return p.map((x: any) => x?.text || x?.raw || "").join(" ").trim();
-              }
-            }
-          }
-          // fallback fields
-          if (obj?.raw && typeof obj.raw === "string") return obj.raw;
-          if (obj?.message && typeof obj.message === "string") return obj.message;
-          return JSON.stringify(obj);
-        } catch (e) {
-          return null;
+      // Extract response text robustly (proxy and Gemini shapes)
+      const extract = (obj: any) => {
+        if (!obj) return null;
+        if (typeof obj === "string") return obj;
+        if (typeof obj.response === "string") return obj.response;
+        if (typeof obj.bot === "string") return obj.bot;
+        if (Array.isArray(obj.candidates) && obj.candidates.length) {
+          const c0 = obj.candidates[0];
+          // common shapes
+          const parts = c0?.content?.parts || c0?.content?.[0]?.parts || c0?.content?.[0]?.content?.parts;
+          if (Array.isArray(parts) && parts.length) return parts.map((p: any) => p?.text || p?.raw || "").join(" ").trim();
+          // fallback: candidate content text
+          const maybeText = c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text;
+          if (maybeText) return maybeText;
         }
+        if (obj?.bot) return obj.bot;
+        if (obj?.raw && typeof obj.raw === "string") return obj.raw;
+        return null;
       };
 
-      const text = extractClientText(data);
+      const text = extract(data);
       if (!text) {
         addMessage("Sorry, no response from the AI.", "gemini");
         speakText("Sorry, no response from the AI.");
         return;
       }
+
       addMessage(text, "gemini");
       speakText(text);
     } catch (e: any) {
