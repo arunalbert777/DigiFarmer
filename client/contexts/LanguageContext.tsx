@@ -113,7 +113,13 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
   // Save language preference to localStorage
   useEffect(() => {
-    localStorage.setItem("preferred-language", language);
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        localStorage.setItem("preferred-language", language);
+      }
+    } catch (e) {
+      // ignore
+    }
   }, [language]);
 
   const t = (key: string, params?: Record<string, string | number>): string => {
