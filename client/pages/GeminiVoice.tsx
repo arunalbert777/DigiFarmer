@@ -112,10 +112,14 @@ export default function GeminiVoice() {
     const endpoints = [] as string[];
     // Relative to current origin (useful when hosted on Netlify)
     if (typeof window !== "undefined") {
-      endpoints.push(`${window.location.origin}/.netlify/functions/gemini-chat`);
+      endpoints.push(
+        `${window.location.origin}/.netlify/functions/gemini-chat`,
+      );
     }
     // Explicit Netlify site (production deploy)
-    endpoints.push(`https://digifarmer-ai-platform.netlify.app/.netlify/functions/gemini-chat`);
+    endpoints.push(
+      `https://digifarmer-ai-platform.netlify.app/.netlify/functions/gemini-chat`,
+    );
     // Local/dev server route
     endpoints.push(`/api/gemini-chat`);
 
@@ -146,15 +150,21 @@ export default function GeminiVoice() {
           if ((r as any).bodyUsed) {
             // try clone first
             try {
-              bodyText = await (r.clone ? r.clone().text() : Promise.reject(new Error("no clone")));
+              bodyText = await (r.clone
+                ? r.clone().text()
+                : Promise.reject(new Error("no clone")));
               finalRes = r;
               break;
             } catch (cloneErr) {
               console.warn(`[gemini] clone failed for ${url}:`, cloneErr);
               // retry fetching fresh copy
               try {
-                const retryUrl = url + (url.includes("?") ? "&" : "?") + "_retry=1";
-                const rr = await fetch(retryUrl, { ...opts, cache: "no-store" });
+                const retryUrl =
+                  url + (url.includes("?") ? "&" : "?") + "_retry=1";
+                const rr = await fetch(retryUrl, {
+                  ...opts,
+                  cache: "no-store",
+                });
                 if ((rr as any).type === "opaque") {
                   lastErr = new Error("Opaque on retry " + retryUrl);
                   continue;
@@ -163,7 +173,10 @@ export default function GeminiVoice() {
                 finalRes = rr;
                 break;
               } catch (retryErr) {
-                console.warn(`[gemini] retry fetch failed for ${url}:`, retryErr);
+                console.warn(
+                  `[gemini] retry fetch failed for ${url}:`,
+                  retryErr,
+                );
                 lastErr = retryErr;
                 continue;
               }
@@ -178,18 +191,26 @@ export default function GeminiVoice() {
               console.warn(`[gemini] read failed for ${url}:`, readErr);
               // try clone as last resort
               try {
-                bodyText = await (r.clone ? r.clone().text() : Promise.reject(new Error("no clone")));
+                bodyText = await (r.clone
+                  ? r.clone().text()
+                  : Promise.reject(new Error("no clone")));
                 finalRes = r;
                 break;
               } catch (cloneErr2) {
-                console.warn(`[gemini] clone fallback failed for ${url}:`, cloneErr2);
+                console.warn(
+                  `[gemini] clone fallback failed for ${url}:`,
+                  cloneErr2,
+                );
                 lastErr = cloneErr2;
                 continue;
               }
             }
           }
         } catch (innerErr) {
-          console.warn(`[gemini] unexpected error reading body from ${url}:`, innerErr);
+          console.warn(
+            `[gemini] unexpected error reading body from ${url}:`,
+            innerErr,
+          );
           lastErr = innerErr;
           continue;
         }
@@ -226,9 +247,17 @@ export default function GeminiVoice() {
       if (typeof obj.bot === "string") return obj.bot;
       if (Array.isArray(obj.candidates) && obj.candidates.length) {
         const c0 = obj.candidates[0];
-        const parts = c0?.content?.parts || c0?.content?.[0]?.parts || c0?.content?.[0]?.content?.parts;
-        if (Array.isArray(parts) && parts.length) return parts.map((p: any) => p?.text || p?.raw || "").join(" ").trim();
-        const maybeText = c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text;
+        const parts =
+          c0?.content?.parts ||
+          c0?.content?.[0]?.parts ||
+          c0?.content?.[0]?.content?.parts;
+        if (Array.isArray(parts) && parts.length)
+          return parts
+            .map((p: any) => p?.text || p?.raw || "")
+            .join(" ")
+            .trim();
+        const maybeText =
+          c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text;
         if (maybeText) return maybeText;
       }
       if (obj?.raw && typeof obj.raw === "string") return obj.raw;
