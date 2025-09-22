@@ -19,7 +19,7 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
     }
 
     // Google Generative Language API endpoint (v1beta generateContent)
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
     const payload = {
       contents: [
@@ -33,11 +33,12 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
       ],
     };
 
+    console.log("[gemini] Calling Generative API", { url, model });
+
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-goog-api-key": apiKey,
       },
       body: JSON.stringify(payload),
     });

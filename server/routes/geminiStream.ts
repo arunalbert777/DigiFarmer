@@ -37,6 +37,8 @@ export const handleGeminiChatStream: RequestHandler = async (req, res) => {
       maxOutputTokens: 512,
     };
 
+    console.log("[geminiStream] Calling upstream", { url, model });
+
     const upstream = await fetch(url, {
       method: "POST",
       headers: {
