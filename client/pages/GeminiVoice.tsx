@@ -109,107 +109,94 @@ export default function GeminiVoice() {
   }
 
   async function getGeminiResponse(prompt: string) {
-    try {
-      const primary =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/.netlify/functions/gemini-chat`
-          : `/api/gemini-chat`;
-      const fallback = `/api/gemini-chat`;
-      const payload = { prompt: prompt };
-
-      // Try primary endpoint first, fallback on 404
-      let res: Response | null = null;
-      try {
-        res = await fetch(primary, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      } catch (e) {
-        res = null;
-      }
-
-      if (!res || res.status === 404) {
-        // fallback
-        res = await fetch(fallback, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      }
-
-      if (!res) throw new Error("Network error calling Gemini endpoints");
-
-      // Read the response body exactly once into a variable
-      const raw = await res.text().catch((err) => {
-        console.warn("[gemini] failed to read body, retrying fallback", err);
-        return null as string | null;
-      });
-
-      // If we couldn't read primary body, try fallback once
-      let bodyText = raw;
-      if (bodyText === null) {
-        try {
-          const retry = await fetch(fallback, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          bodyText = await retry.text();
-          res = retry;
-        } catch (err) {
-          throw new Error("Failed to read response body from server");
-        }
-      }
-
-      // Parse body once
-      let data: any = {};
-      try {
-        data = bodyText ? JSON.parse(bodyText) : {};
-      } catch (e) {
-        data = { raw: bodyText };
-      }
-
-      // If status not ok, surface upstream details
-      if (!res.ok) {
-        const details = data?.error || data?.details || data?.message || bodyText;
-        throw new Error(`Status ${res.status}: ${JSON.stringify(details)}`);
-      }
-
-      // Extract response text robustly (proxy and Gemini shapes)
-      const extract = (obj: any) => {
-        if (!obj) return null;
-        if (typeof obj === "string") return obj;
-        if (typeof obj.response === "string") return obj.response;
-        if (typeof obj.bot === "string") return obj.bot;
-        if (Array.isArray(obj.candidates) && obj.candidates.length) {
-          const c0 = obj.candidates[0];
-          // common shapes
-          const parts = c0?.content?.parts || c0?.content?.[0]?.parts || c0?.content?.[0]?.content?.parts;
-          if (Array.isArray(parts) && parts.length) return parts.map((p: any) => p?.text || p?.raw || "").join(" ").trim();
-          // fallback: candidate content text
-          const maybeText = c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text;
-          if (maybeText) return maybeText;
-        }
-        if (obj?.bot) return obj.bot;
-        if (obj?.raw && typeof obj.raw === "string") return obj.raw;
-        return null;
-      };
-
-      const text = extract(data);
-      if (!text) {
-        addMessage("Sorry, no response from the AI.", "gemini");
-        speakText("Sorry, no response from the AI.");
-        return;
-      }
-
-      addMessage(text, "gemini");
-      speakText(text);
-    } catch (e: any) {
-      console.error("Error calling Gemini:", e);
-      addMessage(`An error occurred: ${e.message || e}`, "gemini");
-      speakText("An error occurred while processing your request.");
+    const endpoints = [] as string[];
+    // Relative to current origin (useful when hosted on Netlify)
+    if (typeof window !== "undefined") {
+      endpoints.push(`${window.location.origin}/.netlify/functions/gemini-chat`);
     }
+    // Explicit Netlify site (production deploy)
+    endpoints.push(`https://digifarmer-ai-platform.netlify.app/.netlify/functions/gemini-chat`);
+    // Local/dev server route
+    endpoints.push(`/api/gemini-chat`);
+
+    const payload = { prompt };
+    let lastErr: any = null;
+    let finalRes: Response | null = null;
+    let bodyText: string | null = null;
+
+    for (const url of endpoints) {
+      try {
+        const r = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        // Try to read body exactly once
+        try {
+          bodyText = await r.text();
+          finalRes = r;
+          break; // success
+        } catch (readErr) {
+          console.warn(`[gemini] failed to read body from ${url}:`, readErr, "responseType=", (r as any).type, "status=", r.status);
+          lastErr = readErr;
+          // If response is opaque (CORS), skip to next endpoint
+          if ((r as any).type === "opaque") continue;
+          // otherwise try next endpoint
+          continue;
+        }
+      } catch (fetchErr) {
+        console.warn(`[gemini] fetch to ${url} failed:`, fetchErr);
+        lastErr = fetchErr;
+        continue;
+      }
+    }
+
+    if (!finalRes) {
+      const msg = `Network error calling Gemini endpoints. Last error: ${String(lastErr)}`;
+      console.error(msg);
+      throw new Error(msg);
+    }
+
+    // Parse body once
+    let data: any = {};
+    try {
+      data = bodyText ? JSON.parse(bodyText) : {};
+    } catch (e) {
+      data = { raw: bodyText };
+    }
+
+    if (!finalRes.ok) {
+      const details = data?.error || data?.details || data?.message || bodyText;
+      throw new Error(`Status ${finalRes.status}: ${JSON.stringify(details)}`);
+    }
+
+    const extract = (obj: any) => {
+      if (!obj) return null;
+      if (typeof obj === "string") return obj;
+      if (typeof obj.response === "string") return obj.response;
+      if (typeof obj.bot === "string") return obj.bot;
+      if (Array.isArray(obj.candidates) && obj.candidates.length) {
+        const c0 = obj.candidates[0];
+        const parts = c0?.content?.parts || c0?.content?.[0]?.parts || c0?.content?.[0]?.content?.parts;
+        if (Array.isArray(parts) && parts.length) return parts.map((p: any) => p?.text || p?.raw || "").join(" ").trim();
+        const maybeText = c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text;
+        if (maybeText) return maybeText;
+      }
+      if (obj?.raw && typeof obj.raw === "string") return obj.raw;
+      if (obj?.message && typeof obj.message === "string") return obj.message;
+      return null;
+    };
+
+    const text = extract(data);
+    if (!text) {
+      addMessage("Sorry, no response from the AI.", "gemini");
+      speakText("Sorry, no response from the AI.");
+      return;
+    }
+
+    addMessage(text, "gemini");
+    speakText(text);
   }
 
   function speakText(text: string) {
