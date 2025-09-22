@@ -108,47 +108,49 @@ export default function GeminiVoice() {
       const payload = { prompt: prompt };
 
       // Try primary endpoint first, fallback on 404
-      let res = await fetchWithRetry(primary, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }).catch((e) => {
-        // network error, we'll rethrow later if fallback also fails
-        return null as any;
-      });
+      let res = null as Response | null;
+      try {
+        res = await fetch(primary, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } catch (e) {
+        res = null;
+      }
 
       if (!res || res.status === 404) {
-        res = await fetchWithRetry(fallback, {
+        // fallback
+        res = await fetch(fallback, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
       }
 
-      // Read response safely: prefer json(), fallback to text
+      if (!res) throw new Error("Network error calling Gemini endpoints");
+
+      // Read response text exactly once and parse
+      let rawText = "";
+      try {
+        rawText = await res.text();
+      } catch (e) {
+        throw new Error(`Failed to read response body: ${String(e)}`);
+      }
+
       let data: any = null;
       try {
-        data = await res.json();
-      } catch (jsonErr) {
-        try {
-          const txt = await res.text();
-          try {
-            data = JSON.parse(txt);
-          } catch (e) {
-            data = { raw: txt };
-          }
-        } catch (textErr) {
-          // If both fail, rethrow original error
-          throw new Error(`Failed to read response body: ${String(jsonErr || textErr)}`);
-        }
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch (e) {
+        data = { raw: rawText };
       }
 
       if (!res.ok) {
-        let details = data?.error || data?.details || data?.message || JSON.stringify(data);
+        let details = data?.error || data?.details || data?.message || rawText;
         throw new Error(`Status ${res.status}: ${details}`);
       }
 
-      const text = data?.response || data?.bot || data?.message || (typeof data === 'string' ? data : '');
+      const text = data?.response || data?.bot || data?.message || (typeof data === 'string' ? data : data?.raw || '');
       if (!text) {
         addMessage("Sorry, no response from the AI.", "gemini");
         speakText("Sorry, no response from the AI.");
