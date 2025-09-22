@@ -2,13 +2,18 @@
 // Securely proxy requests to Google Generative Language API (Gemini)
 // Reads API key from process.env.GOOGLE_API_KEY
 
+const { GoogleGenAI } = require('@google/genai');
+
+// Netlify Function: netlify/functions/gemini-chat.js
+// Uses @google/genai SDK and reads API key from process.env.GOOGLE_API_KEY or process.env.GEMINI_API_KEY
+
 exports.handler = async function (event, context) {
   try {
-    if (event.httpMethod !== "POST") {
+    if (event.httpMethod !== 'POST') {
       return {
         statusCode: 405,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "Method Not Allowed" }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Method Not Allowed' }),
       };
     }
 
@@ -18,17 +23,16 @@ exports.handler = async function (event, context) {
     } catch (e) {
       return {
         statusCode: 400,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "Invalid JSON body" }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Invalid JSON body' }),
       };
     }
 
     // Accept multiple shapes: prompt, message, input.text, contents
     let prompt = undefined;
-    if (typeof body.prompt === "string") prompt = body.prompt;
-    else if (typeof body.message === "string") prompt = body.message;
-    else if (body.input && typeof body.input.text === "string")
-      prompt = body.input.text;
+    if (typeof body.prompt === 'string') prompt = body.prompt;
+    else if (typeof body.message === 'string') prompt = body.message;
+    else if (body.input && typeof body.input.text === 'string') prompt = body.input.text;
     else if (body.contents && Array.isArray(body.contents)) {
       try {
         const first = body.contents[0];
@@ -38,34 +42,31 @@ exports.handler = async function (event, context) {
       }
     }
 
-    if (!prompt || typeof prompt !== "string") {
+    if (!prompt || typeof prompt !== 'string') {
       return {
         statusCode: 400,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: "Missing 'prompt' or 'message' in request body",
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: "Missing 'prompt' or 'message' in request body" }),
       };
     }
 
-    const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return {
         statusCode: 500,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: "Server misconfiguration: missing API key",
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Server misconfiguration: missing API key' }),
       };
     }
 
-    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-preview-05-20"; // or fallback to gemini-2.0-flash
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash-preview-05-20';
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    // Initialize client
+    const client = new GoogleGenAI({ apiKey });
 
-    const payload = {
-      // generateContent expected shape: contents -> parts -> text
-      // See: https://developers.generativeai.google/reference/rest/v1beta/models/generateContent
+    // Build request shape for generateContent
+    const request = {
+      model,
       contents: [
         {
           parts: [
@@ -75,108 +76,61 @@ exports.handler = async function (event, context) {
           ],
         },
       ],
-      // Optionally include other parameters like safetySettings, temperature, etc.
     };
 
-    // Call upstream API
-    const upstream = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const text = await upstream.text();
-    if (!upstream.ok) {
-      // return upstream body if available
-      let details = text;
-      try {
-        const parsed = JSON.parse(text);
-        details = parsed.error || parsed.details || JSON.stringify(parsed);
-      } catch (e) {
-        // keep text
-      }
+    // Call SDK
+    let resp;
+    try {
+      resp = await client.models.generateContent(request);
+    } catch (upErr) {
+      console.error('[netlify/gemini-chat] SDK error:', String(upErr));
       return {
         statusCode: 502,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "Upstream API error", details }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Upstream API error', details: String(upErr) }),
       };
     }
 
-    let data = {};
-    try {
-      data = text ? JSON.parse(text) : {};
-    } catch (e) {
-      // non-json response
-      data = { raw: text };
-    }
-
-    // Extract human-friendly text from common response shapes
+    // Extract text from SDK response
     const extractText = (obj) => {
       try {
-        // generateContent -> candidates[].content[].parts[].text
-        const parts = obj?.candidates?.[0]?.content?.[0]?.parts;
-        if (Array.isArray(parts))
-          return parts
-            .map((p) => p?.text || p?.raw || "")
-            .join(" ")
-            .trim();
-
-        // outputs -> content -> parts
-        const outputs = obj?.outputs || obj?.output || obj?.results;
-        if (Array.isArray(outputs)) {
-          for (const out of outputs) {
-            const cont = out?.content || out?.output || out;
-            if (Array.isArray(cont)) {
-              for (const c of cont) {
-                const p = c?.parts || c?.content || c;
-                if (Array.isArray(p))
-                  return p
-                    .map((x) => x?.text || x?.raw || "")
-                    .join(" ")
-                    .trim();
-              }
-            }
-          }
+        if (!obj) return null;
+        // If SDK returns text property
+        if (typeof obj.text === 'string' && obj.text.trim()) return obj.text.trim();
+        // candidates shape
+        const candidates = obj.candidates || obj?.result?.candidates || obj?.candidates;
+        if (Array.isArray(candidates) && candidates.length) {
+          const c0 = candidates[0];
+          const parts = c0?.content?.parts || c0?.content?.[0]?.parts || c0?.content?.[0]?.content?.parts;
+          if (Array.isArray(parts) && parts.length) return parts.map((p) => p?.text || p?.raw || '').join(' ').trim();
+          const maybe = c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text || c0?.text;
+          if (maybe) return maybe;
         }
-
-        // candidates[].content[0].text
-        const legacy =
-          obj?.candidates?.[0]?.content?.[0]?.text ||
-          obj?.candidates?.[0]?.content?.[0]?.raw;
-        if (legacy && typeof legacy === "string") return legacy;
-
-        // if raw text field exists
-        if (typeof obj?.text === "string") return obj.text;
-
-        // fallback stringify
+        // fallback
+        if (typeof obj === 'string') return obj;
+        if (obj?.raw && typeof obj.raw === 'string') return obj.raw;
         return JSON.stringify(obj);
       } catch (e) {
         return null;
       }
     };
 
-    const botText = extractText(data) || "";
+    const botText = extractText(resp) || extractText(resp?.result) || '';
 
     return {
       statusCode: 200,
       headers: {
-        "Content-Type": "application/json",
-        // allow the same origin; adjust as needed
-        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       },
-      body: JSON.stringify({ response: botText, raw: data }),
+      body: JSON.stringify({ response: botText, raw: resp }),
     };
   } catch (err) {
-    console.error("[netlify/gemini-chat] error:", err);
+    console.error('[netlify/gemini-chat] error:', err);
     return {
       statusCode: 500,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: "Internal server error",
-        details: String(err),
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Internal server error', details: String(err) }),
     };
   }
 };
