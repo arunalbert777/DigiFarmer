@@ -131,13 +131,58 @@ exports.handler = async function (event, context) {
       };
     }
 
-    // Audio generation not implemented server-side in this function.
+    // Audio generation using Google Cloud Text-to-Speech (REST)
     if (type === "audio") {
-      return {
-        statusCode: 501,
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-        body: JSON.stringify({ error: "Audio generation not implemented", message: "Use client-side SpeechSynthesis for playback or connect a dedicated TTS provider. If you want server-side TTS, I can add a TTS implementation using a supported provider." }),
-      };
+      try {
+        const ttsUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
+        const languageCode = lang === "kn" ? "kn-IN" : "en-US";
+        const voiceName = lang === "kn" ? "kn-IN-Wavenet-A" : "en-US-Wavenet-D";
+
+        const ttsRequest = {
+          input: { text: text },
+          voice: { languageCode, name: voiceName },
+          audioConfig: { audioEncoding: "LINEAR16", sampleRateHertz: 24000 },
+        };
+
+        const ttsResp = await fetch(ttsUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(ttsRequest),
+        });
+
+        if (!ttsResp.ok) {
+          const details = await ttsResp.text();
+          console.error("[gemini-proxy] TTS upstream error:", details);
+          return {
+            statusCode: 502,
+            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+            body: JSON.stringify({ error: "TTS upstream error", details }),
+          };
+        }
+
+        const ttsJson = await ttsResp.json();
+        const audioContent = ttsJson?.audioContent;
+        if (!audioContent) {
+          return {
+            statusCode: 502,
+            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+            body: JSON.stringify({ error: "TTS upstream returned no audio", raw: ttsJson }),
+          };
+        }
+
+        return {
+          statusCode: 200,
+          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+          body: JSON.stringify({ audioData: audioContent, raw: ttsJson }),
+        };
+      } catch (e) {
+        console.error("[gemini-proxy] TTS error:", e);
+        return {
+          statusCode: 500,
+          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+          body: JSON.stringify({ error: "TTS error", details: String(e) }),
+        };
+      }
     }
 
     return {
