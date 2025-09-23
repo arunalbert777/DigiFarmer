@@ -358,11 +358,10 @@ export default function AIChat() {
               body: JSON.stringify({ message: currentInput }),
             });
 
+            const respText = await res.text().catch(() => null);
             if (!res.ok) continue;
 
-            const data = await res.json();
-            const botText =
-              typeof data?.bot === "string" ? data.bot : JSON.stringify(data);
+            const botText = respText || "";
             setMessages((prev) =>
               prev.map((m) =>
                 m.id === botId ? { ...m, content: botText } : m,
