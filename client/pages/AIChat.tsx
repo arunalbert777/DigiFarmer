@@ -347,6 +347,7 @@ export default function AIChat() {
           `${origin}/api/gemini-chat`,
           `/api/gemini-chat`,
           `/.netlify/functions/api/gemini-chat`,
+          `/.netlify/functions/gemini-proxy`,
         ];
         let successful = false;
         for (const endpoint of postEndpoints) {
