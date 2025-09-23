@@ -152,28 +152,14 @@ exports.handler = async function (event, context) {
 
       const botText = extractText(resp) || extractText(resp?.result) || "";
 
-      // If the client requested a plain text response (body.plain === true or ?plain=1), return text/plain
-      const qs = (event && event.queryStringParameters) || {};
-      const plainRequested = (body && (body.plain === true || body.plain === 'true')) || (qs.plain === '1' || qs.plain === 'true');
-
-      if (plainRequested) {
-        return {
-          statusCode: 200,
-          headers: {
-            "Content-Type": "text/plain",
-            "Access-Control-Allow-Origin": "*",
-          },
-          body: String(botText || ""),
-        };
-      }
-
+      // Always return plain text only (no raw metadata)
       return {
         statusCode: 200,
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "text/plain",
           "Access-Control-Allow-Origin": "*",
         },
-        body: JSON.stringify({ text: botText, raw: resp }),
+        body: String(botText || ""),
       };
     }
 
