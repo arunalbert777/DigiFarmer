@@ -24,12 +24,20 @@ exports.handler = async function (event, context) {
       return {
         statusCode: 400,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ error: "Invalid JSON body", message: String(e.message) }),
+        body: JSON.stringify({
+          error: "Invalid JSON body",
+          message: String(e.message),
+        }),
       };
     }
 
     const type = (body.type || "text").toString();
-    const text = typeof body.text === "string" ? body.text : typeof body.message === "string" ? body.message : undefined;
+    const text =
+      typeof body.text === "string"
+        ? body.text
+        : typeof body.message === "string"
+          ? body.message
+          : undefined;
     const lang = typeof body.lang === "string" ? body.lang : "en";
 
     if (!text || !text.trim()) {
@@ -45,7 +53,9 @@ exports.handler = async function (event, context) {
       return {
         statusCode: 500,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ error: "Server misconfiguration: missing API key" }),
+        body: JSON.stringify({
+          error: "Server misconfiguration: missing API key",
+        }),
       };
     }
 
@@ -54,7 +64,8 @@ exports.handler = async function (event, context) {
 
     if (type === "text") {
       // Create payload compatible with generateContent
-      const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-preview-05-20";
+      const model =
+        process.env.GEMINI_MODEL || "gemini-2.5-flash-preview-05-20";
       const request = {
         model,
         contents: [
@@ -76,7 +87,10 @@ exports.handler = async function (event, context) {
         return {
           statusCode: 502,
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ error: "Upstream API error", details: String(upErr) }),
+          body: JSON.stringify({
+            error: "Upstream API error",
+            details: String(upErr),
+          }),
         };
       }
 
@@ -85,16 +99,29 @@ exports.handler = async function (event, context) {
         try {
           if (!obj) return null;
           if (typeof obj === "string" && obj.trim()) return obj.trim();
-          if (typeof obj.text === "string" && obj.text.trim()) return obj.text.trim();
+          if (typeof obj.text === "string" && obj.text.trim())
+            return obj.text.trim();
 
-          const candidates = obj?.candidates || obj?.result?.candidates || obj?.output?.candidates;
+          const candidates =
+            obj?.candidates ||
+            obj?.result?.candidates ||
+            obj?.output?.candidates;
           if (Array.isArray(candidates) && candidates.length) {
             const c0 = candidates[0];
-            const parts = c0?.content?.parts || c0?.content?.[0]?.parts || c0?.content?.[0]?.content?.parts;
+            const parts =
+              c0?.content?.parts ||
+              c0?.content?.[0]?.parts ||
+              c0?.content?.[0]?.content?.parts;
             if (Array.isArray(parts) && parts.length) {
-              return parts.map((p) => p?.text || p?.raw || "").join(" ").trim();
+              return parts
+                .map((p) => p?.text || p?.raw || "")
+                .join(" ")
+                .trim();
             }
-            const maybe = c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text || c0?.text;
+            const maybe =
+              c0?.content?.[0]?.parts?.[0]?.text ||
+              c0?.content?.[0]?.text ||
+              c0?.text;
             if (maybe) return maybe;
           }
 
@@ -106,7 +133,11 @@ exports.handler = async function (event, context) {
               if (Array.isArray(cont)) {
                 for (const c of cont) {
                   const p = c?.parts || c?.content || c;
-                  if (Array.isArray(p)) return p.map((x) => x?.text || x?.raw || "").join(" ").trim();
+                  if (Array.isArray(p))
+                    return p
+                      .map((x) => x?.text || x?.raw || "")
+                      .join(" ")
+                      .trim();
                 }
               }
             }
@@ -155,7 +186,10 @@ exports.handler = async function (event, context) {
           console.error("[gemini-proxy] TTS upstream error:", details);
           return {
             statusCode: 502,
-            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
             body: JSON.stringify({ error: "TTS upstream error", details }),
           };
         }
@@ -165,21 +199,33 @@ exports.handler = async function (event, context) {
         if (!audioContent) {
           return {
             statusCode: 502,
-            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-            body: JSON.stringify({ error: "TTS upstream returned no audio", raw: ttsJson }),
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+            body: JSON.stringify({
+              error: "TTS upstream returned no audio",
+              raw: ttsJson,
+            }),
           };
         }
 
         return {
           statusCode: 200,
-          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
           body: JSON.stringify({ audioData: audioContent, raw: ttsJson }),
         };
       } catch (e) {
         console.error("[gemini-proxy] TTS error:", e);
         return {
           statusCode: 500,
-          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
           body: JSON.stringify({ error: "TTS error", details: String(e) }),
         };
       }
@@ -195,7 +241,10 @@ exports.handler = async function (event, context) {
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: "Internal server error", details: String(err) }),
+      body: JSON.stringify({
+        message: "Internal server error",
+        details: String(err),
+      }),
     };
   }
 };

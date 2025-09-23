@@ -12,13 +12,25 @@ export function createServer() {
   app.use(cors());
   app.use(express.json());
   // Capture JSON parse errors from express.json() and return structured JSON instead of HTML overlay
-  app.use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if (err && (err instanceof SyntaxError || err.type === 'entity.parse.failed')) {
-      console.error('[server] JSON parse error:', err.message);
-      return res.status(400).json({ error: 'Invalid JSON body', message: String(err.message) });
-    }
-    return next(err);
-  });
+  app.use(
+    (
+      err: any,
+      _req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ) => {
+      if (
+        err &&
+        (err instanceof SyntaxError || err.type === "entity.parse.failed")
+      ) {
+        console.error("[server] JSON parse error:", err.message);
+        return res
+          .status(400)
+          .json({ error: "Invalid JSON body", message: String(err.message) });
+      }
+      return next(err);
+    },
+  );
   app.use(express.urlencoded({ extended: true }));
 
   // Example API routes
