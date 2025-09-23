@@ -122,51 +122,14 @@ export default function GeminiVoice() {
         cache: "no-store",
       });
 
-      // Read JSON once
-      let data: any;
-      try {
-        data = await res.json();
-      } catch (jsonErr) {
-        const text = await res.text().catch(() => null);
-        throw new Error(
-          `Invalid JSON response from server: ${String(jsonErr)} ${text || ""}`,
-        );
-      }
-
+      // Read response as plain text
+      const bodyText = await res.text();
       if (!res.ok) {
-        const details =
-          data?.error || data?.details || data?.message || JSON.stringify(data);
-        throw new Error(`Upstream error: ${details}`);
+        throw new Error(`Upstream error: ${bodyText || res.statusText}`);
       }
 
-      // Extract text from common shapes
-      const extract = (obj: any) => {
-        if (!obj) return null;
-        if (typeof obj === "string") return obj;
-        if (typeof obj.response === "string") return obj.response;
-        if (typeof obj.bot === "string") return obj.bot;
-        if (Array.isArray(obj.candidates) && obj.candidates.length) {
-          const c0 = obj.candidates[0];
-          const parts =
-            c0?.content?.parts ||
-            c0?.content?.[0]?.parts ||
-            c0?.content?.[0]?.content?.parts;
-          if (Array.isArray(parts) && parts.length)
-            return parts
-              .map((p: any) => p?.text || p?.raw || "")
-              .join(" ")
-              .trim();
-          const maybeText =
-            c0?.content?.[0]?.parts?.[0]?.text || c0?.content?.[0]?.text;
-          if (maybeText) return maybeText;
-        }
-        if (obj?.raw && typeof obj.raw === "string") return obj.raw;
-        if (obj?.message && typeof obj.message === "string") return obj.message;
-        return null;
-      };
-
-      const text = extract(data);
-      if (!text) {
+      const text = bodyText || "";
+      if (!text.trim()) {
         addMessage("Sorry, no response from the AI.", "gemini");
         speakText("Sorry, no response from the AI.");
         return;
