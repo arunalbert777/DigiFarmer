@@ -109,9 +109,10 @@ export default function GeminiVoice() {
   }
 
   async function getGeminiResponse(prompt: string) {
-    // Simplify: call server endpoint /api/gemini-chat (server route) which uses the GOOGLE_API_KEY
-    const url = "/api/gemini-chat";
-    const payload = { prompt };
+    // Call Netlify function proxy
+    const url = "./.netlify/functions/gemini-proxy";
+    const shortLang = language && language.startsWith("kn") ? "kn" : "en";
+    const payload = { type: "text", text: prompt, lang: shortLang };
 
     try {
       const res = await fetch(url, {
