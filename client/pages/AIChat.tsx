@@ -282,6 +282,8 @@ export default function AIChat() {
         `${origin}/api/gemini-chat-stream?message=${encodeURIComponent(currentInput)}`,
         `/api/gemini-chat-stream?message=${encodeURIComponent(currentInput)}`,
         `/.netlify/functions/api/gemini-chat-stream?message=${encodeURIComponent(currentInput)}`,
+        // fallback to proxy (POST) if SSE not available
+        `/.netlify/functions/gemini-proxy?message=${encodeURIComponent(currentInput)}`,
       ];
 
       let es: EventSource | null = null;
