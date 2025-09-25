@@ -1,5 +1,4 @@
 import { RequestHandler } from "express";
-import fetch from "node-fetch";
 
 export const handleDiseaseDetect: RequestHandler = async (req, res) => {
   try {
