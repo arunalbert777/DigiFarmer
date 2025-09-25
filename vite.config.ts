@@ -1,6 +1,7 @@
 import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { pathToFileURL } from "url";
 // Note: defer importing the server to runtime (dev only) so production build doesn't attempt to resolve server-only deps like node-fetch
 
 // https://vitejs.dev/config/
