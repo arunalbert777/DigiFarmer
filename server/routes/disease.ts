@@ -2,40 +2,45 @@ import { RequestHandler } from "express";
 
 export const handleDiseaseDetect: RequestHandler = async (req, res) => {
   try {
-    // Debug incoming request
     console.log("[disease] incoming headers:", req.headers);
-    // Accept JSON { image: base64 string } or multipart (not implemented)
-    const body = req.body || {};
-    console.log("[disease] body keys:", Object.keys(body));
-    const base64 = typeof body.image === "string" ? body.image : undefined;
 
-    if (!base64) {
-      console.error(
-        "[disease] Missing image in body; body preview keys:",
-        Object.keys(body).slice(0, 10),
-      );
-      return res
-        .status(400)
-        .json({ error: "Missing 'image' (base64) in request body" });
+    // Support both multipart file uploads (req.file.buffer) and JSON { image: 'data:...base64,...' }
+    let buffer: Buffer | undefined;
+
+    if ((req as any).file && (req as any).file.buffer) {
+      buffer = (req as any).file.buffer as Buffer;
+      console.log("[disease] received multipart file, size:", buffer.length);
+    } else {
+      const body = req.body || {};
+      console.log("[disease] body keys:", Object.keys(body));
+      const base64 = typeof body.image === "string" ? body.image : undefined;
+
+      if (!base64) {
+        console.error(
+          "[disease] Missing image in body; body preview keys:",
+          Object.keys(body).slice(0, 10),
+        );
+        return res
+          .status(400)
+          .json({ error: "Missing 'image' (base64) in request body" });
+      }
+
+      // Decode base64 (allow data URL or raw base64)
+      const raw = base64.replace(/^data:[^;]+;base64,/, "");
+      buffer = Buffer.from(raw, "base64");
+      console.log("[disease] received image length:", buffer.length);
     }
-
-    console.log("[disease] received image length:", base64.length);
 
     const hfKey = process.env.HUGGINGFACE_API_KEY;
     const hfModel =
       process.env.HUGGINGFACE_MODEL ||
-      process.env.HUGGINGFACE_MODEL ||
-      "nateraw/plant-disease-classification";
+      "malifiahm/plant_disease_classification";
 
     if (!hfKey) {
       return res.status(500).json({
         error: "Server misconfiguration: missing HUGGINGFACE_API_KEY",
       });
     }
-
-    // Decode base64 (allow data URL or raw base64)
-    const raw = base64.replace(/^data:[^;]+;base64,/, "");
-    const buffer = Buffer.from(raw, "base64");
 
     const url = `https://api-inference.huggingface.co/models/${hfModel}`;
 
