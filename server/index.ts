@@ -11,7 +11,8 @@ export function createServer() {
 
   // Middleware
   app.use(cors());
-  app.use(express.json());
+  // Increase body size limits to accept image uploads as base64
+  app.use(express.json({ limit: "12mb" }));
   // Capture JSON parse errors from express.json() and return structured JSON instead of HTML overlay
   app.use(
     (
@@ -32,7 +33,7 @@ export function createServer() {
       return next(err);
     },
   );
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.urlencoded({ extended: true, limit: "12mb" }));
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
