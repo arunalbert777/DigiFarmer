@@ -6,6 +6,7 @@ export default function GeminiVoice() {
   const [language, setLanguage] = useState("en-US");
   const conversationRef = useRef<HTMLDivElement | null>(null);
   const recognitionRef = useRef<any>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     return () => {
