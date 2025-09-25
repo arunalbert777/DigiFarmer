@@ -115,7 +115,11 @@ export default function GeminiVoice() {
     const shortLang = language && language.startsWith("kn") ? "kn" : "en";
     // For Kannada, request server-side TTS audio when available; otherwise request text
     const wantAudio = shortLang === "kn";
-    const payload = { type: wantAudio ? "audio" : "text", text: prompt, lang: shortLang };
+    const payload = {
+      type: wantAudio ? "audio" : "text",
+      text: prompt,
+      lang: shortLang,
+    };
 
     try {
       const res = await fetch(url, {
