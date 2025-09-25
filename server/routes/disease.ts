@@ -19,11 +19,9 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       "nateraw/plant-disease-classification";
 
     if (!hfKey) {
-      return res
-        .status(500)
-        .json({
-          error: "Server misconfiguration: missing HUGGINGFACE_API_KEY",
-        });
+      return res.status(500).json({
+        error: "Server misconfiguration: missing HUGGINGFACE_API_KEY",
+      });
     }
 
     // Decode base64 (allow data URL or raw base64)
@@ -43,12 +41,10 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     if (!r.ok) {
       const text = await r.text().catch(() => null);
-      return res
-        .status(502)
-        .json({
-          error: "Upstream inference error",
-          details: text || r.statusText,
-        });
+      return res.status(502).json({
+        error: "Upstream inference error",
+        details: text || r.statusText,
+      });
     }
 
     const json = await r.json();
