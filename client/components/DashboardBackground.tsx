@@ -7,7 +7,7 @@ export default function DashboardBackground() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/20 -z-10 pointer-events-none" />
       {/* Karnataka flag ribbon top-left */}
       <svg
-        className="absolute top-0 left-0 w-96 h-56 opacity-30 transform -translate-x-1/3 -translate-y-1/4"
+        className="absolute top-0 left-0 w-[520px] h-[300px] opacity-60 transform -translate-x-1/4 -translate-y-1/6"
         viewBox="0 0 600 360"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden
@@ -23,7 +23,7 @@ export default function DashboardBackground() {
 
       {/* Karnataka flag ribbon bottom-right mirrored */}
       <svg
-        className="absolute bottom-0 right-0 w-96 h-56 opacity-28 transform translate-x-1/3 translate-y-1/6"
+        className="absolute bottom-0 right-0 w-[520px] h-[300px] opacity-55 transform translate-x-1/6 translate-y-1/12"
         viewBox="0 0 600 360"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden
@@ -43,7 +43,7 @@ export default function DashboardBackground() {
 
       {/* Stylized farm fields pattern center-left */}
       <svg
-        className="absolute left-8 top-40 w-80 h-72 opacity-25"
+        className="absolute left-6 top-36 w-[420px] h-[320px] opacity-55 scale-105"
         viewBox="0 0 200 180"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden
@@ -68,7 +68,7 @@ export default function DashboardBackground() {
       </svg>
 
       {/* Kannada text watermark */}
-      <div className="absolute right-24 top-28 transform rotate-12 opacity-15 text-7xl font-bold text-yellow-600 select-none pointer-events-none">
+      <div className="absolute right-20 top-24 transform rotate-12 opacity-28 text-7xl font-bold text-yellow-600 select-none pointer-events-none">
         <span style={{ fontFamily: "Noto Sans Kannada, sans-serif" }}>
           ಕೃಷಿ
         </span>
@@ -76,7 +76,7 @@ export default function DashboardBackground() {
 
       {/* Farmer silhouette (simple) */}
       <svg
-        className="absolute bottom-8 left-12 w-48 h-48 text-green-900 opacity-30"
+        className="absolute bottom-8 left-8 w-56 h-56 text-green-900 opacity-55"
         viewBox="0 0 64 64"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden
@@ -90,7 +90,7 @@ export default function DashboardBackground() {
 
       {/* Subtle grain icons along bottom */}
       <svg
-        className="absolute bottom-2 left-1/2 -translate-x-1/2 w-2/3 h-12 opacity-12"
+        className="absolute bottom-2 left-1/2 -translate-x-1/2 w-2/3 h-12 opacity-22"
         viewBox="0 0 600 60"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden
