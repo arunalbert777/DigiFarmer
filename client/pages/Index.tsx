@@ -129,7 +129,7 @@ export default function Index() {
         <div className="relative z-0">
           <DashboardBackground />
         </div>
-        <div className="mx-auto max-w-4xl text-center">
+        <div className="mx-auto max-w-4xl text-center relative z-10">
           <div className="mb-8">
             <Badge variant="secondary" className="mb-4">
               <Leaf className="h-3 w-3 mr-1" />
