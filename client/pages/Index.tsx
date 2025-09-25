@@ -37,7 +37,6 @@ import {
   Handshake,
   Building2,
 } from "lucide-react";
-import DashboardBackground from "@/components/DashboardBackground";
 
 const getFeatures = (t: (key: string) => string) => [
   {
@@ -125,15 +124,12 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-leaf-50 via-white to-earth-50">
       {/* Hero Section */}
-      <section className="relative px-6 lg:px-8 pb-24 pt-16 overflow-visible">
-        <div className="relative z-0">
-          <DashboardBackground />
-        </div>
-        <div className="mx-auto max-w-4xl text-center relative z-10">
+      <section className="relative px-6 lg:px-8 pb-24 pt-16">
+        <div className="mx-auto max-w-4xl text-center">
           <div className="mb-8">
             <Badge variant="secondary" className="mb-4">
               <Leaf className="h-3 w-3 mr-1" />
-              By Presidency University Students
+              Powered by Advanced AI
             </Badge>
           </div>
 
@@ -159,7 +155,7 @@ export default function Index() {
             <Button size="lg" variant="outline" asChild>
               <Link to="/gemini-voice">
                 <Volume className="h-4 w-4 mr-2" />
-                {t("nav.geminiVoice")}
+                Gemini Voice
               </Link>
             </Button>
           </div>
