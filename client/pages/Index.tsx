@@ -47,12 +47,12 @@ const getFeatures = (t: (key: string) => string) => [
     benefits: ["200+ disease detection", "90%+ accuracy", "Instant results"],
   },
   {
-    icon: Bot,
-    title: t("home.features.aiAssistant.title"),
-    description: t("home.features.aiAssistant.description"),
-    path: "/ai-chat",
+    icon: Volume,
+    title: t("home.features.geminiVoice.title"),
+    description: t("home.features.geminiVoice.description"),
+    path: "/gemini-voice",
     color: "bg-blue-50 text-blue-600",
-    benefits: ["Instant responses", "Expert knowledge", "Personalized advice"],
+    benefits: ["Voice interaction", "Multilingual (Kannada/English)", "Hands-free assistance"],
   },
   {
     icon: Users,
