@@ -113,7 +113,9 @@ export default function GeminiVoice() {
     // Call Netlify function proxy
     const url = "./.netlify/functions/gemini-proxy";
     const shortLang = language && language.startsWith("kn") ? "kn" : "en";
-    const payload = { type: "text", text: prompt, lang: shortLang };
+    // For Kannada, request server-side TTS audio when available; otherwise request text
+    const wantAudio = shortLang === "kn";
+    const payload = { type: wantAudio ? "audio" : "text", text: prompt, lang: shortLang };
 
     try {
       const res = await fetch(url, {
@@ -123,12 +125,39 @@ export default function GeminiVoice() {
         cache: "no-store",
       });
 
-      // Read response as plain text
-      const bodyText = await res.text();
       if (!res.ok) {
+        const bodyText = await res.text();
         throw new Error(`Upstream error: ${bodyText || res.statusText}`);
       }
 
+      const contentType = (res.headers.get("content-type") || "").toLowerCase();
+
+      // If server returned audio (e.g., audio/mpeg, audio/wav), play it directly
+      if (contentType.startsWith("audio/")) {
+        try {
+          const blob = await res.blob();
+          const audioUrl = URL.createObjectURL(blob);
+          stopSpeech();
+          addMessage("(Voice response)", "gemini");
+          const audio = new Audio(audioUrl);
+          audioRef.current = audio;
+          setStatus("Playing audio...");
+          audio.play().catch((err) => console.warn("Audio play failed:", err));
+          audio.onended = () => {
+            setStatus("Click the mic to start speaking.");
+            try {
+              URL.revokeObjectURL(audioUrl);
+            } catch (e) {}
+            audioRef.current = null;
+          };
+          return;
+        } catch (e) {
+          console.warn("Failed to play server audio, falling back to text:", e);
+        }
+      }
+
+      // Otherwise assume textual response
+      const bodyText = await res.text();
       const text = bodyText || "";
       if (!text.trim()) {
         addMessage("Sorry, no response from the AI.", "gemini");
