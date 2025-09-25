@@ -11,8 +11,8 @@ export default {
     contractFarming: "Contract Farming",
     verticalFarming: "Vertical Farming",
     developers: "Developers",
-    geminiVoice: "Gemini Voice",
-  },
+    geminiVoice: "Agro Voice Assistant",
+    },
 
   // Common
   common: {
@@ -73,6 +73,11 @@ export default {
         title: "AI Assistant",
         description:
           "24/7 intelligent farming assistant for instant answers to agricultural questions and personalized advice.",
+      },
+      geminiVoice: {
+        title: "Agro Voice Assistant",
+        description:
+          "Voice-enabled agricultural assistant supporting English and Kannada for hands-free guidance and queries.",
       },
       expertConsultation: {
         title: "Expert Consultation",
