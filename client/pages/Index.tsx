@@ -148,9 +148,9 @@ export default function Index() {
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link to="/ai-chat">
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Chat with AI Assistant
+              <Link to="/gemini-voice">
+                <Volume className="h-4 w-4 mr-2" />
+                Gemini Voice
               </Link>
             </Button>
           </div>
