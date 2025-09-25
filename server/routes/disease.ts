@@ -8,14 +8,23 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
     const base64 = typeof body.image === "string" ? body.image : undefined;
 
     if (!base64) {
-      return res.status(400).json({ error: "Missing 'image' (base64) in request body" });
+      return res
+        .status(400)
+        .json({ error: "Missing 'image' (base64) in request body" });
     }
 
     const hfKey = process.env.HUGGINGFACE_API_KEY;
-    const hfModel = process.env.HUGGINGFACE_MODEL || process.env.HUGGINGFACE_MODEL || "nateraw/plant-disease-classification";
+    const hfModel =
+      process.env.HUGGINGFACE_MODEL ||
+      process.env.HUGGINGFACE_MODEL ||
+      "nateraw/plant-disease-classification";
 
     if (!hfKey) {
-      return res.status(500).json({ error: "Server misconfiguration: missing HUGGINGFACE_API_KEY" });
+      return res
+        .status(500)
+        .json({
+          error: "Server misconfiguration: missing HUGGINGFACE_API_KEY",
+        });
     }
 
     // Decode base64 (allow data URL or raw base64)
@@ -35,7 +44,12 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     if (!r.ok) {
       const text = await r.text().catch(() => null);
-      return res.status(502).json({ error: "Upstream inference error", details: text || r.statusText });
+      return res
+        .status(502)
+        .json({
+          error: "Upstream inference error",
+          details: text || r.statusText,
+        });
     }
 
     const json = await r.json();
@@ -43,13 +57,17 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
     if (Array.isArray(json) && json.length) {
       const top = json[0];
       // Return friendly result
-      return res.status(200).json({ label: top.label, score: top.score, all: json });
+      return res
+        .status(200)
+        .json({ label: top.label, score: top.score, all: json });
     }
 
     // If model returned a different shape, return raw
     return res.status(200).json({ raw: json });
   } catch (err: any) {
     console.error("[disease] error:", err);
-    return res.status(500).json({ error: err.message || "Internal server error" });
+    return res
+      .status(500)
+      .json({ error: err.message || "Internal server error" });
   }
 };
