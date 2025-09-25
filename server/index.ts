@@ -4,6 +4,7 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleGeminiChat } from "./routes/gemini";
 import { handleGeminiChatStream } from "./routes/geminiStream";
+import { handleDiseaseDetect } from "./routes/disease";
 
 export function createServer() {
   const app = express();
