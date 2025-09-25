@@ -24,7 +24,10 @@ export default function DiseaseDetection() {
     setResult(null);
     try {
       // Debug logs to help server-side troubleshooting
-      console.log('[detection] submitting image, data length=', imageData.length);
+      console.log(
+        "[detection] submitting image, data length=",
+        imageData.length,
+      );
 
       const res = await fetch("/api/detect", {
         method: "POST",
@@ -35,21 +38,30 @@ export default function DiseaseDetection() {
       // If server returns 400 missing image, attempt FormData fallback (multipart)
       if (res.status === 400) {
         const text = await res.text().catch(() => null);
-        console.warn('[detection] server returned 400 on JSON submit, response:', text);
+        console.warn(
+          "[detection] server returned 400 on JSON submit, response:",
+          text,
+        );
         if (fileRef) {
           const fd = new FormData();
-          fd.append('file', fileRef);
-          const res2 = await fetch('/api/detect', { method: 'POST', body: fd });
+          fd.append("file", fileRef);
+          const res2 = await fetch("/api/detect", { method: "POST", body: fd });
           const data2 = await res2.json().catch(() => null);
-          if (!res2.ok) throw new Error(data2?.error || data2?.details || JSON.stringify(data2));
+          if (!res2.ok)
+            throw new Error(
+              data2?.error || data2?.details || JSON.stringify(data2),
+            );
           setResult(data2);
           return;
         }
-        throw new Error('Server rejected JSON payload and no fileRef available');
+        throw new Error(
+          "Server rejected JSON payload and no fileRef available",
+        );
       }
 
       const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
+      if (!res.ok)
+        throw new Error(data?.error || data?.details || JSON.stringify(data));
       setResult(data);
     } catch (e: any) {
       setResult({ error: e.message || String(e) });

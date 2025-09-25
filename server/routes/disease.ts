@@ -3,20 +3,23 @@ import { RequestHandler } from "express";
 export const handleDiseaseDetect: RequestHandler = async (req, res) => {
   try {
     // Debug incoming request
-    console.log('[disease] incoming headers:', req.headers);
+    console.log("[disease] incoming headers:", req.headers);
     // Accept JSON { image: base64 string } or multipart (not implemented)
     const body = req.body || {};
-    console.log('[disease] body keys:', Object.keys(body));
+    console.log("[disease] body keys:", Object.keys(body));
     const base64 = typeof body.image === "string" ? body.image : undefined;
 
     if (!base64) {
-      console.error('[disease] Missing image in body; body preview keys:', Object.keys(body).slice(0,10));
+      console.error(
+        "[disease] Missing image in body; body preview keys:",
+        Object.keys(body).slice(0, 10),
+      );
       return res
         .status(400)
         .json({ error: "Missing 'image' (base64) in request body" });
     }
 
-    console.log('[disease] received image length:', base64.length);
+    console.log("[disease] received image length:", base64.length);
 
     const hfKey = process.env.HUGGINGFACE_API_KEY;
     const hfModel =
