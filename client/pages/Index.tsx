@@ -37,6 +37,7 @@ import {
   Handshake,
   Building2,
 } from "lucide-react";
+import DashboardBackground from "@/components/DashboardBackground";
 
 const getFeatures = (t: (key: string) => string) => [
   {
