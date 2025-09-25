@@ -293,29 +293,39 @@ export default function GeminiVoice() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center">
-          <button
-            id="micBtn"
-            onClick={onMicClick}
-            className={`bg-blue-600 text-white w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50`}
-            aria-pressed={isListening}
-          >
-            <svg
-              className={`h-10 w-10 ${isListening ? "hidden" : ""}`}
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
+        <div className="flex flex-col items-center space-y-2">
+          <div className="flex items-center space-x-4">
+            <button
+              id="micBtn"
+              onClick={onMicClick}
+              className={`bg-blue-600 text-white w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50`}
+              aria-pressed={isListening}
             >
-              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.41-3.59c.14-.14.28-.29.41-.44L17 10.97V11c0 2.76-2.24 5-5 5s-5-2.24-5-5v-.03l.18.23c.13.14.27.29.41.44C7.79 12.26 9.87 13 12 13s4.21-.74 5.41-1.59zM12 17c-2.32 0-4.49-1.07-5.91-2.74L6 14.15V19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4.85l-.09.11C16.49 15.93 14.32 17 12 17z" />
-            </svg>
-            <svg
-              className={`h-10 w-10 text-red-500 ${isListening ? "" : "hidden"}`}
-              viewBox="0 0 24 24"
+              <svg
+                className={`h-10 w-10 ${isListening ? "hidden" : ""}`}
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.41-3.59c.14-.14.28-.29.41-.44L17 10.97V11c0 2.76-2.24 5-5 5s-5-2.24-5-5v-.03l.18.23c.13.14.27.29.41.44C7.79 12.26 9.87 13 12 13s4.21-.74 5.41-1.59zM12 17c-2.32 0-4.49-1.07-5.91-2.74L6 14.15V19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4.85l-.09.11C16.49 15.93 14.32 17 12 17z" />
+              </svg>
+              <svg
+                className={`h-10 w-10 text-red-500 ${isListening ? "" : "hidden"}`}
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.41-3.59c.14-.14.28-.29.41-.44L17 10.97V11c0 2.76-2.24 5-5 5s-5-2.24-5-5v-.03l.18.23c.13.14.27.29.41.44C7.79 12.26 9.87 13 12 13s4.21-.74 5.41-1.59zM12 17c-2.32 0-4.49-1.07-5.91-2.74L6 14.15V19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4.85l-.09.11C16.49 15.93 14.32 17 12 17z" />
+              </svg>
+            </button>
+
+            <button
+              id="stopBtn"
+              onClick={stopSpeech}
+              className="px-3 py-2 bg-red-500 text-white rounded-md shadow-sm hover:bg-red-600"
             >
-              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.41-3.59c.14-.14.28-.29.41-.44L17 10.97V11c0 2.76-2.24 5-5 5s-5-2.24-5-5v-.03l.18.23c.13.14.27.29.41.44C7.79 12.26 9.87 13 12 13s4.21-.74 5.41-1.59zM12 17c-2.32 0-4.49-1.07-5.91-2.74L6 14.15V19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4.85l-.09.11C16.49 15.93 14.32 17 12 17z" />
-            </svg>
-          </button>
-          <p id="status" className="mt-4 text-gray-600 text-sm font-semibold">
+              Stop
+            </button>
+          </div>
+          <p id="status" className="mt-2 text-gray-600 text-sm font-semibold">
             {status}
           </p>
         </div>
