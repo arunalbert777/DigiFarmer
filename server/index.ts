@@ -5,12 +5,6 @@ import { handleDemo } from "./routes/demo";
 import { handleGeminiChat } from "./routes/gemini";
 import { handleGeminiChatStream } from "./routes/geminiStream";
 import { handleDiseaseDetect } from "./routes/disease";
-import multer from "multer";
-// Accept multipart file uploads in memory (for /api/detect)
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 12 * 1024 * 1024 },
-});
 
 export function createServer() {
   const app = express();
