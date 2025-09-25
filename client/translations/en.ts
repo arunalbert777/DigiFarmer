@@ -12,7 +12,7 @@ export default {
     verticalFarming: "Vertical Farming",
     developers: "Developers",
     geminiVoice: "Agro Voice Assistant",
-    },
+  },
 
   // Common
   common: {

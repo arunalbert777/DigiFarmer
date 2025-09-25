@@ -160,7 +160,7 @@ export default function GeminiVoice() {
       }
       setStatus("Click the mic to start speaking.");
     } catch (e) {
-      console.warn('stopSpeech error', e);
+      console.warn("stopSpeech error", e);
     }
   }
 
