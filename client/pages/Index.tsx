@@ -125,8 +125,10 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-leaf-50 via-white to-earth-50">
       {/* Hero Section */}
-      <section className="relative px-6 lg:px-8 pb-24 pt-16">
-        <DashboardBackground />
+      <section className="relative px-6 lg:px-8 pb-24 pt-16 overflow-visible">
+        <div className="relative z-0">
+          <DashboardBackground />
+        </div>
         <div className="mx-auto max-w-4xl text-center">
           <div className="mb-8">
             <Badge variant="secondary" className="mb-4">
