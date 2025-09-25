@@ -228,7 +228,7 @@ export default function GeminiVoice() {
     <div className="p-6 flex justify-center">
       <div className="container w-full flex flex-col h-[80vh]">
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
-          Gemini Voice Assistant
+          Agro Voice Assistant
         </h1>
         <p className="text-center text-gray-600 mb-4">
           Click the mic to speak in English or Kannada.
