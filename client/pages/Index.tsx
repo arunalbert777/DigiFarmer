@@ -22,6 +22,7 @@ import {
   Leaf,
   Camera,
   MessageCircle,
+  Volume,
   TrendingUp,
   Shield,
   Globe,
