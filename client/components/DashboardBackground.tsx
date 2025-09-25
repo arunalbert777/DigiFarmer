@@ -28,7 +28,11 @@ export default function DashboardBackground() {
       >
         <rect width="600" height="180" fill="#FFD100" />
         <rect y="180" width="600" height="180" fill="#FF0000" />
-        <g transform="translate(460,200) rotate(20)" fill="#ffffff" opacity="0.12">
+        <g
+          transform="translate(460,200) rotate(20)"
+          fill="#ffffff"
+          opacity="0.12"
+        >
           <rect x="0" y="0" width="80" height="6" rx="3" />
           <rect x="0" y="20" width="60" height="6" rx="3" />
           <rect x="10" y="40" width="40" height="6" rx="3" />
@@ -49,7 +53,11 @@ export default function DashboardBackground() {
           </linearGradient>
         </defs>
         <rect width="200" height="180" fill="url(#g1)" rx="12" />
-        <path d="M0 140 Q50 100 100 140 T200 140 V180 H0 Z" fill="#7bb06f" opacity="0.55" />
+        <path
+          d="M0 140 Q50 100 100 140 T200 140 V180 H0 Z"
+          fill="#7bb06f"
+          opacity="0.55"
+        />
         <g fill="#ffffff" opacity="0.06">
           <path d="M10 30 L30 20 L25 40 Z" />
           <path d="M40 60 L60 50 L55 70 Z" />
@@ -59,7 +67,9 @@ export default function DashboardBackground() {
 
       {/* Kannada text watermark */}
       <div className="absolute right-24 top-28 transform rotate-12 opacity-15 text-7xl font-bold text-yellow-600 select-none pointer-events-none">
-        <span style={{ fontFamily: 'Noto Sans Kannada, sans-serif' }}>ಕೃಷಿ</span>
+        <span style={{ fontFamily: "Noto Sans Kannada, sans-serif" }}>
+          ಕೃಷಿ
+        </span>
       </div>
 
       {/* Farmer silhouette (simple) */}
@@ -77,11 +87,19 @@ export default function DashboardBackground() {
       </svg>
 
       {/* Subtle grain icons along bottom */}
-      <svg className="absolute bottom-2 left-1/2 -translate-x-1/2 w-2/3 h-12 opacity-12" viewBox="0 0 600 60" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <svg
+        className="absolute bottom-2 left-1/2 -translate-x-1/2 w-2/3 h-12 opacity-12"
+        viewBox="0 0 600 60"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden
+      >
         <g fill="#f59e0b">
           {Array.from({ length: 20 }).map((_, i) => (
             // eslint-disable-next-line react/no-array-index-key
-            <path key={i} d={`M${30 + i * 28} 40 c-4 -6 -4 -12 0 -18 c3 6 3 12 0 18 z`} />
+            <path
+              key={i}
+              d={`M${30 + i * 28} 40 c-4 -6 -4 -12 0 -18 c3 6 3 12 0 18 z`}
+            />
           ))}
         </g>
       </svg>
