@@ -49,8 +49,8 @@ export function createServer() {
   // Gemini AI streaming (SSE) endpoint
   app.get("/api/gemini-chat-stream", handleGeminiChatStream);
 
-  // Disease detection endpoint (accept JSON base64 or multipart file)
-  app.post("/api/detect", upload.single("file"), handleDiseaseDetect);
+  // Disease detection endpoint
+  app.post("/api/detect", handleDiseaseDetect);
 
   return app;
 }
