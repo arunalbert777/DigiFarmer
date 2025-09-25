@@ -33,8 +33,7 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     const hfKey = process.env.HUGGINGFACE_API_KEY;
     const hfModel =
-      process.env.HUGGINGFACE_MODEL ||
-      "malifiahm/plant_disease_classification";
+      process.env.HUGGINGFACE_MODEL || "malifiahm/plant_disease_classification";
 
     if (!hfKey) {
       return res.status(500).json({
