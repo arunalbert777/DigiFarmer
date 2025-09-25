@@ -52,7 +52,11 @@ const getFeatures = (t: (key: string) => string) => [
     description: t("home.features.geminiVoice.description"),
     path: "/gemini-voice",
     color: "bg-blue-50 text-blue-600",
-    benefits: ["Voice interaction", "Multilingual (Kannada/English)", "Hands-free assistance"],
+    benefits: [
+      "Voice interaction",
+      "Multilingual (Kannada/English)",
+      "Hands-free assistance",
+    ],
   },
   {
     icon: Users,
