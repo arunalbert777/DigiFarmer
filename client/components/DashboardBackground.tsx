@@ -3,6 +3,8 @@ import React from "react";
 export default function DashboardBackground() {
   return (
     <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden">
+      {/* Make overall background slightly darker to increase contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/20 -z-10 pointer-events-none" />
       {/* Karnataka flag ribbon top-left */}
       <svg
         className="absolute top-0 left-0 w-96 h-56 opacity-30 transform -translate-x-1/3 -translate-y-1/4"
