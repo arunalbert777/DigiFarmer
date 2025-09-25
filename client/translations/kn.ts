@@ -12,7 +12,7 @@ export default {
     verticalFarming: "ಲಂಬ ಕೃಷಿ",
     developers: "ಡೆವ��ಪರ್‌ಗಳು",
     geminiVoice: "ಜೆಮಿನಿ ವಾಯ್ಸ್",
-    },
+  },
 
   // Common
   common: {
