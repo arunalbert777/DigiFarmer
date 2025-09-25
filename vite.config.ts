@@ -32,8 +32,8 @@ function expressPlugin(): Plugin {
     apply: "serve", // Only apply during development (serve mode)
     async configureServer(server) {
       // Dynamically import the server module at dev-time only
-      const serverEntry = path.resolve(__dirname, "server", "index.ts");
-      const mod = await import(pathToFileURL(serverEntry).href);
+      // Use Vite's ssrLoadModule so Vite resolves TypeScript modules in dev
+      const mod = await server.ssrLoadModule('/server/index.ts');
       const app = mod.createServer();
 
       // Add Express app as middleware to Vite dev server
