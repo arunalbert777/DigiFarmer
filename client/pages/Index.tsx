@@ -129,7 +129,7 @@ export default function Index() {
           <div className="mb-8">
             <Badge variant="secondary" className="mb-4">
               <Leaf className="h-3 w-3 mr-1" />
-              Powered by Advanced AI
+              By Presidency University Students
             </Badge>
           </div>
 
