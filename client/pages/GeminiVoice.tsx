@@ -145,6 +145,25 @@ export default function GeminiVoice() {
     }
   }
 
+  function stopSpeech() {
+    try {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (audioRef.current) {
+        try {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+          URL.revokeObjectURL(audioRef.current.src);
+        } catch (e) {}
+        audioRef.current = null;
+      }
+      setStatus("Click the mic to start speaking.");
+    } catch (e) {
+      console.warn('stopSpeech error', e);
+    }
+  }
+
   function speakText(text: string) {
     try {
       if (!("speechSynthesis" in window)) {
@@ -159,7 +178,8 @@ export default function GeminiVoice() {
       utt.onstart = () => setStatus("Speaking...");
       utt.onend = () => setStatus("Click the mic to start speaking.");
       utt.onerror = () => setStatus("Error during speech synthesis.");
-      window.speechSynthesis.cancel();
+      // Ensure any previous speech/audio is stopped before speaking
+      stopSpeech();
       window.speechSynthesis.speak(utt);
     } catch (e) {
       console.warn(e);
