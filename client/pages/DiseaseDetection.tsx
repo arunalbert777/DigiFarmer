@@ -2,12 +2,14 @@ import React, { useState } from "react";
 
 export default function DiseaseDetection() {
   const [imageData, setImageData] = useState<string | null>(null);
+  const [fileRef, setFileRef] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    setFileRef(file);
     const reader = new FileReader();
     reader.onload = () => {
       setImageData(String(reader.result || ""));
@@ -21,15 +23,33 @@ export default function DiseaseDetection() {
     setLoading(true);
     setResult(null);
     try {
+      // Debug logs to help server-side troubleshooting
+      console.log('[detection] submitting image, data length=', imageData.length);
+
       const res = await fetch("/api/detect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: imageData }),
       });
 
-      const data = await res.json();
-      if (!res.ok)
-        throw new Error(data?.error || data?.details || JSON.stringify(data));
+      // If server returns 400 missing image, attempt FormData fallback (multipart)
+      if (res.status === 400) {
+        const text = await res.text().catch(() => null);
+        console.warn('[detection] server returned 400 on JSON submit, response:', text);
+        if (fileRef) {
+          const fd = new FormData();
+          fd.append('file', fileRef);
+          const res2 = await fetch('/api/detect', { method: 'POST', body: fd });
+          const data2 = await res2.json().catch(() => null);
+          if (!res2.ok) throw new Error(data2?.error || data2?.details || JSON.stringify(data2));
+          setResult(data2);
+          return;
+        }
+        throw new Error('Server rejected JSON payload and no fileRef available');
+      }
+
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
       setResult(data);
     } catch (e: any) {
       setResult({ error: e.message || String(e) });
