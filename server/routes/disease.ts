@@ -86,42 +86,91 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "Empty image buffer" });
     }
 
-    const url = `https://api-inference.huggingface.co/models/${hfModel}`;
+    // Attempt inference with retries and fallbacks
+    const hfKey = process.env.HUGGINGFACE_API_KEY;
+    const primaryModel = process.env.HUGGINGFACE_MODEL || "malifiahm/plant_disease_classification";
+    const fallbackModels = [
+      "microsoft/resnet-50",
+      "google/vit-base-patch16-224",
+      // add more known image-classification models if needed
+    ];
 
-    const r = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${hfKey}`,
-        "Content-Type": "application/octet-stream",
-      },
-      body: buffer,
-    });
+    const modelsToTry = [primaryModel, ...fallbackModels.filter((m) => m !== primaryModel)];
 
-    if (!r.ok) {
-      const text = await r.text().catch(() => null);
-      console.error("[disease] upstream error status:", r.status, text);
-      return res
-        .status(502)
-        .json({
-          error: "Upstream inference error",
-          details: text || r.statusText,
+    async function callModel(model: string, timeoutMs = 25000) {
+      const url = `https://api-inference.huggingface.co/models/${model}`;
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const resp = await fetch(url, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${hfKey}`,
+            "Content-Type": "application/octet-stream",
+          },
+          body: buffer,
+          signal: controller.signal,
         });
+        clearTimeout(id);
+        return resp;
+      } catch (e) {
+        clearTimeout(id);
+        throw e;
+      }
     }
 
-    const json = await r.json().catch((e) => {
-      console.error("[disease] failed to parse HF response as JSON", e);
-      return null;
-    });
+    let lastErr: any = null;
+    for (const model of modelsToTry) {
+      let attempt = 0;
+      let backoff = 500;
+      while (attempt < 3) {
+        attempt += 1;
+        try {
+          console.log(`[disease] calling model=${model} attempt=${attempt}`);
+          const resp = await callModel(model, 25000);
+          if (!resp.ok) {
+            const text = await resp.text().catch(() => null);
+            console.warn(`[disease] model ${model} returned status ${resp.status}`, text?.slice?.(0, 200));
+            if ([429, 502, 503, 504].includes(resp.status)) {
+              // transient - retry
+              await new Promise((r) => setTimeout(r, backoff + Math.floor(Math.random() * 200)));
+              backoff *= 2;
+              continue;
+            }
+            // non-retryable for this model, break and try next model
+            lastErr = { status: resp.status, details: text };
+            break;
+          }
 
-    if (Array.isArray(json) && json.length) {
-      const top = json[0];
-      return res
-        .status(200)
-        .json({ label: top.label, score: top.score, all: json });
+          const json = await resp.json().catch((e) => {
+            console.error("[disease] failed to parse HF response as JSON", e);
+            return null;
+          });
+
+          if (Array.isArray(json) && json.length) {
+            const top = json[0];
+            return res.status(200).json({ label: top.label, score: top.score, all: json, model });
+          }
+
+          // If the model returns a different shape (e.g., VQA/text), return raw for now
+          return res.status(200).json({ raw: json, model });
+        } catch (e: any) {
+          console.warn(`[disease] model ${model} attempt ${attempt} failed:`, e?.message || e);
+          lastErr = e;
+          // Retry on network / abort errors
+          if (e?.name === "AbortError" || e?.code === "ECONNRESET" || e?.code === "ETIMEDOUT") {
+            await new Promise((r) => setTimeout(r, backoff + Math.floor(Math.random() * 200)));
+            backoff *= 2;
+            continue;
+          }
+          // other errors -> break retry loop and try next model
+          break;
+        }
+      }
     }
 
-    // If model returned a different shape or null, return raw
-    return res.status(200).json({ raw: json });
+    console.error("[disease] all models failed", lastErr);
+    return res.status(502).json({ error: "Inference failed", details: String(lastErr) });
   } catch (err: any) {
     console.error("[disease] error:", err);
     return res
