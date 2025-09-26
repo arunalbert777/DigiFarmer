@@ -5,71 +5,327 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Disease Detection Pipeline Flowchart</title>
     <style>
-      body { margin: 0; padding: 24px; background: #f7fafc; font-family: Inter, Arial, sans-serif; }
-      .canvas { background: white; border-radius: 12px; box-shadow: 0 6px 24px rgba(15,23,42,0.08); padding: 24px; display: inline-block; }
-      .title { font-size: 18px; font-weight: 600; color: #0f172a; margin-bottom: 12px; }
+      body {
+        margin: 0;
+        padding: 24px;
+        background: #f7fafc;
+        font-family: Inter, Arial, sans-serif;
+      }
+      .canvas {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+        padding: 24px;
+        display: inline-block;
+      }
+      .title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 12px;
+      }
     </style>
   </head>
   <body>
     <div class="canvas">
-      <div class="title">Disease Detection Pipeline (Client → Server → Model)</div>
+      <div class="title">
+        Disease Detection Pipeline (Client → Server → Model)
+      </div>
       <!-- SVG flowchart -->
-      <svg width="1200" height="720" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720">
+      <svg
+        width="1200"
+        height="720"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1200 720"
+      >
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto-start-reverse">
+          <marker
+            id="arrow"
+            markerWidth="10"
+            markerHeight="10"
+            refX="10"
+            refY="5"
+            orient="auto-start-reverse"
+          >
             <path d="M0,0 L10,5 L0,10 z" fill="#334155" />
           </marker>
         </defs>
 
         <!-- Boxes -->
-        <rect x="40" y="60" rx="10" ry="10" width="260" height="120" fill="#ecfeff" stroke="#0369a1" />
-        <text x="170" y="90" font-size="16" font-weight="700" text-anchor="middle" fill="#0f172a">Client (Browser)</text>
-        <text x="170" y="115" font-size="13" text-anchor="middle" fill="#334155">Select & preview image</text>
-        <text x="170" y="135" font-size="13" text-anchor="middle" fill="#334155">Resize, compress, hash</text>
+        <rect
+          x="40"
+          y="60"
+          rx="10"
+          ry="10"
+          width="260"
+          height="120"
+          fill="#ecfeff"
+          stroke="#0369a1"
+        />
+        <text
+          x="170"
+          y="90"
+          font-size="16"
+          font-weight="700"
+          text-anchor="middle"
+          fill="#0f172a"
+        >
+          Client (Browser)
+        </text>
+        <text
+          x="170"
+          y="115"
+          font-size="13"
+          text-anchor="middle"
+          fill="#334155"
+        >
+          Select & preview image
+        </text>
+        <text
+          x="170"
+          y="135"
+          font-size="13"
+          text-anchor="middle"
+          fill="#334155"
+        >
+          Resize, compress, hash
+        </text>
 
-        <rect x="440" y="40" rx="10" ry="10" width="320" height="180" fill="#fff7ed" stroke="#b45309" />
-        <text x="600" y="70" font-size="16" font-weight="700" text-anchor="middle" fill="#0f172a">Serverless API</text>
-        <text x="600" y="98" font-size="13" text-anchor="middle" fill="#334155">Parse JSON / multipart / raw</text>
-        <text x="600" y="120" font-size="13" text-anchor="middle" fill="#334155">Validate, preprocess (sharp)</text>
-        <text x="600" y="140" font-size="13" text-anchor="middle" fill="#334155">Cache lookup & rate-limit</text>
+        <rect
+          x="440"
+          y="40"
+          rx="10"
+          ry="10"
+          width="320"
+          height="180"
+          fill="#fff7ed"
+          stroke="#b45309"
+        />
+        <text
+          x="600"
+          y="70"
+          font-size="16"
+          font-weight="700"
+          text-anchor="middle"
+          fill="#0f172a"
+        >
+          Serverless API
+        </text>
+        <text x="600" y="98" font-size="13" text-anchor="middle" fill="#334155">
+          Parse JSON / multipart / raw
+        </text>
+        <text
+          x="600"
+          y="120"
+          font-size="13"
+          text-anchor="middle"
+          fill="#334155"
+        >
+          Validate, preprocess (sharp)
+        </text>
+        <text
+          x="600"
+          y="140"
+          font-size="13"
+          text-anchor="middle"
+          fill="#334155"
+        >
+          Cache lookup & rate-limit
+        </text>
 
-        <rect x="820" y="60" rx="10" ry="10" width="320" height="120" fill="#f0fdf4" stroke="#15803d" />
-        <text x="980" y="90" font-size="16" font-weight="700" text-anchor="middle" fill="#0f172a">Hugging Face Model</text>
-        <text x="980" y="115" font-size="13" text-anchor="middle" fill="#334155">Image-classification / VQA</text>
-        <text x="980" y="135" font-size="13" text-anchor="middle" fill="#334155">Return JSON</text>
+        <rect
+          x="820"
+          y="60"
+          rx="10"
+          ry="10"
+          width="320"
+          height="120"
+          fill="#f0fdf4"
+          stroke="#15803d"
+        />
+        <text
+          x="980"
+          y="90"
+          font-size="16"
+          font-weight="700"
+          text-anchor="middle"
+          fill="#0f172a"
+        >
+          Hugging Face Model
+        </text>
+        <text
+          x="980"
+          y="115"
+          font-size="13"
+          text-anchor="middle"
+          fill="#334155"
+        >
+          Image-classification / VQA
+        </text>
+        <text
+          x="980"
+          y="135"
+          font-size="13"
+          text-anchor="middle"
+          fill="#334155"
+        >
+          Return JSON
+        </text>
 
         <!-- Arrows -->
-        <line x1="300" y1="120" x2="440" y2="120" stroke="#334155" stroke-width="2" marker-end="url(#arrow)" />
-        <line x1="760" y1="120" x2="820" y2="120" stroke="#334155" stroke-width="2" marker-end="url(#arrow)" />
+        <line
+          x1="300"
+          y1="120"
+          x2="440"
+          y2="120"
+          stroke="#334155"
+          stroke-width="2"
+          marker-end="url(#arrow)"
+        />
+        <line
+          x1="760"
+          y1="120"
+          x2="820"
+          y2="120"
+          stroke="#334155"
+          stroke-width="2"
+          marker-end="url(#arrow)"
+        />
 
         <!-- Post-processing -->
-        <rect x="440" y="250" rx="10" ry="10" width="320" height="110" fill="#eef2ff" stroke="#4f46e5" />
-        <text x="600" y="280" font-size="15" font-weight="700" text-anchor="middle" fill="#0f172a">Post-process & Cache</text>
-        <text x="600" y="305" font-size="13" text-anchor="middle" fill="#334155">Normalize labels & scores</text>
-        <text x="600" y="325" font-size="13" text-anchor="middle" fill="#334155">Store TTL & return</text>
+        <rect
+          x="440"
+          y="250"
+          rx="10"
+          ry="10"
+          width="320"
+          height="110"
+          fill="#eef2ff"
+          stroke="#4f46e5"
+        />
+        <text
+          x="600"
+          y="280"
+          font-size="15"
+          font-weight="700"
+          text-anchor="middle"
+          fill="#0f172a"
+        >
+          Post-process & Cache
+        </text>
+        <text
+          x="600"
+          y="305"
+          font-size="13"
+          text-anchor="middle"
+          fill="#334155"
+        >
+          Normalize labels & scores
+        </text>
+        <text
+          x="600"
+          y="325"
+          font-size="13"
+          text-anchor="middle"
+          fill="#334155"
+        >
+          Store TTL & return
+        </text>
 
-        <line x1="980" y1="180" x2="760" y2="295" stroke="#334155" stroke-width="2" marker-end="url(#arrow)" />
-        <line x1="600" y1="360" x2="200" y2="360" stroke="#334155" stroke-width="2" marker-end="url(#arrow)" />
+        <line
+          x1="980"
+          y1="180"
+          x2="760"
+          y2="295"
+          stroke="#334155"
+          stroke-width="2"
+          marker-end="url(#arrow)"
+        />
+        <line
+          x1="600"
+          y1="360"
+          x2="200"
+          y2="360"
+          stroke="#334155"
+          stroke-width="2"
+          marker-end="url(#arrow)"
+        />
 
         <!-- Return to client -->
-        <rect x="40" y="320" rx="10" ry="10" width="260" height="100" fill="#fff1f2" stroke="#dc2626" />
-        <text x="170" y="350" font-size="15" font-weight="700" text-anchor="middle" fill="#0f172a">Client</text>
-        <text x="170" y="375" font-size="13" text-anchor="middle" fill="#334155">Show label, confidence, details</text>
+        <rect
+          x="40"
+          y="320"
+          rx="10"
+          ry="10"
+          width="260"
+          height="100"
+          fill="#fff1f2"
+          stroke="#dc2626"
+        />
+        <text
+          x="170"
+          y="350"
+          font-size="15"
+          font-weight="700"
+          text-anchor="middle"
+          fill="#0f172a"
+        >
+          Client
+        </text>
+        <text
+          x="170"
+          y="375"
+          font-size="13"
+          text-anchor="middle"
+          fill="#334155"
+        >
+          Show label, confidence, details
+        </text>
 
         <!-- Arrows from post-process to client -->
-        <line x1="440" y1="310" x2="300" y2="360" stroke="#334155" stroke-width="2" marker-end="url(#arrow)" />
+        <line
+          x1="440"
+          y1="310"
+          x2="300"
+          y2="360"
+          stroke="#334155"
+          stroke-width="2"
+          marker-end="url(#arrow)"
+        />
 
         <!-- Side notes -->
         <g>
-          <rect x="40" y="450" rx="8" ry="8" width="1100" height="200" fill="#ffffff" stroke="#e6edf3" />
-          <text x="100" y="480" font-size="14" font-weight="700" fill="#0f172a">Notes & Best Practices</text>
-          <text x="100" y="505" font-size="13" fill="#334155">• Client-side resize & hash to reduce bandwidth and enable caching</text>
-          <text x="100" y="525" font-size="13" fill="#334155">• Server: flexible parsing (JSON string, data URL, multipart), validate file magic bytes, limit size</text>
-          <text x="100" y="545" font-size="13" fill="#334155">• HF calls with retries, exponential backoff, model fallbacks, and timeouts</text>
-          <text x="100" y="565" font-size="13" fill="#334155">• Use LRU / Redis cache and rate-limiting per IP or user</text>
-          <text x="100" y="585" font-size="13" fill="#334155">• Monitoring: metrics (latency, errors), Sentry for exceptions</text>
+          <rect
+            x="40"
+            y="450"
+            rx="8"
+            ry="8"
+            width="1100"
+            height="200"
+            fill="#ffffff"
+            stroke="#e6edf3"
+          />
+          <text x="100" y="480" font-size="14" font-weight="700" fill="#0f172a">
+            Notes & Best Practices
+          </text>
+          <text x="100" y="505" font-size="13" fill="#334155">
+            • Client-side resize & hash to reduce bandwidth and enable caching
+          </text>
+          <text x="100" y="525" font-size="13" fill="#334155">
+            • Server: flexible parsing (JSON string, data URL, multipart),
+            validate file magic bytes, limit size
+          </text>
+          <text x="100" y="545" font-size="13" fill="#334155">
+            • HF calls with retries, exponential backoff, model fallbacks, and
+            timeouts
+          </text>
+          <text x="100" y="565" font-size="13" fill="#334155">
+            • Use LRU / Redis cache and rate-limiting per IP or user
+          </text>
+          <text x="100" y="585" font-size="13" fill="#334155">
+            • Monitoring: metrics (latency, errors), Sentry for exceptions
+          </text>
         </g>
-
       </svg>
     </div>
   </body>
