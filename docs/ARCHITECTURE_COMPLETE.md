@@ -33,7 +33,6 @@ Open the HTML or SVG files locally or in preview to view the diagrams. The disea
   2. node scripts/render_flowchart.js
   3. Output: `public/diagrams/disease_flowchart.png`
 
-
 ---
 
 For further edits to diagrams or architecture, update the SVG/MD files directly and commit. If you want me to generate PNGs or additional export formats here, I can attempt to run the renderer (may require installing puppeteer/playwright and could be blocked by environment constraints).

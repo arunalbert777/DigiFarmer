@@ -75,11 +75,9 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       process.env.HUGGINGFACE_MODEL || "malifiahm/plant_disease_classification";
 
     if (!hfKey) {
-      return res
-        .status(500)
-        .json({
-          error: "Server misconfiguration: missing HUGGINGFACE_API_KEY",
-        });
+      return res.status(500).json({
+        error: "Server misconfiguration: missing HUGGINGFACE_API_KEY",
+      });
     }
 
     if (!buffer || !buffer.length) {
@@ -88,14 +86,18 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     // Attempt inference with retries and fallbacks
     const hfKey = process.env.HUGGINGFACE_API_KEY;
-    const primaryModel = process.env.HUGGINGFACE_MODEL || "malifiahm/plant_disease_classification";
+    const primaryModel =
+      process.env.HUGGINGFACE_MODEL || "malifiahm/plant_disease_classification";
     const fallbackModels = [
       "microsoft/resnet-50",
       "google/vit-base-patch16-224",
       // add more known image-classification models if needed
     ];
 
-    const modelsToTry = [primaryModel, ...fallbackModels.filter((m) => m !== primaryModel)];
+    const modelsToTry = [
+      primaryModel,
+      ...fallbackModels.filter((m) => m !== primaryModel),
+    ];
 
     async function callModel(model: string, timeoutMs = 25000) {
       const url = `https://api-inference.huggingface.co/models/${model}`;
@@ -130,10 +132,15 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
           const resp = await callModel(model, 25000);
           if (!resp.ok) {
             const text = await resp.text().catch(() => null);
-            console.warn(`[disease] model ${model} returned status ${resp.status}`, text?.slice?.(0, 200));
+            console.warn(
+              `[disease] model ${model} returned status ${resp.status}`,
+              text?.slice?.(0, 200),
+            );
             if ([429, 502, 503, 504].includes(resp.status)) {
               // transient - retry
-              await new Promise((r) => setTimeout(r, backoff + Math.floor(Math.random() * 200)));
+              await new Promise((r) =>
+                setTimeout(r, backoff + Math.floor(Math.random() * 200)),
+              );
               backoff *= 2;
               continue;
             }
@@ -149,17 +156,28 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
           if (Array.isArray(json) && json.length) {
             const top = json[0];
-            return res.status(200).json({ label: top.label, score: top.score, all: json, model });
+            return res
+              .status(200)
+              .json({ label: top.label, score: top.score, all: json, model });
           }
 
           // If the model returns a different shape (e.g., VQA/text), return raw for now
           return res.status(200).json({ raw: json, model });
         } catch (e: any) {
-          console.warn(`[disease] model ${model} attempt ${attempt} failed:`, e?.message || e);
+          console.warn(
+            `[disease] model ${model} attempt ${attempt} failed:`,
+            e?.message || e,
+          );
           lastErr = e;
           // Retry on network / abort errors
-          if (e?.name === "AbortError" || e?.code === "ECONNRESET" || e?.code === "ETIMEDOUT") {
-            await new Promise((r) => setTimeout(r, backoff + Math.floor(Math.random() * 200)));
+          if (
+            e?.name === "AbortError" ||
+            e?.code === "ECONNRESET" ||
+            e?.code === "ETIMEDOUT"
+          ) {
+            await new Promise((r) =>
+              setTimeout(r, backoff + Math.floor(Math.random() * 200)),
+            );
             backoff *= 2;
             continue;
           }
@@ -170,7 +188,9 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
     }
 
     console.error("[disease] all models failed", lastErr);
-    return res.status(502).json({ error: "Inference failed", details: String(lastErr) });
+    return res
+      .status(502)
+      .json({ error: "Inference failed", details: String(lastErr) });
   } catch (err: any) {
     console.error("[disease] error:", err);
     return res
