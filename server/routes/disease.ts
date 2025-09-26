@@ -28,11 +28,16 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
           // Not JSON — it might be a raw data URL or raw base64 string
           const maybe = body as string;
           const isDataUrl = maybe.startsWith("data:");
-          const isBase64 = /^[A-Za-z0-9+/=\n\r]+$/.test(maybe.replace(/\s+/g, ""));
+          const isBase64 = /^[A-Za-z0-9+/=\n\r]+$/.test(
+            maybe.replace(/\s+/g, ""),
+          );
           if (isDataUrl || isBase64) {
             const raw = maybe.replace(/^data:[^;]+;base64,/, "");
             buffer = Buffer.from(raw, "base64");
-            console.log("[disease] decoded buffer from raw string body, length:", buffer.length);
+            console.log(
+              "[disease] decoded buffer from raw string body, length:",
+              buffer.length,
+            );
           }
         }
       }
@@ -45,10 +50,18 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
       // If we still don't have a buffer, expect a JSON object like { image: 'data:...base64,...' }
       if (!buffer) {
-        const base64 = body && typeof body.image === "string" ? body.image : undefined;
+        const base64 =
+          body && typeof body.image === "string" ? body.image : undefined;
         if (!base64) {
-          console.error("[disease] Missing image in body; body preview keys:", body && typeof body === "object" ? Object.keys(body).slice(0, 10) : body);
-          return res.status(400).json({ error: "Missing 'image' (base64) in request body" });
+          console.error(
+            "[disease] Missing image in body; body preview keys:",
+            body && typeof body === "object"
+              ? Object.keys(body).slice(0, 10)
+              : body,
+          );
+          return res
+            .status(400)
+            .json({ error: "Missing 'image' (base64) in request body" });
         }
 
         const raw = base64.replace(/^data:[^;]+;base64,/, "");
@@ -58,10 +71,15 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
     }
 
     const hfKey = process.env.HUGGINGFACE_API_KEY;
-    const hfModel = process.env.HUGGINGFACE_MODEL || "malifiahm/plant_disease_classification";
+    const hfModel =
+      process.env.HUGGINGFACE_MODEL || "malifiahm/plant_disease_classification";
 
     if (!hfKey) {
-      return res.status(500).json({ error: "Server misconfiguration: missing HUGGINGFACE_API_KEY" });
+      return res
+        .status(500)
+        .json({
+          error: "Server misconfiguration: missing HUGGINGFACE_API_KEY",
+        });
     }
 
     if (!buffer || !buffer.length) {
@@ -82,7 +100,12 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
     if (!r.ok) {
       const text = await r.text().catch(() => null);
       console.error("[disease] upstream error status:", r.status, text);
-      return res.status(502).json({ error: "Upstream inference error", details: text || r.statusText });
+      return res
+        .status(502)
+        .json({
+          error: "Upstream inference error",
+          details: text || r.statusText,
+        });
     }
 
     const json = await r.json().catch((e) => {
@@ -92,13 +115,17 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     if (Array.isArray(json) && json.length) {
       const top = json[0];
-      return res.status(200).json({ label: top.label, score: top.score, all: json });
+      return res
+        .status(200)
+        .json({ label: top.label, score: top.score, all: json });
     }
 
     // If model returned a different shape or null, return raw
     return res.status(200).json({ raw: json });
   } catch (err: any) {
     console.error("[disease] error:", err);
-    return res.status(500).json({ error: err.message || "Internal server error" });
+    return res
+      .status(500)
+      .json({ error: err.message || "Internal server error" });
   }
 };
