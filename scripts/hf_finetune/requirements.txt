@@ -1,0 +1,8 @@
+datasets
+transformers
+accelerate
+evaluate
+huggingface_hub
+torch
+torchvision
+timm
