@@ -74,20 +74,43 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "Empty image buffer" });
     }
 
+    // Basic image format/size validation to provide clearer 4xx errors
+    let detectedMime: string | undefined;
+    if ((req as any)._bodyMime) detectedMime = (req as any)._bodyMime;
+
+    const isSvg = () => {
+      try {
+        const txt = buffer.toString("utf8", 0, Math.min(200, buffer.length)).toLowerCase();
+        return txt.includes("<svg") || (detectedMime === "image/svg+xml");
+      } catch (e) {
+        return false;
+      }
+    };
+
+    if (isSvg()) {
+      return res.status(400).json({ error: "SVG images are not supported. Please upload a photographic image (JPEG/PNG/WebP)." });
+    }
+
+    const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8;
+    const isPng = buffer.length >= 8 && buffer.readUInt32BE(0) === 0x89504e47;
+    const isWebp = buffer.length >= 12 && buffer.toString("ascii", 0, 4) === "RIFF" && buffer.toString("ascii", 8, 12) === "WEBP";
+
+    if (!isJpeg && !isPng && !isWebp) {
+      return res.status(400).json({ error: "Unsupported image format. Please upload JPEG, PNG, or WebP images." });
+    }
+
+    if (buffer.length < 2000) {
+      return res.status(400).json({ error: "Image too small. Please upload a full-size photo (not an icon or SVG)." });
+    }
+
     // Attempt inference with retries and fallbacks
     const hfKey = process.env.HUGGINGFACE_API_KEY;
-    const primaryModel =
-      process.env.HUGGINGFACE_MODEL || "malifiahm/plant_disease_classification";
+    const primaryModel = process.env.HUGGINGFACE_MODEL || "microsoft/resnet-50";
     const fallbackModels = [
-      "microsoft/resnet-50",
       "google/vit-base-patch16-224",
-      // add more known image-classification models if needed
     ];
 
-    const modelsToTry = [
-      primaryModel,
-      ...fallbackModels.filter((m) => m !== primaryModel),
-    ];
+    const modelsToTry = [primaryModel, ...fallbackModels.filter((m) => m !== primaryModel)];
 
     async function callModel(model: string, timeoutMs = 25000) {
       const url = `https://api-inference.huggingface.co/models/${model}`;
