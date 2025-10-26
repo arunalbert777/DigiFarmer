@@ -1,41 +1,41 @@
-import fs from 'fs';
-import path from 'path';
-import http from 'http';
+import fs from "fs";
+import path from "path";
+import http from "http";
 
-async function main(){
-  const filePath = path.resolve('public/placeholder.svg');
-  if(!fs.existsSync(filePath)){
-    console.error('Local test image not found:', filePath);
+async function main() {
+  const filePath = path.resolve("public/placeholder.svg");
+  if (!fs.existsSync(filePath)) {
+    console.error("Local test image not found:", filePath);
     process.exit(2);
   }
   const data = fs.readFileSync(filePath);
-  const base64 = data.toString('base64');
+  const base64 = data.toString("base64");
   const json = JSON.stringify({ image: `data:image/svg+xml;base64,${base64}` });
 
   const options = {
-    hostname: 'localhost',
+    hostname: "localhost",
     port: 8080,
-    path: '/api/detect',
-    method: 'POST',
+    path: "/api/detect",
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(json)
-    }
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(json),
+    },
   };
 
   const req = http.request(options, (res) => {
-    let body = '';
-    res.setEncoding('utf8');
-    res.on('data', (chunk) => body += chunk);
-    res.on('end', () => {
-      console.log('STATUS:', res.statusCode);
-      console.log('HEADERS:', JSON.stringify(res.headers, null, 2));
-      console.log('BODY:', body);
+    let body = "";
+    res.setEncoding("utf8");
+    res.on("data", (chunk) => (body += chunk));
+    res.on("end", () => {
+      console.log("STATUS:", res.statusCode);
+      console.log("HEADERS:", JSON.stringify(res.headers, null, 2));
+      console.log("BODY:", body);
     });
   });
 
-  req.on('error', (e) => {
-    console.error('Request error:', e);
+  req.on("error", (e) => {
+    console.error("Request error:", e);
   });
 
   req.write(json);
