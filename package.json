@@ -26,7 +26,8 @@
     "zod": "^3.25.76",
     "@google/genai": "^1.0.0",
     "@tensorflow/tfjs-node": "^4.10.0",
-    "@tensorflow-models/mobilenet": "^2.1.0"
+    "@tensorflow-models/mobilenet": "^2.1.0",
+    "file-type": "^18.0.0"
   },
   "devDependencies": {
     "@hookform/resolvers": "^5.2.1",
