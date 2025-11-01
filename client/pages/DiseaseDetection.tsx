@@ -23,23 +23,37 @@ export default function DiseaseDetection() {
     setLoading(true);
     setResult(null);
 
-    // Attempt client-side TFJS inference using a TFJS model in /models/plant_disease/
+    // Attempt client-side TFJS inference using a TFJS model in /models/plant_disease/ via CDN
     try {
-      const tf = await import('@tensorflow/tfjs');
+      const loadScript = (url: string) =>
+        new Promise<void>((res, rej) => {
+          if (document.querySelector(`script[src=\"${url}\"]`)) return res();
+          const s = document.createElement('script');
+          s.src = url;
+          s.onload = () => res();
+          s.onerror = (e) => rej(e);
+          document.head.appendChild(s);
+        });
+
+      // Load TFJS runtime from CDN if not present
+      if (!(window as any).tf) {
+        await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js');
+      }
+
+      const tf = (window as any).tf;
       const modelUrl = '/models/plant_disease/model.json';
       let model: any = null;
       try {
-        model = await (tf as any).loadLayersModel(modelUrl);
+        model = await tf.loadLayersModel(modelUrl);
       } catch (err) {
         try {
-          model = await (tf as any).loadGraphModel(modelUrl);
+          model = await tf.loadGraphModel(modelUrl);
         } catch (err2) {
           model = null;
         }
       }
 
       if (model) {
-        // prepare image element
         const img = new Image();
         img.crossOrigin = 'anonymous';
         const src = imageData as string;
@@ -55,11 +69,11 @@ export default function DiseaseDetection() {
         const ctx = canvas.getContext('2d')!;
         ctx.drawImage(img, 0, 0);
 
-        let tensor = (tf as any).browser.fromPixels(canvas).toFloat();
-        tensor = (tf as any).image.resizeBilinear(tensor, [224, 224]);
+        let tensor = tf.browser.fromPixels(canvas).toFloat();
+        tensor = tf.image.resizeBilinear(tensor, [224, 224]);
         tensor = tensor.expandDims(0).div(255.0);
 
-        const out = (model as any).predict(tensor) as any;
+        const out = model.predict(tensor) as any;
         let preds: number[] | any = null;
         if (out && out.data) {
           preds = Array.from(await out.data());
@@ -81,10 +95,9 @@ export default function DiseaseDetection() {
           return;
         }
 
-        // If model has classify (mobilenet), use it
-        if ((model as any).classify) {
-          const cls = await (model as any).classify(img);
-          setResult({ label: cls[0]?.className || 'unknown', score: cls[0]?.probability || 0, all: cls, model: 'client-mobilenet' });
+        if (model.classify) {
+          const cls = await model.classify(img);
+          setResult({ label: cls[0]?.className || 'unknown', score: cls[0]?.probability || 0, all: cls, model: 'client-model' });
           setLoading(false);
           return;
         }
