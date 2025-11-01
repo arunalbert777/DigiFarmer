@@ -166,46 +166,136 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       return res.status(200).json({ ...cached.value, cached: true });
     }
 
-    // 5) Local TensorFlow.js inference using MobileNet
+    // 5) Try local specialized TFJS plant-disease model, then fallback to MobileNet
     try {
-      const tfnode = await import('@tensorflow/tfjs-node');
-      const mobilenet = await import('@tensorflow-models/mobilenet');
+      const tf = await import('@tensorflow/tfjs-node');
+      const path = await import('path');
+      const fs = await import('fs');
 
-      if (!(global as any)._tfMobilenetModel) {
-        console.log('[disease] loading mobilenet model...');
-        (global as any)._tfMobilenetModel = await (mobilenet as any).load({
-          version: 2,
-          alpha: 1.0,
-        });
-        console.log('[disease] mobilenet model loaded');
+      const modelRel = process.env.PLANT_MODEL_PATH || 'models/plant_disease/model.json';
+      const modelAbs = path.resolve(modelRel);
+
+      async function predictWithGraphModel(graphModel: any, labels: string[] | null) {
+        // decode, resize, normalize
+        let img = (tf as any).node.decodeImage(usedBuffer, 3);
+        try {
+          img = (tf as any).image.resizeBilinear(img, [224, 224]);
+        } catch (e) {
+          // some TF versions use tf.image, some have it on tf
+          img = (tf as any).resizeBilinear(img, [224, 224]);
+        }
+        img = (img as any).expandDims(0).toFloat().div(255);
+
+        const pred = (graphModel as any).predict(img) as any;
+        let scores: number[] = [];
+
+        if (Array.isArray(pred)) {
+          // sometimes model returns array of tensors
+          const out = await Promise.all(pred.map((p: any) => p.array()));
+          scores = out.flat(1)[0] || out.flat();
+        } else if (pred.array) {
+          const arr = await pred.array();
+          scores = Array.isArray(arr[0]) ? arr[0] : arr;
+        } else if (pred.data) {
+          const d = await pred.data();
+          scores = Array.from(d as any);
+        }
+
+        // ensure scores is 1d
+        if (!Array.isArray(scores)) scores = [Number(scores)];
+
+        // softmax
+        const max = Math.max(...scores);
+        const exps = scores.map((s) => Math.exp(s - max));
+        const sum = exps.reduce((a, b) => a + b, 0) || 1;
+        const probs = exps.map((e) => e / sum);
+
+        // top-5
+        const indexed = probs.map((p, i) => ({ i, p }));
+        indexed.sort((a, b) => b.p - a.p);
+        const top = indexed.slice(0, 5).map((x) => ({
+          index: x.i,
+          label: labels?.[x.i] ?? `class_${x.i}`,
+          probability: x.p,
+        }));
+
+        try { img.dispose?.(); } catch (e) {}
+        try { pred.dispose?.(); } catch (e) {}
+
+        return top;
       }
 
-      const model = (global as any)._tfMobilenetModel;
+      // If specialized model exists locally, load and use it
+      if (fs.existsSync(modelAbs)) {
+        if (!(global as any)._plantGraphModel) {
+          console.log('[disease] loading local plant model from', modelAbs);
+          (global as any)._plantGraphModel = await (tf as any).loadGraphModel('file://' + modelAbs);
 
-      // Decode image buffer to tensor and classify
-      const imageTensor = (tfnode as any).node.decodeImage(usedBuffer, 3);
-      const predictions = await model.classify(imageTensor as any, 5);
-      // dispose tensor to free memory
+          // try to load labels.json next to model
+          const labelsPath = path.join(path.dirname(modelAbs), 'labels.json');
+          if (fs.existsSync(labelsPath)) {
+            try {
+              (global as any)._plantLabels = JSON.parse(fs.readFileSync(labelsPath, 'utf8'));
+              console.log('[disease] loaded labels.json with', (global as any)._plantLabels.length, 'labels');
+            } catch (e) {
+              console.warn('[disease] failed to parse labels.json', e);
+              (global as any)._plantLabels = null;
+            }
+          } else {
+            (global as any)._plantLabels = null;
+          }
+        }
+
+        const modelLocal = (global as any)._plantGraphModel;
+        const labels = (global as any)._plantLabels || null;
+        const top = await predictWithGraphModel(modelLocal, labels);
+
+        const output = { label: top[0]?.label ?? 'unknown', score: top[0]?.probability ?? 0, all: top, model: 'local-plant-model' };
+
+        cache.set(key, { value: output, expires: Date.now() + CACHE_TTL });
+        if (cache.size > CACHE_MAX) {
+          const it = cache.keys();
+          const first = it.next().value;
+          if (first) cache.delete(first);
+        }
+
+        return res.status(200).json(output);
+      }
+
+      // Fallback: MobileNet (general) if no specialized model
       try {
-        imageTensor.dispose?.();
-      } catch (e) {}
+        const mobilenet = await import('@tensorflow-models/mobilenet');
 
-      const output = {
-        label: predictions?.[0]?.className || 'unknown',
-        score: predictions?.[0]?.probability || 0,
-        all: predictions,
-        model: 'mobilenet-v2',
-      };
+        if (!(global as any)._tfMobilenetModel) {
+          console.log('[disease] loading mobilenet model...');
+          (global as any)._tfMobilenetModel = await (mobilenet as any).load({ version: 2, alpha: 1.0 });
+          console.log('[disease] mobilenet model loaded');
+        }
 
-      // store in cache with TTL
-      cache.set(key, { value: output, expires: Date.now() + CACHE_TTL });
-      if (cache.size > CACHE_MAX) {
-        const it = cache.keys();
-        const first = it.next().value;
-        if (first) cache.delete(first);
+        const model = (global as any)._tfMobilenetModel;
+        const imageTensor = (tf as any).node.decodeImage(usedBuffer, 3);
+        const predictions = await model.classify(imageTensor as any, 5);
+        try { imageTensor.dispose?.(); } catch (e) {}
+
+        const output = {
+          label: predictions?.[0]?.className || 'unknown',
+          score: predictions?.[0]?.probability || 0,
+          all: predictions,
+          model: 'mobilenet-v2',
+        };
+
+        cache.set(key, { value: output, expires: Date.now() + CACHE_TTL });
+        if (cache.size > CACHE_MAX) {
+          const it = cache.keys();
+          const first = it.next().value;
+          if (first) cache.delete(first);
+        }
+
+        return res.status(200).json(output);
+      } catch (e) {
+        console.error('[disease] mobilenet fallback failed', e);
+        return res.status(500).json({ error: 'Local inference failed', details: String(e) });
       }
-
-      return res.status(200).json(output);
     } catch (e) {
       console.error('[disease] local tfjs inference failed', e);
       return res.status(500).json({ error: 'Local inference failed', details: String(e) });
