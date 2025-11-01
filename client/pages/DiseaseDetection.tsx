@@ -28,7 +28,7 @@ export default function DiseaseDetection() {
       const loadScript = (url: string) =>
         new Promise<void>((res, rej) => {
           if (document.querySelector(`script[src=\"${url}\"]`)) return res();
-          const s = document.createElement('script');
+          const s = document.createElement("script");
           s.src = url;
           s.onload = () => res();
           s.onerror = (e) => rej(e);
@@ -37,11 +37,13 @@ export default function DiseaseDetection() {
 
       // Load TFJS runtime from CDN if not present
       if (!(window as any).tf) {
-        await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js');
+        await loadScript(
+          "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js",
+        );
       }
 
       const tf = (window as any).tf;
-      const modelUrl = '/models/plant_disease/model.json';
+      const modelUrl = "/models/plant_disease/model.json";
       let model: any = null;
       try {
         model = await tf.loadLayersModel(modelUrl);
@@ -55,7 +57,7 @@ export default function DiseaseDetection() {
 
       if (model) {
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        img.crossOrigin = "anonymous";
         const src = imageData as string;
         await new Promise<void>((res, rej) => {
           img.onload = () => res();
@@ -63,10 +65,10 @@ export default function DiseaseDetection() {
           img.src = src;
         });
 
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = img.width;
         canvas.height = img.height;
-        const ctx = canvas.getContext('2d')!;
+        const ctx = canvas.getContext("2d")!;
         ctx.drawImage(img, 0, 0);
 
         let tensor = tf.browser.fromPixels(canvas).toFloat();
@@ -88,30 +90,48 @@ export default function DiseaseDetection() {
           const sum = exps.reduce((a, b) => a + b, 0) || 1;
           const probs = exps.map((e) => e / sum);
           const topIdx = probs.indexOf(Math.max(...probs));
-          setResult({ label: `class_${topIdx}`, score: probs[topIdx], all: probs, model: 'client-model' });
+          setResult({
+            label: `class_${topIdx}`,
+            score: probs[topIdx],
+            all: probs,
+            model: "client-model",
+          });
           setLoading(false);
-          try { tensor.dispose?.(); } catch (e) {}
-          try { (out as any).dispose?.(); } catch (e) {}
+          try {
+            tensor.dispose?.();
+          } catch (e) {}
+          try {
+            (out as any).dispose?.();
+          } catch (e) {}
           return;
         }
 
         if (model.classify) {
           const cls = await model.classify(img);
-          setResult({ label: cls[0]?.className || 'unknown', score: cls[0]?.probability || 0, all: cls, model: 'client-model' });
+          setResult({
+            label: cls[0]?.className || "unknown",
+            score: cls[0]?.probability || 0,
+            all: cls,
+            model: "client-model",
+          });
           setLoading(false);
           return;
         }
       }
     } catch (e) {
-      console.warn('[detection] client-side tfjs/model not available or failed', e);
+      console.warn(
+        "[detection] client-side tfjs/model not available or failed",
+        e,
+      );
     }
 
     // Try client-side MobileNet as fallback via CDN
     try {
       if (!(window as any).mobilenet) {
         await new Promise<void>((res, rej) => {
-          const s1 = document.createElement('script');
-          s1.src = 'https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js';
+          const s1 = document.createElement("script");
+          s1.src =
+            "https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js";
           s1.onload = () => res();
           s1.onerror = (e) => rej(e);
           document.head.appendChild(s1);
@@ -119,8 +139,9 @@ export default function DiseaseDetection() {
       }
       if (!(window as any).tf) {
         await new Promise<void>((res, rej) => {
-          const s2 = document.createElement('script');
-          s2.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js';
+          const s2 = document.createElement("script");
+          s2.src =
+            "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js";
           s2.onload = () => res();
           s2.onerror = (e) => rej(e);
           document.head.appendChild(s2);
@@ -129,7 +150,7 @@ export default function DiseaseDetection() {
 
       const mobilenet = (window as any).mobilenet;
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      img.crossOrigin = "anonymous";
       img.src = imageData as string;
       await new Promise<void>((res, rej) => {
         img.onload = () => res();
@@ -138,33 +159,40 @@ export default function DiseaseDetection() {
       const m = await mobilenet.load({ version: 2, alpha: 1.0 });
       const cls = await m.classify(img as any);
       if (cls && cls.length) {
-        setResult({ label: cls[0].className, score: cls[0].probability, all: cls, model: 'client-mobilenet' });
+        setResult({
+          label: cls[0].className,
+          score: cls[0].probability,
+          all: cls,
+          model: "client-mobilenet",
+        });
         setLoading(false);
         return;
       }
     } catch (e) {
-      console.warn('[detection] client-side mobilenet fallback failed', e);
+      console.warn("[detection] client-side mobilenet fallback failed", e);
     }
 
     // fallback: send to server for detection
     try {
       if (fileRef) {
         const fd = new FormData();
-        fd.append('file', fileRef);
-        const res = await fetch('/api/detect', { method: 'POST', body: fd });
+        fd.append("file", fileRef);
+        const res = await fetch("/api/detect", { method: "POST", body: fd });
         const data = await res.json().catch(() => null);
-        if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
+        if (!res.ok)
+          throw new Error(data?.error || data?.details || JSON.stringify(data));
         setResult(data);
         return;
       }
 
-      const res = await fetch('/api/detect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/detect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: imageData }),
       });
       const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
+      if (!res.ok)
+        throw new Error(data?.error || data?.details || JSON.stringify(data));
       setResult(data);
     } catch (e: any) {
       setResult({ error: e.message || String(e) });

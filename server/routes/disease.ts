@@ -11,48 +11,59 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     // Try multipart parsing via busboy if present
     try {
-      const contentType = (req.headers['content-type'] || '') as string;
-      if (!buffer && contentType.startsWith('multipart/')) {
-        const Busboy = (await import('busboy')).default;
-        console.log('[disease] parsing multipart with busboy');
+      const contentType = (req.headers["content-type"] || "") as string;
+      if (!buffer && contentType.startsWith("multipart/")) {
+        const Busboy = (await import("busboy")).default;
+        console.log("[disease] parsing multipart with busboy");
         await new Promise<void>((resolve, reject) => {
           const bb = new Busboy({ headers: req.headers as any });
-          bb.on('file', (_name, stream) => {
+          bb.on("file", (_name, stream) => {
             const chunks: Buffer[] = [];
-            stream.on('data', (c: Buffer) => chunks.push(c));
-            stream.on('end', () => {
+            stream.on("data", (c: Buffer) => chunks.push(c));
+            stream.on("end", () => {
               buffer = Buffer.concat(chunks);
-              console.log('[disease] parsed multipart file, size=', buffer.length);
+              console.log(
+                "[disease] parsed multipart file, size=",
+                buffer.length,
+              );
             });
           });
-          bb.on('error', (err: any) => reject(err));
-          bb.on('finish', () => resolve());
+          bb.on("error", (err: any) => reject(err));
+          bb.on("finish", () => resolve());
           req.pipe(bb as any);
         });
       }
     } catch (e) {
-      console.warn('[disease] busboy parse failed or not available, continuing', e);
+      console.warn(
+        "[disease] busboy parse failed or not available, continuing",
+        e,
+      );
     }
 
     if ((req as any).file && (req as any).file.buffer) {
       buffer = (req as any).file.buffer as Buffer;
-      console.log('[disease] received multipart file, size:', buffer.length);
+      console.log("[disease] received multipart file, size:", buffer.length);
     } else {
       let body: any = req.body;
-      console.log('[disease] raw body type:', typeof body);
+      console.log("[disease] raw body type:", typeof body);
 
-      if (typeof body === 'string') {
+      if (typeof body === "string") {
         try {
           body = JSON.parse(body);
-          console.log('[disease] parsed string body as JSON');
+          console.log("[disease] parsed string body as JSON");
         } catch (e) {
           const maybe = body as string;
-          const isDataUrl = maybe.startsWith('data:');
-          const isBase64 = /^[A-Za-z0-9+/=\n\r]+$/.test(maybe.replace(/\s+/g, ''));
+          const isDataUrl = maybe.startsWith("data:");
+          const isBase64 = /^[A-Za-z0-9+/=\n\r]+$/.test(
+            maybe.replace(/\s+/g, ""),
+          );
           if (isDataUrl || isBase64) {
-            const raw = maybe.replace(/^data:[^;]+;base64,/, '');
-            buffer = Buffer.from(raw, 'base64');
-            console.log('[disease] decoded buffer from raw string body, length:', buffer.length);
+            const raw = maybe.replace(/^data:[^;]+;base64,/, "");
+            buffer = Buffer.from(raw, "base64");
+            console.log(
+              "[disease] decoded buffer from raw string body, length:",
+              buffer.length,
+            );
             const m = maybe.match(/^data:([^;]+);base64,/);
             if (m) (req as any)._bodyMime = m[1];
           }
@@ -61,90 +72,149 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
       if (!buffer && Buffer.isBuffer(body)) {
         buffer = body as Buffer;
-        console.log('[disease] body is buffer, length:', buffer.length);
+        console.log("[disease] body is buffer, length:", buffer.length);
       }
 
       if (!buffer) {
-        const base64 = body && typeof body.image === 'string' ? body.image : undefined;
+        const base64 =
+          body && typeof body.image === "string" ? body.image : undefined;
         if (!base64) {
-          console.error('[disease] Missing image in body; body preview keys:', body && typeof body === 'object' ? Object.keys(body).slice(0, 10) : body);
-          return res.status(400).json({ error: "Missing 'image' (base64) in request body" });
+          console.error(
+            "[disease] Missing image in body; body preview keys:",
+            body && typeof body === "object"
+              ? Object.keys(body).slice(0, 10)
+              : body,
+          );
+          return res
+            .status(400)
+            .json({ error: "Missing 'image' (base64) in request body" });
         }
-        const raw = base64.replace(/^data:[^;]+;base64,/, '');
-        buffer = Buffer.from(raw, 'base64');
+        const raw = base64.replace(/^data:[^;]+;base64,/, "");
+        buffer = Buffer.from(raw, "base64");
         const m = base64.match(/^data:([^;]+);base64,/);
         if (m) (req as any)._bodyMime = m[1];
-        console.log('[disease] received image length:', buffer.length);
+        console.log("[disease] received image length:", buffer.length);
       }
     }
 
     // 2) Basic validation
-    if (!buffer || !buffer.length) return res.status(400).json({ error: 'Empty image buffer' });
+    if (!buffer || !buffer.length)
+      return res.status(400).json({ error: "Empty image buffer" });
 
     const detectedMime = (req as any)._bodyMime;
-    if (detectedMime) console.log('[disease] detected mime:', detectedMime);
+    if (detectedMime) console.log("[disease] detected mime:", detectedMime);
 
     const isSvg = (() => {
       try {
-        const txt = buffer.toString('utf8', 0, Math.min(200, buffer.length)).toLowerCase();
-        return txt.includes('<svg') || detectedMime === 'image/svg+xml';
+        const txt = buffer
+          .toString("utf8", 0, Math.min(200, buffer.length))
+          .toLowerCase();
+        return txt.includes("<svg") || detectedMime === "image/svg+xml";
       } catch (e) {
         return false;
       }
     })();
-    if (isSvg) return res.status(400).json({ error: 'SVG images are not supported. Please upload a photographic image (JPEG/PNG/WebP).' });
+    if (isSvg)
+      return res
+        .status(400)
+        .json({
+          error:
+            "SVG images are not supported. Please upload a photographic image (JPEG/PNG/WebP).",
+        });
 
     // Use file-type if available
     try {
-      const fileType = await import('file-type');
+      const fileType = await import("file-type");
       const ft = await (fileType as any).fileTypeFromBuffer(buffer);
-      const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+      const allowed = ["image/jpeg", "image/png", "image/webp"];
       if (!ft || !allowed.includes(ft.mime)) {
-        return res.status(400).json({ error: 'Unsupported image format. Please upload JPEG, PNG, or WebP images.' });
+        return res
+          .status(400)
+          .json({
+            error:
+              "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
+          });
       }
     } catch (e) {
       // fallback magic bytes
       const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8;
       const isPng = buffer.length >= 8 && buffer.readUInt32BE(0) === 0x89504e47;
-      const isWebp = buffer.length >= 12 && buffer.toString('ascii', 0, 4) === 'RIFF' && buffer.toString('ascii', 8, 12) === 'WEBP';
-      if (!isJpeg && !isPng && !isWebp) return res.status(400).json({ error: 'Unsupported image format. Please upload JPEG, PNG, or WebP images.' });
+      const isWebp =
+        buffer.length >= 12 &&
+        buffer.toString("ascii", 0, 4) === "RIFF" &&
+        buffer.toString("ascii", 8, 12) === "WEBP";
+      if (!isJpeg && !isPng && !isWebp)
+        return res
+          .status(400)
+          .json({
+            error:
+              "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
+          });
     }
 
-    if (buffer.length < 2000) return res.status(400).json({ error: 'Image too small. Please upload a full-size photo (not an icon).' });
+    if (buffer.length < 2000)
+      return res
+        .status(400)
+        .json({
+          error:
+            "Image too small. Please upload a full-size photo (not an icon).",
+        });
 
     // 3) Resize using sharp if available
     let usedBuffer = buffer;
     try {
-      const sharp = await import('sharp');
+      const sharp = await import("sharp");
       if (sharp) {
         try {
-          const out = await (sharp as any)(buffer).rotate().resize({ width: 1024, height: 1024, fit: 'inside' }).toFormat('jpeg', { quality: 80 }).toBuffer();
-          console.log('[disease] resized image from', buffer.length, 'to', out.length);
+          const out = await (sharp as any)(buffer)
+            .rotate()
+            .resize({ width: 1024, height: 1024, fit: "inside" })
+            .toFormat("jpeg", { quality: 80 })
+            .toBuffer();
+          console.log(
+            "[disease] resized image from",
+            buffer.length,
+            "to",
+            out.length,
+          );
           usedBuffer = out;
         } catch (e) {
-          console.warn('[disease] sharp resize failed, using original buffer', e);
+          console.warn(
+            "[disease] sharp resize failed, using original buffer",
+            e,
+          );
         }
       }
     } catch (e) {
-      console.log('[disease] sharp not installed, skipping resize');
+      console.log("[disease] sharp not installed, skipping resize");
     }
 
     // 4) Simple caching
     const CACHE_TTL = 1000 * 60 * 10;
     const CACHE_MAX = 1000;
-    if (!(global as any)._detectionCache) (global as any)._detectionCache = new Map();
-    const cache: Map<string, { value: any; expires: number }> = (global as any)._detectionCache;
+    if (!(global as any)._detectionCache)
+      (global as any)._detectionCache = new Map();
+    const cache: Map<string, { value: any; expires: number }> = (global as any)
+      ._detectionCache;
 
-    const crypto = await import('crypto');
-    const key = crypto.createHash('sha256').update(usedBuffer).digest('hex');
+    const crypto = await import("crypto");
+    const key = crypto.createHash("sha256").update(usedBuffer).digest("hex");
     const now = Date.now();
     const cached = cache.get(key);
-    if (cached && cached.expires > now) return res.status(200).json({ ...cached.value, cached: true });
+    if (cached && cached.expires > now)
+      return res.status(200).json({ ...cached.value, cached: true });
 
     // 5) No server-side inference performed here. Instruct client to run inference locally.
-    return res.status(501).json({ error: 'No server-side model available. Please perform client-side inference or set PLANT_MODEL_URL in server env to enable hosted-model server-side inference.' });
+    return res
+      .status(501)
+      .json({
+        error:
+          "No server-side model available. Please perform client-side inference or set PLANT_MODEL_URL in server env to enable hosted-model server-side inference.",
+      });
   } catch (err: any) {
-    console.error('[disease] error:', err);
-    return res.status(500).json({ error: err.message || 'Internal server error' });
+    console.error("[disease] error:", err);
+    return res
+      .status(500)
+      .json({ error: err.message || "Internal server error" });
   }
 };
