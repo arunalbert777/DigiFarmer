@@ -106,10 +106,28 @@ export default function DiseaseDetection() {
       console.warn('[detection] client-side tfjs/model not available or failed', e);
     }
 
-    // Try client-side MobileNet as fallback
+    // Try client-side MobileNet as fallback via CDN
     try {
-      const mobilenet = await import('@tensorflow-models/mobilenet');
-      const tf = await import('@tensorflow/tfjs');
+      if (!(window as any).mobilenet) {
+        await new Promise<void>((res, rej) => {
+          const s1 = document.createElement('script');
+          s1.src = 'https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js';
+          s1.onload = () => res();
+          s1.onerror = (e) => rej(e);
+          document.head.appendChild(s1);
+        });
+      }
+      if (!(window as any).tf) {
+        await new Promise<void>((res, rej) => {
+          const s2 = document.createElement('script');
+          s2.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js';
+          s2.onload = () => res();
+          s2.onerror = (e) => rej(e);
+          document.head.appendChild(s2);
+        });
+      }
+
+      const mobilenet = (window as any).mobilenet;
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.src = imageData as string;
@@ -117,7 +135,7 @@ export default function DiseaseDetection() {
         img.onload = () => res();
         img.onerror = (e) => rej(e);
       });
-      const m = await (mobilenet as any).load({ version: 2, alpha: 1.0 });
+      const m = await mobilenet.load({ version: 2, alpha: 1.0 });
       const cls = await m.classify(img as any);
       if (cls && cls.length) {
         setResult({ label: cls[0].className, score: cls[0].probability, all: cls, model: 'client-mobilenet' });
