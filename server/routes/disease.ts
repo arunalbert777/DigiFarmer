@@ -383,47 +383,12 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
         }
       }
 
-      // Fallback: MobileNet (general) if no specialized model
-      try {
-        const mobilenet = await import("@tensorflow-models/mobilenet");
-
-        if (!(global as any)._tfMobilenetModel) {
-          console.log("[disease] loading mobilenet model...");
-          (global as any)._tfMobilenetModel = await (mobilenet as any).load({
-            version: 2,
-            alpha: 1.0,
-          });
-          console.log("[disease] mobilenet model loaded");
-        }
-
-        const model = (global as any)._tfMobilenetModel;
-        const imageTensor = (tf as any).node.decodeImage(usedBuffer, 3);
-        const predictions = await model.classify(imageTensor as any, 5);
-        try {
-          imageTensor.dispose?.();
-        } catch (e) {}
-
-        const output = {
-          label: predictions?.[0]?.className || "unknown",
-          score: predictions?.[0]?.probability || 0,
-          all: predictions,
-          model: "mobilenet-v2",
-        };
-
-        cache.set(key, { value: output, expires: Date.now() + CACHE_TTL });
-        if (cache.size > CACHE_MAX) {
-          const it = cache.keys();
-          const first = it.next().value;
-          if (first) cache.delete(first);
-        }
-
-        return res.status(200).json(output);
-      } catch (e) {
-        console.error("[disease] mobilenet fallback failed", e);
-        return res
-          .status(500)
-          .json({ error: "Local inference failed", details: String(e) });
-      }
+      // If we reached here, no server-side model is available.
+      // Inform client to perform inference locally (client-side TFJS) or provide PLANT_MODEL_URL for hosted model.
+      console.warn('[disease] no server-side model available; instructing client to run inference client-side');
+      return res.status(501).json({
+        error: 'No server-side model available. Please perform client-side inference or set PLANT_MODEL_URL in server env to enable hosted-model server-side inference.',
+      });
     } catch (e) {
       console.error("[disease] local tfjs inference failed", e);
       return res
