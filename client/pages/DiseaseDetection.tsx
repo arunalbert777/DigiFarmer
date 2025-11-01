@@ -93,6 +93,28 @@ export default function DiseaseDetection() {
       console.warn('[detection] client-side tfjs/model not available or failed', e);
     }
 
+    // Try client-side MobileNet as fallback
+    try {
+      const mobilenet = await import('@tensorflow-models/mobilenet');
+      const tf = await import('@tensorflow/tfjs');
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = imageData as string;
+      await new Promise<void>((res, rej) => {
+        img.onload = () => res();
+        img.onerror = (e) => rej(e);
+      });
+      const m = await (mobilenet as any).load({ version: 2, alpha: 1.0 });
+      const cls = await m.classify(img as any);
+      if (cls && cls.length) {
+        setResult({ label: cls[0].className, score: cls[0].probability, all: cls, model: 'client-mobilenet' });
+        setLoading(false);
+        return;
+      }
+    } catch (e) {
+      console.warn('[detection] client-side mobilenet fallback failed', e);
+    }
+
     // fallback: send to server for detection
     try {
       if (fileRef) {
