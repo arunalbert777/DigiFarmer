@@ -82,12 +82,10 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       }
     })();
     if (isSvg)
-      return res
-        .status(400)
-        .json({
-          error:
-            "SVG images are not supported. Please upload a photographic image (JPEG/PNG/WebP).",
-        });
+      return res.status(400).json({
+        error:
+          "SVG images are not supported. Please upload a photographic image (JPEG/PNG/WebP).",
+      });
 
     const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8;
     const isPng = buffer.length >= 8 && buffer.readUInt32BE(0) === 0x89504e47;
@@ -96,19 +94,15 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       buffer.toString("ascii", 0, 4) === "RIFF" &&
       buffer.toString("ascii", 8, 12) === "WEBP";
     if (!isJpeg && !isPng && !isWebp)
-      return res
-        .status(400)
-        .json({
-          error:
-            "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
-        });
+      return res.status(400).json({
+        error:
+          "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
+      });
     if (buffer.length < 2000)
-      return res
-        .status(400)
-        .json({
-          error:
-            "Image too small. Please upload a full-size photo (not an icon).",
-        });
+      return res.status(400).json({
+        error:
+          "Image too small. Please upload a full-size photo (not an icon).",
+      });
 
     // 3) Server-side resizing (sharp optional)
     let usedBuffer = buffer;
@@ -168,14 +162,18 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     // 5) Try local specialized TFJS plant-disease model, then fallback to MobileNet
     try {
-      const tf = await import('@tensorflow/tfjs-node');
-      const path = await import('path');
-      const fs = await import('fs');
+      const tf = await import("@tensorflow/tfjs-node");
+      const path = await import("path");
+      const fs = await import("fs");
 
-      const modelRel = process.env.PLANT_MODEL_PATH || 'models/plant_disease/model.json';
+      const modelRel =
+        process.env.PLANT_MODEL_PATH || "models/plant_disease/model.json";
       const modelAbs = path.resolve(modelRel);
 
-      async function predictWithGraphModel(graphModel: any, labels: string[] | null) {
+      async function predictWithGraphModel(
+        graphModel: any,
+        labels: string[] | null,
+      ) {
         // decode, resize, normalize
         let img = (tf as any).node.decodeImage(usedBuffer, 3);
         try {
@@ -219,8 +217,12 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
           probability: x.p,
         }));
 
-        try { img.dispose?.(); } catch (e) {}
-        try { pred.dispose?.(); } catch (e) {}
+        try {
+          img.dispose?.();
+        } catch (e) {}
+        try {
+          pred.dispose?.();
+        } catch (e) {}
 
         return top;
       }
@@ -228,17 +230,25 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       // If specialized model exists locally, load and use it
       if (fs.existsSync(modelAbs)) {
         if (!(global as any)._plantGraphModel) {
-          console.log('[disease] loading local plant model from', modelAbs);
-          (global as any)._plantGraphModel = await (tf as any).loadGraphModel('file://' + modelAbs);
+          console.log("[disease] loading local plant model from", modelAbs);
+          (global as any)._plantGraphModel = await (tf as any).loadGraphModel(
+            "file://" + modelAbs,
+          );
 
           // try to load labels.json next to model
-          const labelsPath = path.join(path.dirname(modelAbs), 'labels.json');
+          const labelsPath = path.join(path.dirname(modelAbs), "labels.json");
           if (fs.existsSync(labelsPath)) {
             try {
-              (global as any)._plantLabels = JSON.parse(fs.readFileSync(labelsPath, 'utf8'));
-              console.log('[disease] loaded labels.json with', (global as any)._plantLabels.length, 'labels');
+              (global as any)._plantLabels = JSON.parse(
+                fs.readFileSync(labelsPath, "utf8"),
+              );
+              console.log(
+                "[disease] loaded labels.json with",
+                (global as any)._plantLabels.length,
+                "labels",
+              );
             } catch (e) {
-              console.warn('[disease] failed to parse labels.json', e);
+              console.warn("[disease] failed to parse labels.json", e);
               (global as any)._plantLabels = null;
             }
           } else {
@@ -250,7 +260,12 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
         const labels = (global as any)._plantLabels || null;
         const top = await predictWithGraphModel(modelLocal, labels);
 
-        const output = { label: top[0]?.label ?? 'unknown', score: top[0]?.probability ?? 0, all: top, model: 'local-plant-model' };
+        const output = {
+          label: top[0]?.label ?? "unknown",
+          score: top[0]?.probability ?? 0,
+          all: top,
+          model: "local-plant-model",
+        };
 
         cache.set(key, { value: output, expires: Date.now() + CACHE_TTL });
         if (cache.size > CACHE_MAX) {
@@ -264,24 +279,29 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
       // Fallback: MobileNet (general) if no specialized model
       try {
-        const mobilenet = await import('@tensorflow-models/mobilenet');
+        const mobilenet = await import("@tensorflow-models/mobilenet");
 
         if (!(global as any)._tfMobilenetModel) {
-          console.log('[disease] loading mobilenet model...');
-          (global as any)._tfMobilenetModel = await (mobilenet as any).load({ version: 2, alpha: 1.0 });
-          console.log('[disease] mobilenet model loaded');
+          console.log("[disease] loading mobilenet model...");
+          (global as any)._tfMobilenetModel = await (mobilenet as any).load({
+            version: 2,
+            alpha: 1.0,
+          });
+          console.log("[disease] mobilenet model loaded");
         }
 
         const model = (global as any)._tfMobilenetModel;
         const imageTensor = (tf as any).node.decodeImage(usedBuffer, 3);
         const predictions = await model.classify(imageTensor as any, 5);
-        try { imageTensor.dispose?.(); } catch (e) {}
+        try {
+          imageTensor.dispose?.();
+        } catch (e) {}
 
         const output = {
-          label: predictions?.[0]?.className || 'unknown',
+          label: predictions?.[0]?.className || "unknown",
           score: predictions?.[0]?.probability || 0,
           all: predictions,
-          model: 'mobilenet-v2',
+          model: "mobilenet-v2",
         };
 
         cache.set(key, { value: output, expires: Date.now() + CACHE_TTL });
@@ -293,12 +313,16 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
         return res.status(200).json(output);
       } catch (e) {
-        console.error('[disease] mobilenet fallback failed', e);
-        return res.status(500).json({ error: 'Local inference failed', details: String(e) });
+        console.error("[disease] mobilenet fallback failed", e);
+        return res
+          .status(500)
+          .json({ error: "Local inference failed", details: String(e) });
       }
     } catch (e) {
-      console.error('[disease] local tfjs inference failed', e);
-      return res.status(500).json({ error: 'Local inference failed', details: String(e) });
+      console.error("[disease] local tfjs inference failed", e);
+      return res
+        .status(500)
+        .json({ error: "Local inference failed", details: String(e) });
     }
   } catch (err: any) {
     console.error("[disease] error:", err);
