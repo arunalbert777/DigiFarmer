@@ -22,30 +22,96 @@ export default function DiseaseDetection() {
     if (!imageData) return;
     setLoading(true);
     setResult(null);
-    try {
-      console.log("[detection] submitting image");
 
+    // Attempt client-side TFJS inference using a TFJS model in /models/plant_disease/
+    try {
+      const tf = await import('@tensorflow/tfjs');
+      const modelUrl = '/models/plant_disease/model.json';
+      let model: any = null;
+      try {
+        model = await (tf as any).loadLayersModel(modelUrl);
+      } catch (err) {
+        try {
+          model = await (tf as any).loadGraphModel(modelUrl);
+        } catch (err2) {
+          model = null;
+        }
+      }
+
+      if (model) {
+        // prepare image element
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        const src = imageData as string;
+        await new Promise<void>((res, rej) => {
+          img.onload = () => res();
+          img.onerror = (e) => rej(e);
+          img.src = src;
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0);
+
+        let tensor = (tf as any).browser.fromPixels(canvas).toFloat();
+        tensor = (tf as any).image.resizeBilinear(tensor, [224, 224]);
+        tensor = tensor.expandDims(0).div(255.0);
+
+        const out = (model as any).predict(tensor) as any;
+        let preds: number[] | any = null;
+        if (out && out.data) {
+          preds = Array.from(await out.data());
+        } else if (Array.isArray(out) && out[0] && out[0].data) {
+          preds = Array.from(await out[0].data());
+        }
+
+        if (preds && preds.length) {
+          const arr = preds.map(Number);
+          const max = Math.max(...arr);
+          const exps = arr.map((a) => Math.exp(a - max));
+          const sum = exps.reduce((a, b) => a + b, 0) || 1;
+          const probs = exps.map((e) => e / sum);
+          const topIdx = probs.indexOf(Math.max(...probs));
+          setResult({ label: `class_${topIdx}`, score: probs[topIdx], all: probs, model: 'client-model' });
+          setLoading(false);
+          try { tensor.dispose?.(); } catch (e) {}
+          try { (out as any).dispose?.(); } catch (e) {}
+          return;
+        }
+
+        // If model has classify (mobilenet), use it
+        if ((model as any).classify) {
+          const cls = await (model as any).classify(img);
+          setResult({ label: cls[0]?.className || 'unknown', score: cls[0]?.probability || 0, all: cls, model: 'client-mobilenet' });
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('[detection] client-side tfjs/model not available or failed', e);
+    }
+
+    // fallback: send to server for detection
+    try {
       if (fileRef) {
-        // send multipart form by default
         const fd = new FormData();
-        fd.append("file", fileRef);
-        const res = await fetch("/api/detect", { method: "POST", body: fd });
+        fd.append('file', fileRef);
+        const res = await fetch('/api/detect', { method: 'POST', body: fd });
         const data = await res.json().catch(() => null);
-        if (!res.ok)
-          throw new Error(data?.error || data?.details || JSON.stringify(data));
+        if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
         setResult(data);
         return;
       }
 
-      // fallback to JSON dataURL when fileRef not available
-      const res = await fetch("/api/detect", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/detect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageData }),
       });
       const data = await res.json().catch(() => null);
-      if (!res.ok)
-        throw new Error(data?.error || data?.details || JSON.stringify(data));
+      if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
       setResult(data);
     } catch (e: any) {
       setResult({ error: e.message || String(e) });
