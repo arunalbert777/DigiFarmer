@@ -330,6 +330,48 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
         return res.status(200).json(output);
       }
 
+      // If PLANT_MODEL_URL provided, try loading hosted TFJS model
+      const hostedUrl = process.env.PLANT_MODEL_URL;
+      if (hostedUrl) {
+        try {
+          if (!(global as any)._hostedPlantModelUrl || (global as any)._hostedPlantModelUrl !== hostedUrl) {
+            console.log('[disease] loading hosted plant model from', hostedUrl);
+            (global as any)._hostedPlantModel = await (tf as any).loadGraphModel(hostedUrl);
+            (global as any)._hostedPlantModelUrl = hostedUrl;
+
+            // try to fetch labels.json next to hosted model
+            try {
+              const labelsUrl = new URL('labels.json', hostedUrl).toString();
+              const labelsResp = await fetch(labelsUrl);
+              if (labelsResp.ok) {
+                (global as any)._hostedPlantLabels = await labelsResp.json();
+                console.log('[disease] loaded hosted labels.json with', (global as any)._hostedPlantLabels.length, 'labels');
+              } else {
+                (global as any)._hostedPlantLabels = null;
+              }
+            } catch (e) {
+              (global as any)._hostedPlantLabels = null;
+            }
+          }
+
+          if ((global as any)._hostedPlantModel) {
+            const top = await predictWithGraphModel((global as any)._hostedPlantModel, (global as any)._hostedPlantLabels || null);
+            const output = { label: top[0]?.label ?? 'unknown', score: top[0]?.probability ?? 0, all: top, model: 'hosted-plant-model' };
+
+            cache.set(key, { value: output, expires: Date.now() + CACHE_TTL });
+            if (cache.size > CACHE_MAX) {
+              const it = cache.keys();
+              const first = it.next().value;
+              if (first) cache.delete(first);
+            }
+
+            return res.status(200).json(output);
+          }
+        } catch (e) {
+          console.warn('[disease] failed to load/score hosted model', e);
+        }
+      }
+
       // Fallback: MobileNet (general) if no specialized model
       try {
         const mobilenet = await import("@tensorflow-models/mobilenet");
