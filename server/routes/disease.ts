@@ -7,6 +7,32 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     // 1) Extract image buffer (multipart or JSON/dataURL/raw base64)
     let buffer: Buffer | undefined;
+
+    // If multipart/form-data arrives, parse using busboy
+    try {
+      const contentType = (req.headers['content-type'] || '') as string;
+      if (!buffer && contentType.startsWith('multipart/')) {
+        const Busboy = (await import('busboy')).default;
+        console.log('[disease] parsing multipart with busboy');
+        await new Promise<void>((resolve, reject) => {
+          const bb = new Busboy({ headers: req.headers as any });
+          bb.on('file', (_name, stream) => {
+            const chunks: Buffer[] = [];
+            stream.on('data', (c: Buffer) => chunks.push(c));
+            stream.on('end', () => {
+              buffer = Buffer.concat(chunks);
+              console.log('[disease] parsed multipart file, size=', buffer.length);
+            });
+          });
+          bb.on('error', (err: any) => reject(err));
+          bb.on('finish', () => resolve());
+          req.pipe(bb as any);
+        });
+      }
+    } catch (e) {
+      console.warn('[disease] busboy parse failed or not available, continuing', e);
+    }
+
     if ((req as any).file && (req as any).file.buffer) {
       buffer = (req as any).file.buffer as Buffer;
       console.log("[disease] received multipart file, size:", buffer.length);
