@@ -94,6 +94,10 @@ jobs:
 
       - name: Attempt to train model locally and convert (if no .h5 found)
         if: steps.copy_model.outputs.found == '0'
+        env:
+          TRAIN_SAMPLES: 500
+          TRAIN_EPOCHS: 1
+          TRAIN_BATCH: 16
         run: |
           set -e
           echo "No pretrained .h5 found; attempting to train a lightweight model using TensorFlow Datasets (PlantVillage)"
