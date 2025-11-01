@@ -71,6 +71,7 @@ jobs:
           echo "Conversion complete"
 
       - name: Verify model.json
+        id: verify_model
         run: |
           if [ -f models/plant_disease/model.json ]; then
             echo "model_exists=1" >> $GITHUB_OUTPUT
