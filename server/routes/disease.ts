@@ -10,27 +10,33 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     // If multipart/form-data arrives, parse using busboy
     try {
-      const contentType = (req.headers['content-type'] || '') as string;
-      if (!buffer && contentType.startsWith('multipart/')) {
-        const Busboy = (await import('busboy')).default;
-        console.log('[disease] parsing multipart with busboy');
+      const contentType = (req.headers["content-type"] || "") as string;
+      if (!buffer && contentType.startsWith("multipart/")) {
+        const Busboy = (await import("busboy")).default;
+        console.log("[disease] parsing multipart with busboy");
         await new Promise<void>((resolve, reject) => {
           const bb = new Busboy({ headers: req.headers as any });
-          bb.on('file', (_name, stream) => {
+          bb.on("file", (_name, stream) => {
             const chunks: Buffer[] = [];
-            stream.on('data', (c: Buffer) => chunks.push(c));
-            stream.on('end', () => {
+            stream.on("data", (c: Buffer) => chunks.push(c));
+            stream.on("end", () => {
               buffer = Buffer.concat(chunks);
-              console.log('[disease] parsed multipart file, size=', buffer.length);
+              console.log(
+                "[disease] parsed multipart file, size=",
+                buffer.length,
+              );
             });
           });
-          bb.on('error', (err: any) => reject(err));
-          bb.on('finish', () => resolve());
+          bb.on("error", (err: any) => reject(err));
+          bb.on("finish", () => resolve());
           req.pipe(bb as any);
         });
       }
     } catch (e) {
-      console.warn('[disease] busboy parse failed or not available, continuing', e);
+      console.warn(
+        "[disease] busboy parse failed or not available, continuing",
+        e,
+      );
     }
 
     if ((req as any).file && (req as any).file.buffer) {
@@ -115,11 +121,16 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     // Use robust file-type detection when available
     try {
-      const fileType = await import('file-type');
+      const fileType = await import("file-type");
       const ft = await (fileType as any).fileTypeFromBuffer(buffer);
-      const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+      const allowed = ["image/jpeg", "image/png", "image/webp"];
       if (!ft || !allowed.includes(ft.mime)) {
-        return res.status(400).json({ error: 'Unsupported image format. Please upload JPEG, PNG, or WebP images.' });
+        return res
+          .status(400)
+          .json({
+            error:
+              "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
+          });
       }
     } catch (e) {
       // Fallback to magic bytes detection
@@ -127,14 +138,24 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       const isPng = buffer.length >= 8 && buffer.readUInt32BE(0) === 0x89504e47;
       const isWebp =
         buffer.length >= 12 &&
-        buffer.toString('ascii', 0, 4) === 'RIFF' &&
-        buffer.toString('ascii', 8, 12) === 'WEBP';
+        buffer.toString("ascii", 0, 4) === "RIFF" &&
+        buffer.toString("ascii", 8, 12) === "WEBP";
       if (!isJpeg && !isPng && !isWebp)
-        return res.status(400).json({ error: 'Unsupported image format. Please upload JPEG, PNG, or WebP images.' });
+        return res
+          .status(400)
+          .json({
+            error:
+              "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
+          });
     }
 
     if (buffer.length < 2000)
-      return res.status(400).json({ error: 'Image too small. Please upload a full-size photo (not an icon).' });
+      return res
+        .status(400)
+        .json({
+          error:
+            "Image too small. Please upload a full-size photo (not an icon).",
+        });
 
     // 3) Server-side resizing (sharp optional)
     let usedBuffer = buffer;

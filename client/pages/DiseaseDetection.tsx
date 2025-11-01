@@ -23,27 +23,29 @@ export default function DiseaseDetection() {
     setLoading(true);
     setResult(null);
     try {
-      console.log('[detection] submitting image');
+      console.log("[detection] submitting image");
 
       if (fileRef) {
         // send multipart form by default
         const fd = new FormData();
-        fd.append('file', fileRef);
-        const res = await fetch('/api/detect', { method: 'POST', body: fd });
+        fd.append("file", fileRef);
+        const res = await fetch("/api/detect", { method: "POST", body: fd });
         const data = await res.json().catch(() => null);
-        if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
+        if (!res.ok)
+          throw new Error(data?.error || data?.details || JSON.stringify(data));
         setResult(data);
         return;
       }
 
       // fallback to JSON dataURL when fileRef not available
-      const res = await fetch('/api/detect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/detect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: imageData }),
       });
       const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
+      if (!res.ok)
+        throw new Error(data?.error || data?.details || JSON.stringify(data));
       setResult(data);
     } catch (e: any) {
       setResult({ error: e.message || String(e) });
