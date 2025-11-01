@@ -209,7 +209,7 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
 
     // 5) Try local specialized TFJS plant-disease model, then fallback to MobileNet
     try {
-      const tf = await import("@tensorflow/tfjs-node");
+      const tf = await import("@tensorflow/tfjs");
       const path = await import("path");
       const fs = await import("fs");
 
