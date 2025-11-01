@@ -23,45 +23,27 @@ export default function DiseaseDetection() {
     setLoading(true);
     setResult(null);
     try {
-      // Debug logs to help server-side troubleshooting
-      console.log(
-        "[detection] submitting image, data length=",
-        imageData.length,
-      );
+      console.log('[detection] submitting image');
 
-      const res = await fetch("/api/detect", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: imageData }),
-      });
-
-      // If server returns 400 missing image, attempt FormData fallback (multipart)
-      if (res.status === 400) {
-        const text = await res.text().catch(() => null);
-        console.warn(
-          "[detection] server returned 400 on JSON submit, response:",
-          text,
-        );
-        if (fileRef) {
-          const fd = new FormData();
-          fd.append("file", fileRef);
-          const res2 = await fetch("/api/detect", { method: "POST", body: fd });
-          const data2 = await res2.json().catch(() => null);
-          if (!res2.ok)
-            throw new Error(
-              data2?.error || data2?.details || JSON.stringify(data2),
-            );
-          setResult(data2);
-          return;
-        }
-        throw new Error(
-          "Server rejected JSON payload and no fileRef available",
-        );
+      if (fileRef) {
+        // send multipart form by default
+        const fd = new FormData();
+        fd.append('file', fileRef);
+        const res = await fetch('/api/detect', { method: 'POST', body: fd });
+        const data = await res.json().catch(() => null);
+        if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
+        setResult(data);
+        return;
       }
 
+      // fallback to JSON dataURL when fileRef not available
+      const res = await fetch('/api/detect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageData }),
+      });
       const data = await res.json().catch(() => null);
-      if (!res.ok)
-        throw new Error(data?.error || data?.details || JSON.stringify(data));
+      if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
       setResult(data);
     } catch (e: any) {
       setResult({ error: e.message || String(e) });
