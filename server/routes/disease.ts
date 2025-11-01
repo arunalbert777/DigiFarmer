@@ -274,55 +274,6 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
         return top;
       }
 
-      // If specialized model exists locally, load and use it
-      if (fs.existsSync(modelAbs)) {
-        if (!(global as any)._plantGraphModel) {
-          console.log("[disease] loading local plant model from", modelAbs);
-          (global as any)._plantGraphModel = await (tf as any).loadGraphModel(
-            "file://" + modelAbs,
-          );
-
-          // try to load labels.json next to model
-          const labelsPath = path.join(path.dirname(modelAbs), "labels.json");
-          if (fs.existsSync(labelsPath)) {
-            try {
-              (global as any)._plantLabels = JSON.parse(
-                fs.readFileSync(labelsPath, "utf8"),
-              );
-              console.log(
-                "[disease] loaded labels.json with",
-                (global as any)._plantLabels.length,
-                "labels",
-              );
-            } catch (e) {
-              console.warn("[disease] failed to parse labels.json", e);
-              (global as any)._plantLabels = null;
-            }
-          } else {
-            (global as any)._plantLabels = null;
-          }
-        }
-
-        const modelLocal = (global as any)._plantGraphModel;
-        const labels = (global as any)._plantLabels || null;
-        const top = await predictWithGraphModel(modelLocal, labels);
-
-        const output = {
-          label: top[0]?.label ?? "unknown",
-          score: top[0]?.probability ?? 0,
-          all: top,
-          model: "local-plant-model",
-        };
-
-        cache.set(key, { value: output, expires: Date.now() + CACHE_TTL });
-        if (cache.size > CACHE_MAX) {
-          const it = cache.keys();
-          const first = it.next().value;
-          if (first) cache.delete(first);
-        }
-
-        return res.status(200).json(output);
-      }
 
       // If PLANT_MODEL_URL provided, try loading hosted TFJS model
       const hostedUrl = process.env.PLANT_MODEL_URL;
