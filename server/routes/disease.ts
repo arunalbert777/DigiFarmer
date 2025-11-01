@@ -87,22 +87,28 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
           "SVG images are not supported. Please upload a photographic image (JPEG/PNG/WebP).",
       });
 
-    const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8;
-    const isPng = buffer.length >= 8 && buffer.readUInt32BE(0) === 0x89504e47;
-    const isWebp =
-      buffer.length >= 12 &&
-      buffer.toString("ascii", 0, 4) === "RIFF" &&
-      buffer.toString("ascii", 8, 12) === "WEBP";
-    if (!isJpeg && !isPng && !isWebp)
-      return res.status(400).json({
-        error:
-          "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
-      });
+    // Use robust file-type detection when available
+    try {
+      const fileType = await import('file-type');
+      const ft = await (fileType as any).fileTypeFromBuffer(buffer);
+      const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!ft || !allowed.includes(ft.mime)) {
+        return res.status(400).json({ error: 'Unsupported image format. Please upload JPEG, PNG, or WebP images.' });
+      }
+    } catch (e) {
+      // Fallback to magic bytes detection
+      const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8;
+      const isPng = buffer.length >= 8 && buffer.readUInt32BE(0) === 0x89504e47;
+      const isWebp =
+        buffer.length >= 12 &&
+        buffer.toString('ascii', 0, 4) === 'RIFF' &&
+        buffer.toString('ascii', 8, 12) === 'WEBP';
+      if (!isJpeg && !isPng && !isWebp)
+        return res.status(400).json({ error: 'Unsupported image format. Please upload JPEG, PNG, or WebP images.' });
+    }
+
     if (buffer.length < 2000)
-      return res.status(400).json({
-        error:
-          "Image too small. Please upload a full-size photo (not an icon).",
-      });
+      return res.status(400).json({ error: 'Image too small. Please upload a full-size photo (not an icon).' });
 
     // 3) Server-side resizing (sharp optional)
     let usedBuffer = buffer;
