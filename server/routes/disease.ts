@@ -125,12 +125,10 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       const ft = await (fileType as any).fileTypeFromBuffer(buffer);
       const allowed = ["image/jpeg", "image/png", "image/webp"];
       if (!ft || !allowed.includes(ft.mime)) {
-        return res
-          .status(400)
-          .json({
-            error:
-              "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
-          });
+        return res.status(400).json({
+          error:
+            "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
+        });
       }
     } catch (e) {
       // Fallback to magic bytes detection
@@ -141,21 +139,17 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
         buffer.toString("ascii", 0, 4) === "RIFF" &&
         buffer.toString("ascii", 8, 12) === "WEBP";
       if (!isJpeg && !isPng && !isWebp)
-        return res
-          .status(400)
-          .json({
-            error:
-              "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
-          });
+        return res.status(400).json({
+          error:
+            "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
+        });
     }
 
     if (buffer.length < 2000)
-      return res
-        .status(400)
-        .json({
-          error:
-            "Image too small. Please upload a full-size photo (not an icon).",
-        });
+      return res.status(400).json({
+        error:
+          "Image too small. Please upload a full-size photo (not an icon).",
+      });
 
     // 3) Server-side resizing (sharp optional)
     let usedBuffer = buffer;
@@ -334,18 +328,27 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       const hostedUrl = process.env.PLANT_MODEL_URL;
       if (hostedUrl) {
         try {
-          if (!(global as any)._hostedPlantModelUrl || (global as any)._hostedPlantModelUrl !== hostedUrl) {
-            console.log('[disease] loading hosted plant model from', hostedUrl);
-            (global as any)._hostedPlantModel = await (tf as any).loadGraphModel(hostedUrl);
+          if (
+            !(global as any)._hostedPlantModelUrl ||
+            (global as any)._hostedPlantModelUrl !== hostedUrl
+          ) {
+            console.log("[disease] loading hosted plant model from", hostedUrl);
+            (global as any)._hostedPlantModel = await (
+              tf as any
+            ).loadGraphModel(hostedUrl);
             (global as any)._hostedPlantModelUrl = hostedUrl;
 
             // try to fetch labels.json next to hosted model
             try {
-              const labelsUrl = new URL('labels.json', hostedUrl).toString();
+              const labelsUrl = new URL("labels.json", hostedUrl).toString();
               const labelsResp = await fetch(labelsUrl);
               if (labelsResp.ok) {
                 (global as any)._hostedPlantLabels = await labelsResp.json();
-                console.log('[disease] loaded hosted labels.json with', (global as any)._hostedPlantLabels.length, 'labels');
+                console.log(
+                  "[disease] loaded hosted labels.json with",
+                  (global as any)._hostedPlantLabels.length,
+                  "labels",
+                );
               } else {
                 (global as any)._hostedPlantLabels = null;
               }
@@ -355,8 +358,16 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
           }
 
           if ((global as any)._hostedPlantModel) {
-            const top = await predictWithGraphModel((global as any)._hostedPlantModel, (global as any)._hostedPlantLabels || null);
-            const output = { label: top[0]?.label ?? 'unknown', score: top[0]?.probability ?? 0, all: top, model: 'hosted-plant-model' };
+            const top = await predictWithGraphModel(
+              (global as any)._hostedPlantModel,
+              (global as any)._hostedPlantLabels || null,
+            );
+            const output = {
+              label: top[0]?.label ?? "unknown",
+              score: top[0]?.probability ?? 0,
+              all: top,
+              model: "hosted-plant-model",
+            };
 
             cache.set(key, { value: output, expires: Date.now() + CACHE_TTL });
             if (cache.size > CACHE_MAX) {
@@ -368,7 +379,7 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
             return res.status(200).json(output);
           }
         } catch (e) {
-          console.warn('[disease] failed to load/score hosted model', e);
+          console.warn("[disease] failed to load/score hosted model", e);
         }
       }
 
