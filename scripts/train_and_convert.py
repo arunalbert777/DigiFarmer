@@ -45,14 +45,18 @@ def preprocess(image, label):
     return image, label
 
 # Limit dataset size to keep training within action time
-TAKE_N = 2000  # take 2000 examples for faster training
+import os
+TAKE_N = int(os.getenv('TRAIN_SAMPLES', '500'))  # samples to take
 SHUFFLE_BUF = 1000
+BATCH_SIZE = int(os.getenv('TRAIN_BATCH', str(BATCH_SIZE)))
+
+print(f'Training with TAKE_N={TAKE_N}, BATCH_SIZE={BATCH_SIZE}')
 
 ds = ds.shuffle(SHUFFLE_BUF)
 if TAKE_N:
     ds = ds.take(TAKE_N)
 
-train_size = int(0.8 * TAKE_N)
+train_size = max(1, int(0.8 * TAKE_N))
 train_ds = ds.take(train_size).map(preprocess).batch(BATCH_SIZE).prefetch(tf.data.AUTOTUNE)
 val_ds = ds.skip(train_size).map(preprocess).batch(BATCH_SIZE).prefetch(tf.data.AUTOTUNE)
 
@@ -83,7 +87,7 @@ model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4), loss='spar
 
 model.summary()
 
-EPOCHS = 3
+EPOCHS = int(os.getenv('TRAIN_EPOCHS', '1'))
 
 print('Starting training for', EPOCHS, 'epochs')
 model.fit(train_ds, validation_data=val_ds, epochs=EPOCHS)
