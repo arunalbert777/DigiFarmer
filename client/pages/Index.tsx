@@ -155,7 +155,7 @@ export default function Index() {
             <Button size="lg" variant="outline" asChild>
               <Link to="/gemini-voice">
                 <Volume className="h-4 w-4 mr-2" />
-                Gemini Voice
+                {t("nav.geminiVoice")}
               </Link>
             </Button>
           </div>
