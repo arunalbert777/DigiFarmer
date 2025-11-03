@@ -11,8 +11,8 @@ export default {
     contractFarming: "Contract Farming",
     verticalFarming: "Vertical Farming",
     developers: "Developers",
-    geminiVoice: "Gemini Voice",
-  },
+    geminiVoice: "Agro voice assistant",
+    },
 
   // Common
   common: {
@@ -68,6 +68,11 @@ export default {
         title: "AI Disease Detection",
         description:
           "Upload crop images for instant disease identification and treatment recommendations using advanced AI technology.",
+      },
+      geminiVoice: {
+        title: "Agro Voice Assistant",
+        description:
+          "Hands-free voice assistant for farming with multilingual support (Kannada/English) and voice responses.",
       },
       aiAssistant: {
         title: "AI Assistant",
