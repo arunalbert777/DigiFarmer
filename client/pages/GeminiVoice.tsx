@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import { useLanguage } from "../contexts/LanguageContext";
+
 export default function GeminiVoice() {
   const [isListening, setIsListening] = useState(false);
   const [status, setStatus] = useState("Click the mic to start speaking.");
@@ -257,11 +259,13 @@ export default function GeminiVoice() {
     }
   }
 
+  const { t } = useLanguage();
+
   return (
     <div className="p-6 flex justify-center">
       <div className="container w-full flex flex-col h-[80vh]">
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
-          Gemini Voice Assistant
+          {t("nav.geminiVoice")}
         </h1>
         <p className="text-center text-gray-600 mb-4">
           Click the mic to speak in English or Kannada.
