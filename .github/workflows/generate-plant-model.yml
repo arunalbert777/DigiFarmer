@@ -92,15 +92,32 @@ jobs:
           name: plant_model_h5
           path: models/plant_disease/model.h5
 
-      - name: Attempt download of user-provided model.h5 URL
+      - name: Attempt download of user-provided model.h5 URL(s)
         if: steps.copy_model.outputs.found == '0' && contains(steps.verify_after_train.outputs.model_h5_exists, '0')
-        env:
-          MODEL_H5_URL: "https://cdn.builder.io/o/assets%2F9a08e76889074a27806519bd7e3ac637%2F36b0adc174b14a388a4bef7a09acec16?alt=media&token=a4e7142e-c4ea-4a6f-8e88-bf6d94c59ed6&apiKey=9a08e76889074a27806519bd7e3ac637"
         run: |
           set -e
-          echo "Downloading user-provided model.h5 from MODEL_H5_URL"
+          echo "Trying to download user-provided model.h5 from candidate URLs"
           mkdir -p models/plant_disease
-          curl -L --fail -o models/plant_disease/model.h5 "$MODEL_H5_URL" || (echo "Download failed" && exit 1)
+          urls=(
+            "https://cdn.builder.io/o/assets%2F9a08e76889074a27806519bd7e3ac637%2F36b0adc174b14a388a4bef7a09acec16?alt=media&token=a4e7142e-c4ea-4a6f-8e88-bf6d94c59ed6&apiKey=9a08e76889074a27806519bd7e3ac637"
+            "https://cdn.builder.io/o/assets%2F9a08e76889074a27806519bd7e3ac637%2F92f857e71e714e28becce0b426717877?alt=media&token=9133030f-c8ce-4083-a018-d03c6e64d002&apiKey=9a08e76889074a27806519bd7e3ac637"
+          )
+          success=0
+          for u in "${urls[@]}"; do
+            echo "Attempting $u"
+            if curl -L --fail -o models/plant_disease/model.h5 "$u"; then
+              echo "Downloaded model.h5 from $u"
+              success=1
+              break
+            else
+              echo "Failed to download from $u"
+              rm -f models/plant_disease/model.h5 || true
+            fi
+          done
+          if [ "$success" -ne 1 ]; then
+            echo "All download attempts failed"
+            exit 1
+          fi
 
       - name: Convert downloaded model.h5 to TFJS (Docker)
         if: steps.copy_model.outputs.found == '0' && contains(steps.verify_after_train.outputs.model_h5_exists, '0')
