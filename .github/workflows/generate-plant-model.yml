@@ -106,13 +106,35 @@ jobs:
           success=0
           for u in "${urls[@]}"; do
             echo "Attempting $u"
-            if curl -L --fail -o models/plant_disease/model.h5 "$u"; then
-              echo "Downloaded model.h5 from $u"
-              success=1
-              break
+            out_path="models/plant_disease/download_tmp"
+            mkdir -p "$(dirname "$out_path")"
+            # download to a temp file
+            if curl -L --fail -o "$out_path" "$u"; then
+              echo "Downloaded candidate to $out_path"
+              # detect zip by magic bytes or extension
+              if file "$out_path" | grep -qi zip || echo "$u" | grep -qi "\.zip"; then
+                echo "Artifact appears to be a zip, extracting .h5 or .hdf5 files"
+                unzip -o "$out_path" -d models/plant_disease || true
+                h5f=$(find models/plant_disease -maxdepth 1 -type f \( -iname "*.h5" -o -iname "*.hdf5" \) | head -n1 || true)
+                if [ -n "$h5f" ]; then
+                  mv "$h5f" models/plant_disease/model.h5
+                  echo "Extracted $h5f to models/plant_disease/model.h5"
+                  success=1
+                  break
+                else
+                  echo "No .h5 found inside zip"
+                  rm -f "$out_path"
+                fi
+              else
+                # assume direct h5 file
+                mv "$out_path" models/plant_disease/model.h5
+                echo "Saved direct model to models/plant_disease/model.h5"
+                success=1
+                break
+              fi
             else
               echo "Failed to download from $u"
-              rm -f models/plant_disease/model.h5 || true
+              rm -f "$out_path" || true
             fi
           done
           if [ "$success" -ne 1 ]; then
