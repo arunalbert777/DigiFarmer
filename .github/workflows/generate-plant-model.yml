@@ -92,8 +92,48 @@ jobs:
           name: plant_model_h5
           path: models/plant_disease/model.h5
 
-      - name: Fail gracefully if training couldn't produce model.h5
+      - name: Attempt download of user-provided model.h5 URL
+        if: steps.copy_model.outputs.found == '0' && contains(steps.verify_after_train.outputs.model_h5_exists, '0')
+        env:
+          MODEL_H5_URL: "https://cdn.builder.io/o/assets%2F9a08e76889074a27806519bd7e3ac637%2F36b0adc174b14a388a4bef7a09acec16?alt=media&token=a4e7142e-c4ea-4a6f-8e88-bf6d94c59ed6&apiKey=9a08e76889074a27806519bd7e3ac637"
+        run: |
+          set -e
+          echo "Downloading user-provided model.h5 from MODEL_H5_URL"
+          mkdir -p models/plant_disease
+          curl -L --fail -o models/plant_disease/model.h5 "$MODEL_H5_URL" || (echo "Download failed" && exit 1)
+
+      - name: Convert downloaded model.h5 to TFJS (Docker)
         if: steps.copy_model.outputs.found == '0' && contains(steps.verify_after_train.outputs.model_h5_exists, '0')
         run: |
-          echo "Training attempted but no models/plant_disease/model.h5 was produced. Please provide a pre-trained Keras .h5 or adjust the training parameters."
+          set -e
+          if [ ! -f models/plant_disease/model.h5 ]; then echo "No model.h5 to convert"; exit 1; fi
+          echo "Using Docker to convert model.h5 to TFJS format"
+          docker run --rm -v "$PWD/models/plant_disease":/models -w /models python:3.10-slim bash -lc "pip install --upgrade pip && pip install tensorflow==2.11.0 tensorflowjs==3.14.0 h5py && tensorflowjs_converter --input_format=keras model.h5 ."
+
+      - name: Verify model.json after download+convert
+        id: verify_download_convert
+        run: |
+          if [ -f models/plant_disease/model.json ]; then
+            echo "model_exists=1" >> $GITHUB_OUTPUT
+          else
+            echo "model_exists=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push converted model (from downloaded artifact)
+        if: steps.copy_model.outputs.found == '0' && contains(steps.verify_download_convert.outputs.model_exists, '1')
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "$GIT_AUTHOR_NAME"
+          git config user.email "$GIT_AUTHOR_EMAIL"
+          git add models/plant_disease -f || true
+          git commit -m "chore: add converted TFJS plant disease model (downloaded)" || echo "no changes to commit"
+          git push origin HEAD:main || echo "push failed"
+
+      - name: Fail gracefully if training and download couldn't produce model.h5
+        if: steps.copy_model.outputs.found == '0' && contains(steps.verify_after_train.outputs.model_h5_exists, '0') && contains(steps.verify_download_convert.outputs.model_exists, '0')
+        run: |
+          echo "Training and download attempted but no models/plant_disease/model.h5 or model.json was produced. Please provide a valid Keras .h5 or adjust the training parameters."
           exit 1
