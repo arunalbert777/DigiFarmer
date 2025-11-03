@@ -55,82 +55,45 @@ jobs:
           fi
           echo "found=0" >> $GITHUB_OUTPUT
 
-      - name: Setup pip
+      - name: Upload model.h5 artifact (if copied)
         if: steps.copy_model.outputs.found == '1'
-        run: python -m pip install --upgrade pip
+        uses: actions/upload-artifact@v4
+        with:
+          name: plant_model_h5
+          path: models/plant_disease/model.h5
 
-      - name: Install TensorFlow and tensorflowjs
-        if: steps.copy_model.outputs.found == '1'
-        run: |
-          python -m pip install tensorflow==2.12.0 tensorflowjs==3.21.0 h5py
-
-      - name: Convert Keras .h5 to TFJS format
-        if: steps.copy_model.outputs.found == '1'
-        run: |
-          set -e
-          echo "Converting models/plant_disease/model.h5 to TFJS format..."
-          tensorflowjs_converter --input_format=keras models/plant_disease/model.h5 models/plant_disease/
-          echo "Conversion complete"
-
-      - name: Verify model.json
-        id: verify_model
-        run: |
-          if [ -f models/plant_disease/model.json ]; then
-            echo "model_exists=1" >> $GITHUB_OUTPUT
-          else
-            echo "model_exists=0" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit and push converted model (if copied)
-        if: steps.copy_model.outputs.found == '1' && contains(steps.verify_model.outputs.model_exists, '1')
-        env:
-          GIT_AUTHOR_NAME: github-actions[bot]
-          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "$GIT_AUTHOR_NAME"
-          git config user.email "$GIT_AUTHOR_EMAIL"
-          git add models/plant_disease -f || true
-          git commit -m "chore: add converted TFJS plant disease model" || echo "no changes to commit"
-          git push origin HEAD:main || echo "push failed"
-
-      - name: Attempt to train model locally and convert (if no .h5 found)
+      - name: Attempt to train model locally (if no .h5 found)
         if: steps.copy_model.outputs.found == '0'
         env:
           TRAIN_SAMPLES: 500
           TRAIN_EPOCHS: 1
           TRAIN_BATCH: 16
+          SKIP_TFJS_CONVERT: '1'
         run: |
           set -e
           echo "No pretrained .h5 found; attempting to train a lightweight model using TensorFlow Datasets (PlantVillage)"
           python -m pip install --upgrade pip
-          python -m pip install tensorflow==2.12.0 tensorflowjs==3.21.0 tensorflow-datasets==4.9.2 h5py
+          python -m pip install tensorflow==2.12.0 tensorflow-datasets==4.9.2 h5py
           python scripts/train_and_convert.py || (echo "Training failed" && exit 1)
 
-      - name: Verify model.json after training
+      - name: Verify model.h5 after training
         id: verify_after_train
         run: |
-          if [ -f models/plant_disease/model.json ]; then
-            echo "model_exists=1" >> $GITHUB_OUTPUT
+          if [ -f models/plant_disease/model.h5 ]; then
+            echo "model_h5_exists=1" >> $GITHUB_OUTPUT
           else
-            echo "model_exists=0" >> $GITHUB_OUTPUT
+            echo "model_h5_exists=0" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit and push trained model
-        if: steps.copy_model.outputs.found == '0' && contains(steps.verify_after_train.outputs.model_exists, '1')
-        env:
-          GIT_AUTHOR_NAME: github-actions[bot]
-          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "$GIT_AUTHOR_NAME"
-          git config user.email "$GIT_AUTHOR_EMAIL"
-          git add models/plant_disease -f || true
-          git commit -m "chore: add trained TFJS plant disease model" || echo "no changes to commit"
-          git push origin HEAD:main || echo "push failed"
+      - name: Upload trained model.h5 artifact
+        if: steps.copy_model.outputs.found == '0' && contains(steps.verify_after_train.outputs.model_h5_exists, '1')
+        uses: actions/upload-artifact@v4
+        with:
+          name: plant_model_h5
+          path: models/plant_disease/model.h5
 
-      - name: Fail gracefully if training couldn't produce model
-        if: steps.copy_model.outputs.found == '0' && contains(steps.verify_after_train.outputs.model_exists, '0')
+      - name: Fail gracefully if training couldn't produce model.h5
+        if: steps.copy_model.outputs.found == '0' && contains(steps.verify_after_train.outputs.model_h5_exists, '0')
         run: |
-          echo "Training attempted but no models/plant_disease/model.json was produced. Please provide a pre-trained Keras .h5 or adjust the training parameters."
+          echo "Training attempted but no models/plant_disease/model.h5 was produced. Please provide a pre-trained Keras .h5 or adjust the training parameters."
           exit 1
