@@ -28,7 +28,9 @@ jobs:
       - name: Clone candidate model repo
         run: |
           rm -rf temp_repo
-          git clone --depth 1 https://github.com/DhruvMakwana/Plant-Disease-Classification temp_repo || true
+          # Try the user-requested repo first, then fallback to the other candidate
+          git clone --depth 1 https://github.com/amanparmar17/Leaf_diesease-Detection temp_repo || \
+            git clone --depth 1 https://github.com/DhruvMakwana/Plant-Disease-Classification temp_repo || true
 
       - name: Create models folder
         run: |
