@@ -68,7 +68,7 @@ jobs:
           TRAIN_SAMPLES: 500
           TRAIN_EPOCHS: 1
           TRAIN_BATCH: 16
-          SKIP_TFJS_CONVERT: '1'
+          SKIP_TFJS_CONVERT: "1"
         run: |
           set -e
           echo "No pretrained .h5 found; attempting to train a lightweight model using TensorFlow Datasets (PlantVillage)"
