@@ -102,12 +102,15 @@ if class_names:
     with open(labels_path, 'w') as f:
         json.dump(class_names, f)
 
-# Convert to TFJS format using tensorflowjs_converter (CLI)
-print('Converting to TFJS format...')
-try:
-    subprocess.check_call(['tensorflowjs_converter', '--input_format=keras', str(MODEL_H5), str(OUT_DIR)])
-except Exception as e:
-    print('Conversion failed:', e)
-    sys.exit(3)
-
-print('TFJS model generated at', OUT_DIR / 'model.json')
+# Convert to TFJS format using tensorflowjs_converter (CLI) unless SKIP_TFJS_CONVERT is set
+skip_conv = os.getenv('SKIP_TFJS_CONVERT', '0')
+if skip_conv in ('1', 'true', 'True'):
+    print('SKIP_TFJS_CONVERT is set; skipping TFJS conversion in CI. You can convert model.h5 locally using tensorflowjs_converter.')
+else:
+    print('Converting to TFJS format...')
+    try:
+        subprocess.check_call(['tensorflowjs_converter', '--input_format=keras', str(MODEL_H5), str(OUT_DIR)])
+    except Exception as e:
+        print('Conversion failed:', e)
+        sys.exit(3)
+    print('TFJS model generated at', OUT_DIR / 'model.json')
