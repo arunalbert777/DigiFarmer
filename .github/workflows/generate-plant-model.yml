@@ -100,6 +100,7 @@ jobs:
           mkdir -p models/plant_disease
           urls=(
             "https://productionresultssa7.blob.core.windows.net/actions-results/8b84a601-25cd-4b27-95ae-37f2c8cedf18/workflow-job-run-d55bc7ce-fc2b-5f50-ae30-1f01fd22d0bf/artifacts/e53ab1bbf79841d8323187a487424c55b588f125ba62a1a70c73c98b71f62acc.zip?rscd=attachment%3B+filename%3D%22plant_model_h5.zip%22&se=2025-11-03T12%3A45%3A15Z&sig=qQkAk0hdR8bDtJKemdeCaV5EQp2MzWEOuSAa8Sbzfck%3D&ske=2025-11-04T00%3A25%3A51Z&sks=b&skt=2025-11-03T12%3A25%3A51Z&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skv=2025-11-05&sp=r&spr=https&sr=b&st=2025-11-03T12%3A35%3A10Z&sv=2025-11-05"
+            "https://cdn.builder.io/o/assets%2F9a08e76889074a27806519bd7e3ac637%2F4df66a24e77445dab5e1bef610430829?alt=media&token=17f1a423-fe07-40cb-a148-ac94de2f48a4&apiKey=9a08e76889074a27806519bd7e3ac637"
             "https://cdn.builder.io/o/assets%2F9a08e76889074a27806519bd7e3ac637%2F36b0adc174b14a388a4bef7a09acec16?alt=media&token=a4e7142e-c4ea-4a6f-8e88-bf6d94c59ed6&apiKey=9a08e76889074a27806519bd7e3ac637"
             "https://cdn.builder.io/o/assets%2F9a08e76889074a27806519bd7e3ac637%2F92f857e71e714e28becce0b426717877?alt=media&token=9133030f-c8ce-4083-a018-d03c6e64d002&apiKey=9a08e76889074a27806519bd7e3ac637"
           )
