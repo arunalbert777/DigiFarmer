@@ -1,10 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function DiseaseDetection() {
   const [imageData, setImageData] = useState<string | null>(null);
   const [fileRef, setFileRef] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [usingCamera, setUsingCamera] = useState(false);
+  const [diseaseMap, setDiseaseMap] = useState<Record<string, any> | null>(null);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  useEffect(() => {
+    // Load disease mapping data (human readable names + treatment steps)
+    fetch("/data/diseases.json")
+      .then((r) => r.json())
+      .then((j) => setDiseaseMap(j))
+      .catch(() => setDiseaseMap(null));
+
+    return () => stopCamera();
+  }, []);
+
+  function stopCamera() {
+    try {
+      streamRef.current?.getTracks?.().forEach((t) => t.stop());
+    } catch (e) {}
+    streamRef.current = null;
+    setUsingCamera(false);
+  }
+
+  async function startCamera() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert("Camera not supported in this browser.");
+      return;
+    }
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+        audio: false,
+      });
+      streamRef.current = s;
+      if (videoRef.current) {
+        videoRef.current.srcObject = s;
+        await videoRef.current.play();
+      }
+      setUsingCamera(true);
+    } catch (e) {
+      console.error("camera start failed", e);
+      alert("Unable to access camera. Please allow camera permissions or use file upload.");
+    }
+  }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -18,6 +63,31 @@ export default function DiseaseDetection() {
     reader.readAsDataURL(file);
   }
 
+  function dataURLtoFile(dataurl: string, filename = "capture.jpg") {
+    const arr = dataurl.split(",");
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new File([u8arr], filename, { type: "image/jpeg" });
+  }
+
+  async function captureFromCamera() {
+    if (!videoRef.current) return;
+    const v = videoRef.current;
+    const canvas = document.createElement("canvas");
+    canvas.width = v.videoWidth || 1280;
+    canvas.height = v.videoHeight || 720;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+    setImageData(dataUrl);
+    setFileRef(dataURLtoFile(dataUrl));
+    setResult(null);
+    stopCamera();
+  }
+
   async function submitImage() {
     if (!imageData) return;
     setLoading(true);
@@ -27,7 +97,7 @@ export default function DiseaseDetection() {
     try {
       const loadScript = (url: string) =>
         new Promise<void>((res, rej) => {
-          if (document.querySelector(`script[src=\"${url}\"]`)) return res();
+          if (document.querySelector(`script[src="${url}"]`)) return res();
           const s = document.createElement("script");
           s.src = url;
           s.onload = () => res();
@@ -90,12 +160,12 @@ export default function DiseaseDetection() {
           const sum = exps.reduce((a, b) => a + b, 0) || 1;
           const probs = exps.map((e) => e / sum);
           const topIdx = probs.indexOf(Math.max(...probs));
-          setResult({
-            label: `class_${topIdx}`,
-            score: probs[topIdx],
-            all: probs,
-            model: "client-model",
-          });
+          const label = `class_${topIdx}`;
+          const score = probs[topIdx];
+
+          const enriched = enrichResult(label, score);
+
+          setResult({ label, score, all: probs, model: "client-model", ...enriched });
           setLoading(false);
           try {
             tensor.dispose?.();
@@ -108,21 +178,18 @@ export default function DiseaseDetection() {
 
         if (model.classify) {
           const cls = await model.classify(img);
-          setResult({
-            label: cls[0]?.className || "unknown",
-            score: cls[0]?.probability || 0,
-            all: cls,
-            model: "client-model",
-          });
+          const label = cls[0]?.className || "unknown";
+          const score = cls[0]?.probability || 0;
+
+          const enriched = enrichResult(label, score);
+
+          setResult({ label, score, all: cls, model: "client-model", ...enriched });
           setLoading(false);
           return;
         }
       }
     } catch (e) {
-      console.warn(
-        "[detection] client-side tfjs/model not available or failed",
-        e,
-      );
+      console.warn("[detection] client-side tfjs/model not available or failed", e);
     }
 
     // Try client-side MobileNet as fallback via CDN
@@ -159,12 +226,10 @@ export default function DiseaseDetection() {
       const m = await mobilenet.load({ version: 2, alpha: 1.0 });
       const cls = await m.classify(img as any);
       if (cls && cls.length) {
-        setResult({
-          label: cls[0].className,
-          score: cls[0].probability,
-          all: cls,
-          model: "client-mobilenet",
-        });
+        const label = cls[0].className;
+        const score = cls[0].probability;
+        const enriched = enrichResult(label, score);
+        setResult({ label, score, all: cls, model: "client-mobilenet", ...enriched });
         setLoading(false);
         return;
       }
@@ -179,9 +244,9 @@ export default function DiseaseDetection() {
         fd.append("file", fileRef);
         const res = await fetch("/api/detect", { method: "POST", body: fd });
         const data = await res.json().catch(() => null);
-        if (!res.ok)
-          throw new Error(data?.error || data?.details || JSON.stringify(data));
-        setResult(data);
+        if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
+        const enriched = enrichResult(data?.label || data?.disease || "unknown", data?.score || 0);
+        setResult({ ...data, ...enriched });
         return;
       }
 
@@ -191,9 +256,9 @@ export default function DiseaseDetection() {
         body: JSON.stringify({ image: imageData }),
       });
       const data = await res.json().catch(() => null);
-      if (!res.ok)
-        throw new Error(data?.error || data?.details || JSON.stringify(data));
-      setResult(data);
+      if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
+      const enriched = enrichResult(data?.label || data?.disease || "unknown", data?.score || 0);
+      setResult({ ...data, ...enriched });
     } catch (e: any) {
       setResult({ error: e.message || String(e) });
     } finally {
@@ -201,29 +266,53 @@ export default function DiseaseDetection() {
     }
   }
 
+  function enrichResult(label: string, score: number) {
+    // Try to find a mapping in diseaseMap: keys may match class names from PlantVillage or generic labels
+    if (!diseaseMap) return {};
+    // direct match
+    if (diseaseMap[label]) return { details: diseaseMap[label] };
+    // normalize some common label formats
+    const normalized = label.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "");
+    if (diseaseMap[normalized]) return { details: diseaseMap[normalized] };
+
+    // If label is like class_12 and diseaseMap contains entries by index, try to map by index
+    const m = label.match(/^class_(\d+)$/i);
+    if (m) {
+      // Try to map by index -> many models have class ordering; we can't know it here.
+      // As a safer fallback, look for a 'healthy' key when confidence low/high
+      if (score < 0.15 && diseaseMap["healthy"]) return { details: diseaseMap["healthy"] };
+    }
+
+    return {};
+  }
+
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold mb-4">AI Disease Detection</h1>
       <p className="mb-4 text-gray-600">
-        Upload a photo of the plant or leaf and the AI will attempt to identify
-        the disease.
+        Upload or capture a photo of the plant or leaf and the AI will attempt to
+        identify the disease and provide treatment recommendations.
       </p>
 
-      <div className="mb-4">
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2">
         <input type="file" accept="image/*" onChange={handleFile} />
-      </div>
-
-      {imageData && (
-        <div className="mb-4">
-          <img
-            src={imageData}
-            alt="preview"
-            className="max-w-full rounded-lg border"
-          />
-        </div>
-      )}
-
-      <div className="flex items-center space-x-2 mb-6">
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handleFile}
+          className="hidden"
+          aria-hidden
+        />
+        <button
+          onClick={() => {
+            if (usingCamera) stopCamera();
+            else startCamera();
+          }}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+        >
+          {usingCamera ? "Stop Camera" : "Use Camera"}
+        </button>
         <button
           onClick={submitImage}
           disabled={!imageData || loading}
@@ -242,6 +331,36 @@ export default function DiseaseDetection() {
         </button>
       </div>
 
+      {usingCamera && (
+        <div className="mb-4">
+          <video ref={videoRef} className="w-full rounded-lg border" />
+          <div className="mt-2">
+            <button
+              onClick={captureFromCamera}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
+            >
+              Capture Photo
+            </button>
+            <button
+              onClick={stopCamera}
+              className="ml-2 px-4 py-2 border rounded-lg"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {imageData && (
+        <div className="mb-4">
+          <img
+            src={imageData}
+            alt="preview"
+            className="max-w-full rounded-lg border"
+          />
+        </div>
+      )}
+
       {result && (
         <div className="p-4 border rounded-lg bg-white">
           {result.error ? (
@@ -255,12 +374,36 @@ export default function DiseaseDetection() {
               <p>
                 Confidence: <strong>{(result.score * 100).toFixed(1)}%</strong>
               </p>
-              <details className="mt-2">
-                <summary className="text-sm text-gray-600">Raw output</summary>
-                <pre className="text-xs mt-2 max-h-48 overflow-auto">
-                  {JSON.stringify(result.all || result.raw || result, null, 2)}
-                </pre>
-              </details>
+
+              {result.details ? (
+                <div className="mt-3">
+                  <p>
+                    Plant: <strong>{result.details.plant}</strong>
+                  </p>
+                  <p>
+                    Disease: <strong>{result.details.disease}</strong>
+                  </p>
+
+                  <div className="mt-3">
+                    <h4 className="font-medium">Recommended treatment (step-by-step)</h4>
+                    <ol className="list-decimal list-inside mt-2 text-sm">
+                      {result.details.treatment.map((s: string, i: number) => (
+                        <li key={i} className="mb-1">{s}</li>
+                      ))}
+                    </ol>
+                    {result.details.reference && (
+                      <p className="mt-2 text-xs text-gray-600">Reference: {result.details.reference}</p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <details className="mt-2">
+                  <summary className="text-sm text-gray-600">Raw output</summary>
+                  <pre className="text-xs mt-2 max-h-48 overflow-auto">
+                    {JSON.stringify(result.all || result.raw || result, null, 2)}
+                  </pre>
+                </details>
+              )}
             </div>
           )}
         </div>
