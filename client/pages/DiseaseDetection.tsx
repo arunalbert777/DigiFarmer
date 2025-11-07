@@ -22,7 +22,7 @@ export default function DiseaseDetection() {
       .then((j) => setDiseaseMap(j))
       .catch(() => setDiseaseMap(null));
 
-    // Try to load TFJS labels.json produced during conversion/training
+    // Try to load TFJS labels.json produced during conversion/training, fall back to server metadata endpoint
     fetch("/models/plant_disease/labels.json")
       .then((r) => {
         if (!r.ok) throw new Error("no labels");
@@ -31,7 +31,18 @@ export default function DiseaseDetection() {
       .then((j) => {
         if (Array.isArray(j)) setClassLabels(j as string[]);
       })
-      .catch(() => setClassLabels(null));
+      .catch(async () => {
+        // try server endpoint
+        try {
+          const r2 = await fetch("/api/detect/labels");
+          if (!r2.ok) throw new Error("no server labels");
+          const payload = await r2.json();
+          if (payload && Array.isArray(payload.labels)) setClassLabels(payload.labels as string[]);
+          else setClassLabels(null);
+        } catch (e) {
+          setClassLabels(null);
+        }
+      });
 
     return () => stopCamera();
   }, []);
