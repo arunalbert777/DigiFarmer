@@ -1,0 +1,59 @@
+{
+  "Tomato___Early_blight": {
+    "plant": "Tomato",
+    "disease": "Early blight",
+    "confidenceThreshold": 0.6,
+    "treatment": [
+      "Remove and destroy heavily infected leaves to reduce inoculum.",
+      "Ensure good spacing and pruning to improve air circulation.",
+      "Avoid overhead irrigation; water at the base of the plant in the morning.",
+      "Apply a registered fungicide (e.g., chlorothalonil or copper-based) following label instructions if disease is severe.",
+      "Rotate crops and avoid planting tomatoes in the same location for 2-3 seasons."
+    ],
+    "reference": "PlantVillage / Plant Disease Guides"
+  },
+  "Tomato___Late_blight": {
+    "plant": "Tomato",
+    "disease": "Late blight",
+    "confidenceThreshold": 0.6,
+    "treatment": [
+      "Remove infected plants and destroy; late blight can spread rapidly.",
+      "Avoid working in fields when foliage is wet to prevent spread.",
+      "Use certified disease-free seed and resistant varieties where available.",
+      "Apply appropriate fungicides (e.g., mancozeb or copper formulations) as a preventive/curative measure following labels.",
+      "Improve drainage and reduce leaf wetness duration."
+    ],
+    "reference": "PlantVillage / Plant Disease Guides"
+  },
+  "Potato___Early_blight": {
+    "plant": "Potato",
+    "disease": "Early blight",
+    "confidenceThreshold": 0.6,
+    "treatment": [
+      "Remove and destroy affected foliage; practice crop rotation.",
+      "Plant resistant varieties and avoid dense planting.",
+      "Use fungicide sprays when weather favors disease, following label guidance.",
+      "Maintain balanced fertilization; excess nitrogen can increase susceptibility."
+    ],
+    "reference": "PlantVillage / Plant Disease Guides"
+  },
+  "Apple___Apple_scab": {
+    "plant": "Apple",
+    "disease": "Apple scab",
+    "confidenceThreshold": 0.6,
+    "treatment": [
+      "Remove and destroy fallen leaves and mummified fruit in autumn.",
+      "Prune to improve air circulation and reduce humidity within canopy.",
+      "Apply protective fungicide sprays during green tip to early season as per local recommendations.",
+      "Choose resistant cultivars when possible."
+    ],
+    "reference": "PlantVillage / Plant Disease Guides"
+  },
+  "healthy": {
+    "plant": "Unknown",
+    "disease": "Healthy",
+    "confidenceThreshold": 0.0,
+    "treatment": ["No treatment required. Continue regular crop care and monitoring."],
+    "reference": "PlantVillage"
+  }
+}
