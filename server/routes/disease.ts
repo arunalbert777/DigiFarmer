@@ -115,12 +115,10 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       }
     })();
     if (isSvg)
-      return res
-        .status(400)
-        .json({
-          error:
-            "SVG images are not supported. Please upload a photographic image (JPEG/PNG/WebP).",
-        });
+      return res.status(400).json({
+        error:
+          "SVG images are not supported. Please upload a photographic image (JPEG/PNG/WebP).",
+      });
 
     // Use file-type if available
     try {
@@ -128,12 +126,10 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       const ft = await (fileType as any).fileTypeFromBuffer(buffer);
       const allowed = ["image/jpeg", "image/png", "image/webp"];
       if (!ft || !allowed.includes(ft.mime)) {
-        return res
-          .status(400)
-          .json({
-            error:
-              "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
-          });
+        return res.status(400).json({
+          error:
+            "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
+        });
       }
     } catch (e) {
       // fallback magic bytes
@@ -144,21 +140,17 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
         buffer.toString("ascii", 0, 4) === "RIFF" &&
         buffer.toString("ascii", 8, 12) === "WEBP";
       if (!isJpeg && !isPng && !isWebp)
-        return res
-          .status(400)
-          .json({
-            error:
-              "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
-          });
+        return res.status(400).json({
+          error:
+            "Unsupported image format. Please upload JPEG, PNG, or WebP images.",
+        });
     }
 
     if (buffer.length < 2000)
-      return res
-        .status(400)
-        .json({
-          error:
-            "Image too small. Please upload a full-size photo (not an icon).",
-        });
+      return res.status(400).json({
+        error:
+          "Image too small. Please upload a full-size photo (not an icon).",
+      });
 
     // 3) Resize using sharp if available
     let usedBuffer = buffer;
@@ -223,13 +215,15 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
         const out = await resp.json().catch(() => null);
         if (!resp.ok) {
           console.error("[disease] HF inference failed", resp.status, out);
-          throw new Error(out?.error || `HF inference failed with ${resp.status}`);
+          throw new Error(
+            out?.error || `HF inference failed with ${resp.status}`,
+          );
         }
 
         // Expected output: array of {label, score} or model specific JSON
         if (Array.isArray(out) && out.length) {
           const top = out[0];
-          const label = top.label || (top.class_name || "unknown");
+          const label = top.label || top.class_name || "unknown";
           const score = top.score || top.probability || 0;
           const value = { label, score, raw: out };
           cache.set(key, { value, expires: now + CACHE_TTL });
@@ -246,12 +240,10 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
     }
 
     // 6) No server-side inference available
-    return res
-      .status(501)
-      .json({
-        error:
-          "No server-side model available. Please perform client-side inference or configure HUGGINGFACE_MODEL and HUGGINGFACE_API_KEY in server env to enable hosted-model server-side inference.",
-      });
+    return res.status(501).json({
+      error:
+        "No server-side model available. Please perform client-side inference or configure HUGGINGFACE_MODEL and HUGGINGFACE_API_KEY in server env to enable hosted-model server-side inference.",
+    });
   } catch (err: any) {
     console.error("[disease] error:", err);
     return res
