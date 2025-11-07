@@ -53,7 +53,9 @@
     "plant": "Unknown",
     "disease": "Healthy",
     "confidenceThreshold": 0.0,
-    "treatment": ["No treatment required. Continue regular crop care and monitoring."],
+    "treatment": [
+      "No treatment required. Continue regular crop care and monitoring."
+    ],
     "reference": "PlantVillage"
   }
 }

@@ -6,7 +6,9 @@ export default function DiseaseDetection() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [usingCamera, setUsingCamera] = useState(false);
-  const [diseaseMap, setDiseaseMap] = useState<Record<string, any> | null>(null);
+  const [diseaseMap, setDiseaseMap] = useState<Record<string, any> | null>(
+    null,
+  );
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -47,7 +49,9 @@ export default function DiseaseDetection() {
       setUsingCamera(true);
     } catch (e) {
       console.error("camera start failed", e);
-      alert("Unable to access camera. Please allow camera permissions or use file upload.");
+      alert(
+        "Unable to access camera. Please allow camera permissions or use file upload.",
+      );
     }
   }
 
@@ -165,7 +169,13 @@ export default function DiseaseDetection() {
 
           const enriched = enrichResult(label, score);
 
-          setResult({ label, score, all: probs, model: "client-model", ...enriched });
+          setResult({
+            label,
+            score,
+            all: probs,
+            model: "client-model",
+            ...enriched,
+          });
           setLoading(false);
           try {
             tensor.dispose?.();
@@ -183,13 +193,22 @@ export default function DiseaseDetection() {
 
           const enriched = enrichResult(label, score);
 
-          setResult({ label, score, all: cls, model: "client-model", ...enriched });
+          setResult({
+            label,
+            score,
+            all: cls,
+            model: "client-model",
+            ...enriched,
+          });
           setLoading(false);
           return;
         }
       }
     } catch (e) {
-      console.warn("[detection] client-side tfjs/model not available or failed", e);
+      console.warn(
+        "[detection] client-side tfjs/model not available or failed",
+        e,
+      );
     }
 
     // Try client-side MobileNet as fallback via CDN
@@ -229,7 +248,13 @@ export default function DiseaseDetection() {
         const label = cls[0].className;
         const score = cls[0].probability;
         const enriched = enrichResult(label, score);
-        setResult({ label, score, all: cls, model: "client-mobilenet", ...enriched });
+        setResult({
+          label,
+          score,
+          all: cls,
+          model: "client-mobilenet",
+          ...enriched,
+        });
         setLoading(false);
         return;
       }
@@ -244,8 +269,12 @@ export default function DiseaseDetection() {
         fd.append("file", fileRef);
         const res = await fetch("/api/detect", { method: "POST", body: fd });
         const data = await res.json().catch(() => null);
-        if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
-        const enriched = enrichResult(data?.label || data?.disease || "unknown", data?.score || 0);
+        if (!res.ok)
+          throw new Error(data?.error || data?.details || JSON.stringify(data));
+        const enriched = enrichResult(
+          data?.label || data?.disease || "unknown",
+          data?.score || 0,
+        );
         setResult({ ...data, ...enriched });
         return;
       }
@@ -256,8 +285,12 @@ export default function DiseaseDetection() {
         body: JSON.stringify({ image: imageData }),
       });
       const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || data?.details || JSON.stringify(data));
-      const enriched = enrichResult(data?.label || data?.disease || "unknown", data?.score || 0);
+      if (!res.ok)
+        throw new Error(data?.error || data?.details || JSON.stringify(data));
+      const enriched = enrichResult(
+        data?.label || data?.disease || "unknown",
+        data?.score || 0,
+      );
       setResult({ ...data, ...enriched });
     } catch (e: any) {
       setResult({ error: e.message || String(e) });
@@ -272,7 +305,9 @@ export default function DiseaseDetection() {
     if (diseaseMap[label]) return { details: diseaseMap[label] };
 
     // try normalized label
-    const normalized = label.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_()]/g, "");
+    const normalized = label
+      .replace(/\s+/g, "_")
+      .replace(/[^a-zA-Z0-9_()]/g, "");
     if (diseaseMap[normalized]) return { details: diseaseMap[normalized] };
 
     // attempt to match common PlantVillage patterns by splitting
@@ -282,10 +317,11 @@ export default function DiseaseDetection() {
     };
 
     // if label contains '___' try direct
-    if (label.includes('___') && tryKey(label)) return { details: tryKey(label) };
+    if (label.includes("___") && tryKey(label))
+      return { details: tryKey(label) };
 
     // fallback: try to parse plant and disease from label like 'Tomato___Late_blight'
-    const parts = label.split('___');
+    const parts = label.split("___");
     if (parts.length === 2) {
       const key = `${parts[0]}___${parts[1]}`;
       if (diseaseMap[key]) return { details: diseaseMap[key] };
@@ -304,14 +340,14 @@ export default function DiseaseDetection() {
           disease_kn: "ಅನಾಮಧೇಯ ರೋಗ",
           treatment_en: [
             "Image unclear — retake a close-up of the affected leaf or capture multiple angles.",
-            "Provide crop type and recent symptoms for better guidance."
+            "Provide crop type and recent symptoms for better guidance.",
           ],
           treatment_kn: [
             "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾರು ಕೋಣಗಳನ್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
-            "ಉತ್ತಮ ಸಲಹೆಗಾಗಿ ಬೆಳೆ ಪ್ರಕಾರ ಮತ್ತು ಇತ್ತೀಚಿನ ಲಕ್ಷಣಗಳನ್ನು ಒದಗಿಸಿ."
+            "ಉತ್ತಮ ಸಲಹೆಗಾಗಿ ಬೆಳೆ ಪ್ರಕಾರ ಮತ್ತು ಇತ್ತೀಚಿನ ಲಕ್ಷಣಗಳನ್ನು ಒದಗಿಸಿ.",
           ],
-          reference: "PlantVillage"
-        }
+          reference: "PlantVillage",
+        },
       };
     }
 
@@ -323,8 +359,9 @@ export default function DiseaseDetection() {
     <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold mb-4">AI Disease Detection</h1>
       <p className="mb-4 text-gray-600">
-        Upload or capture a photo of the plant or leaf and the AI will attempt to
-        identify the disease and provide treatment recommendations in English and Kannada.
+        Upload or capture a photo of the plant or leaf and the AI will attempt
+        to identify the disease and provide treatment recommendations in English
+        and Kannada.
       </p>
 
       <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2">
@@ -413,13 +450,19 @@ export default function DiseaseDetection() {
                     <div className="mt-3">
                       <h5 className="font-medium">Treatment (English)</h5>
                       <ol className="list-decimal list-inside mt-2 text-sm">
-                        {result.details.treatment_en.map((s: string, i: number) => (
-                          <li key={i} className="mb-1">{s}</li>
-                        ))}
+                        {result.details.treatment_en.map(
+                          (s: string, i: number) => (
+                            <li key={i} className="mb-1">
+                              {s}
+                            </li>
+                          ),
+                        )}
                       </ol>
                     </div>
                     {result.details.reference && (
-                      <p className="mt-2 text-xs text-gray-600">Reference: {result.details.reference}</p>
+                      <p className="mt-2 text-xs text-gray-600">
+                        Reference: {result.details.reference}
+                      </p>
                     )}
                   </div>
 
@@ -434,18 +477,28 @@ export default function DiseaseDetection() {
                     <div className="mt-3">
                       <h5 className="font-medium">ಚಿಕಿತ್ಸೆ (ಕನ್ನಡ)</h5>
                       <ol className="list-decimal list-inside mt-2 text-sm">
-                        {result.details.treatment_kn.map((s: string, i: number) => (
-                          <li key={i} className="mb-1">{s}</li>
-                        ))}
+                        {result.details.treatment_kn.map(
+                          (s: string, i: number) => (
+                            <li key={i} className="mb-1">
+                              {s}
+                            </li>
+                          ),
+                        )}
                       </ol>
                     </div>
                   </div>
                 </div>
               ) : (
                 <details className="mt-2">
-                  <summary className="text-sm text-gray-600">Raw output</summary>
+                  <summary className="text-sm text-gray-600">
+                    Raw output
+                  </summary>
                   <pre className="text-xs mt-2 max-h-48 overflow-auto">
-                    {JSON.stringify(result.all || result.raw || result, null, 2)}
+                    {JSON.stringify(
+                      result.all || result.raw || result,
+                      null,
+                      2,
+                    )}
                   </pre>
                 </details>
               )}

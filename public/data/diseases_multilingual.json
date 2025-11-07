@@ -103,8 +103,12 @@
     "disease_en": "Healthy",
     "disease_kn": "ಆರೋಗ್ಯವಂತವಾಗಿದೆ",
     "confidenceThreshold": 0.0,
-    "treatment_en": ["No treatment required. Continue monitoring and good practices."],
-    "treatment_kn": ["ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ಬಂಧನ ಮತ್ತು ಉತ್ತಮ ಅಭ್ಯಾಸಗಳನ್ನು ಮುಂದುವರೆಯಿರಿ."],
+    "treatment_en": [
+      "No treatment required. Continue monitoring and good practices."
+    ],
+    "treatment_kn": [
+      "ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ಬಂಧನ ಮತ್ತು ಉತ್ತಮ ಅಭ್ಯಾಸಗಳನ್ನು ಮುಂದುವರೆಯಿರಿ."
+    ],
     "reference": "PlantVillage"
   },
 
@@ -196,7 +200,9 @@
     "disease_kn": "ಆರೋಗ್ಯವಂತವಾಗಿದೆ",
     "confidenceThreshold": 0.0,
     "treatment_en": ["No treatment required. Monitor regularly."],
-    "treatment_kn": ["ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ನಿಯಮಿತವಾಗಿ ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ."],
+    "treatment_kn": [
+      "ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ನಿಯಮಿತವಾಗಿ ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ."
+    ],
     "reference": "PlantVillage"
   },
 
