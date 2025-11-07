@@ -429,7 +429,10 @@ export default function DiseaseDetection() {
 
   // try to find leaf match from result label (if available)
   const leafMatch = result
-    ? findLeafType(result.label || (Array.isArray(result.all) ? String(result.all[0]) : ""))
+    ? findLeafType(
+        result.label ||
+          (Array.isArray(result.all) ? String(result.all[0]) : ""),
+      )
     : null;
 
   return (
@@ -574,12 +577,20 @@ export default function DiseaseDetection() {
               ) : leafMatch ? (
                 <div className="mt-3">
                   <h4 className="font-medium">Detected Plant / Leaf Type</h4>
-                  <p className="mt-2">Plant: <strong>{leafMatch.plant_en}</strong></p>
-                  <p>Kannada: <strong>{leafMatch.plant_kn}</strong></p>
+                  <p className="mt-2">
+                    Plant: <strong>{leafMatch.plant_en}</strong>
+                  </p>
+                  <p>
+                    Kannada: <strong>{leafMatch.plant_kn}</strong>
+                  </p>
                   <div className="mt-3">
                     <h5 className="font-medium">Leaf Description</h5>
-                    <p className="text-sm mt-2">{leafMatch.leaf_description_en}</p>
-                    <p className="text-sm mt-2">{leafMatch.leaf_description_kn}</p>
+                    <p className="text-sm mt-2">
+                      {leafMatch.leaf_description_en}
+                    </p>
+                    <p className="text-sm mt-2">
+                      {leafMatch.leaf_description_kn}
+                    </p>
                   </div>
                 </div>
               ) : (
