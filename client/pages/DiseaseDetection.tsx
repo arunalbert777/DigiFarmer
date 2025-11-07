@@ -5,13 +5,9 @@ export default function DiseaseDetection() {
   const [fileRef, setFileRef] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [usingCamera, setUsingCamera] = useState(false);
   const [diseaseMap, setDiseaseMap] = useState<Record<string, any> | null>(
     null,
   );
-
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
 
   const [classLabels, setClassLabels] = useState<string[] | null>(null);
   const [leafTypes, setLeafTypes] = useState<Record<string, any> | null>(null);
@@ -52,40 +48,9 @@ export default function DiseaseDetection() {
         }
       });
 
-    return () => stopCamera();
+    return () => {};
   }, []);
 
-  function stopCamera() {
-    try {
-      streamRef.current?.getTracks?.().forEach((t) => t.stop());
-    } catch (e) {}
-    streamRef.current = null;
-    setUsingCamera(false);
-  }
-
-  async function startCamera() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert("Camera not supported in this browser.");
-      return;
-    }
-    try {
-      const s = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
-        audio: false,
-      });
-      streamRef.current = s;
-      if (videoRef.current) {
-        videoRef.current.srcObject = s;
-        await videoRef.current.play();
-      }
-      setUsingCamera(true);
-    } catch (e) {
-      console.error("camera start failed", e);
-      alert(
-        "Unable to access camera. Please allow camera permissions or use file upload.",
-      );
-    }
-  }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -108,21 +73,6 @@ export default function DiseaseDetection() {
     return new File([u8arr], filename, { type: "image/jpeg" });
   }
 
-  async function captureFromCamera() {
-    if (!videoRef.current) return;
-    const v = videoRef.current;
-    const canvas = document.createElement("canvas");
-    canvas.width = v.videoWidth || 1280;
-    canvas.height = v.videoHeight || 720;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
-    setImageData(dataUrl);
-    setFileRef(dataURLtoFile(dataUrl));
-    setResult(null);
-    stopCamera();
-  }
 
   async function submitImage() {
     if (!imageData) return;
@@ -447,15 +397,6 @@ export default function DiseaseDetection() {
       <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2">
         <input type="file" accept="image/*" onChange={handleFile} />
         <button
-          onClick={() => {
-            if (usingCamera) stopCamera();
-            else startCamera();
-          }}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-        >
-          {usingCamera ? "Stop Camera" : "Use Camera"}
-        </button>
-        <button
           onClick={submitImage}
           disabled={!imageData || loading}
           className="px-4 py-2 bg-green-600 text-white rounded-lg disabled:opacity-60"
@@ -473,31 +414,6 @@ export default function DiseaseDetection() {
         </button>
       </div>
 
-      {usingCamera && (
-        <div className="mb-4">
-          <video
-            ref={videoRef}
-            className="w-full rounded-lg border"
-            muted
-            playsInline
-            autoPlay
-          />
-          <div className="mt-2">
-            <button
-              onClick={captureFromCamera}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
-            >
-              Capture Photo
-            </button>
-            <button
-              onClick={stopCamera}
-              className="ml-2 px-4 py-2 border rounded-lg"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
 
       {imageData && (
         <div className="mb-4">
