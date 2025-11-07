@@ -84,13 +84,15 @@ exports.handler = async function (event, context) {
         resp = await client.models.generateContent(request);
       } catch (upErr) {
         console.error("[gemini-proxy] SDK error:", String(upErr));
+        // Return a friendly textual fallback so the client can proceed without throwing
+        const fallbackText = "AI service currently unavailable. Please try again later.";
         return {
-          statusCode: 502,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            error: "Upstream API error",
-            details: String(upErr),
-          }),
+          statusCode: 200,
+          headers: {
+            "Content-Type": "text/plain",
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: fallbackText,
         };
       }
 
