@@ -1,0 +1,285 @@
+{
+  "Tomato___Early_blight": {
+    "plant_en": "Tomato",
+    "plant_kn": "ಟೊಮೇಟೋ",
+    "disease_en": "Early blight",
+    "disease_kn": "ಆರಂಭಿಕ ಬ್ಲೈಟ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Remove and destroy heavily infected leaves to reduce inoculum.",
+      "Improve air circulation by pruning and proper spacing.",
+      "Avoid overhead irrigation; water at the base in the morning.",
+      "Apply appropriate fungicides (follow label instructions).",
+      "Practice crop rotation and use resistant varieties where available."
+    ],
+    "treatment_kn": [
+      "ಸೋಮ್ಮು ಹೊಡೆಯಾದ ಎಲೆಗಳನ್ನು ತೆಗೆಯಿರಿ ಮತ್ತು ನಾಶಮಾಡಿ.",
+      "ಕಡೆಗೆಸುವಿಕೆ ಮತ್ತು ಸರಿಯಾದ ಅಂತರವಿಟ್ಟು ಗಾಳಿ ಸಂಚಲನ ಹೆಚ್ಚಿಸಿ.",
+      "ಮೇಲಿನ ನೀರಾವರಿ ತಪ್ಪಿಸಿ; ಬೆಳಿಗ್ಗೆ ನೆಲದ ಆಧಾರದ ಮೇಲೆ ನೀರು ನೀಡಿ.",
+      "ಸೂಚಿತದಂತೆ ಸೂಕ್ತ ಫಂಗಿಸೈಡ್ ಬಳಸಿ.",
+      "ಫಸಲು ಶ್ರೇಣಿಯನ್ನು ಬದಲಾಯಿಸಿ ಮತ್ತು ಪ್ರತಿರೋಧಕ ತರಗತಿಗಳನ್ನು ಬಳಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+  "Tomato___Late_blight": {
+    "plant_en": "Tomato",
+    "plant_kn": "ಟೊಮೇಟೋ",
+    "disease_en": "Late blight",
+    "disease_kn": "ನಂತ���ದ ಬ್ಲೈಟ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Remove infected plants and destroy to prevent spread.",
+      "Avoid working in wet foliage and improve drainage.",
+      "Use certified disease-free seed and resistant varieties.",
+      "Apply recommended fungicides promptly when disease appears."
+    ],
+    "treatment_kn": [
+      "ರೋಗಿತ ಗಿಡಗಳನ್ನು ತೆಗೆಯಿರಿ ಮತ್ತು ನಾಶಮಾಡಿ.",
+      "ಆರ್ತದಿದ್ದಲ್ಲಿ ಹಾಸು ತಡೆಯಿರಿ ಮತ್ತು ವಿಸರ್ಜನೆ ಉತ್ತಮಗೊಳಿಸಿ.",
+      "ರೋಗ ಮುಕ್ತ ಬೀಜ ಮತ್ತು ಪ್ರತಿರೋಧಕ ವಿಧಗಳನ್ನು ಬಳಸಿ.",
+      "ರೋಗ ಕಾಣಿಸಿದಾಗ ತಕ್ಷಣ ಸೂಕ್ತ ಫಂಗಿಸೈಡ್ ಬಳಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+  "Tomato___Bacterial_spot": {
+    "plant_en": "Tomato",
+    "plant_kn": "ಟೊಮೇಟೋ",
+    "disease_en": "Bacterial spot",
+    "disease_kn": "ಬಾಕ್ಟೀರಿಯಲ್ ಸ್ಪಾಟ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Remove infected leaves and practice good sanitation.",
+      "Avoid overhead irrigation and reduce leaf wetness duration.",
+      "Use copper-based bactericides where appropriate.",
+      "Select resistant varieties if available."
+    ],
+    "treatment_kn": [
+      "ಸೋಮ್ಮು ಹೊಡೆಯಾದ ಎಲೆಗಳನ್ನು ತೆಗೆಯಿರಿ ಮತ್ತು ಸ್ಯಾನಿಟೈಜ್ ಮಾಡಿ.",
+      "ಮೇಲಿನ ನೀರಾವರಿ ತಪ್ಪಿಸಿ ಮತ್ತು ಎಲೆಗಳ ಒರೆತ 시간을 ಕಡಿಮೆ ಮಾಡಿ.",
+      "ಹೆಚ್ಚಾದ ಪ್ರಸ್ತುತಿಯಲ್ಲಿ ಕಾಪರ್ ಆಧಾರಿತ ಬ್ಯಾಕ್ಟೀರಿಸೈಡ್ ಬಳಸಿ.",
+      "ಲಭ್ಯವಿದ್ದರೆ ಪ್ರತಿರೋಧಕ ವಿಧಗಳನ್ನು ಆರಿಸಿಕೊಳ್ಳಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+  "Tomato___Leaf_Mold": {
+    "plant_en": "Tomato",
+    "plant_kn": "ಟೊಮೇಟೋ",
+    "disease_en": "Leaf mold",
+    "disease_kn": "ಎಲೆ ಕಬ್ಬಿಣ",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Increase ventilation and reduce humidity in the canopy.",
+      "Remove affected foliage and avoid overhead watering.",
+      "Apply fungicides labeled for leaf mold control."
+    ],
+    "treatment_kn": [
+      "ಗಾಳಿಚಲಿಸುವಿಕೆಯನ್ನು ಹೆಚ್ಚಿಸಿ ಮತ್ತು ಜುರುಪನ್ನು ಕಡಿಮೆ ಮಾಡಿ.",
+      "ಪ್ರಭಾವಿತ ಎಲೆಗಳನ್ನು ಕષಾಯಿಸಿ ಮತ್ತು ಮೇಲ್ಮೈ ನೀರಾವರಿ ತಪ್ಪಿಸಿ.",
+      "ಎಲೆ ಕಬ್ಬಿಣ ನಿಯಂತ್ರಣಕ್ಕೆ ಸೂಚಿಸಿದ ಫಂಗಿಸೈಡ್ ಬಳಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+  "Tomato___Septoria_leaf_spot": {
+    "plant_en": "Tomato",
+    "plant_kn": "ಟೊಮೇಟೋ",
+    "disease_en": "Septoria leaf spot",
+    "disease_kn": "ಸೆಪ್ಟೋರಿಯಾ ಎಲೆ ಸ್ಪಾಟ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Remove and destroy diseased leaves.",
+      "Practice crop rotation and avoid wet foliage.",
+      "Apply fungicides as per local recommendations."
+    ],
+    "treatment_kn": [
+      "ರೋಗಿತ ಎಲೆಗಳನ್ನು ತೆಗೆಯಿರಿ ಮತ್ತು ನಾಶಮಾಡಿ.",
+      "ಫಸಲು ಶ್ರೇಣಿಯನ್ನು ಬದಲಾಯಿಸಿ ಮತ್ತು ತೇವಾಂಶ ಕಡಿಮೆ ಮಾಡಿ.",
+      "ಸ್ಥಳೀಯ ಸೂಚ��ೆಯ ಪ್ರಕಾರ ಫಂಗಿಸೈಡ್ ಬಳಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+  "Tomato___healthy": {
+    "plant_en": "Tomato",
+    "plant_kn": "ಟೊಮೇಟೋ",
+    "disease_en": "Healthy",
+    "disease_kn": "ಆರೋಗ್ಯವಂತವಾಗಿದೆ",
+    "confidenceThreshold": 0.0,
+    "treatment_en": ["No treatment required. Continue monitoring and good practices."],
+    "treatment_kn": ["ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ಬಂಧನ ಮತ್ತು ಉತ್ತಮ ಅಭ್ಯಾಸಗಳನ್ನು ಮುಂದುವರೆಯಿರಿ."],
+    "reference": "PlantVillage"
+  },
+
+  "Potato___Early_blight": {
+    "plant_en": "Potato",
+    "plant_kn": "ಆಲೂಗಡ್ಡೆ",
+    "disease_en": "Early blight",
+    "disease_kn": "ಆರಂಭಿಕ ಬ್ಲೈಟ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Remove and destroy affected foliage; practice crop rotation.",
+      "Use fungicides when weather favors disease.",
+      "Plant certified seed and maintain balanced nutrition."
+    ],
+    "treatment_kn": [
+      "ಪ್ರಭಾವಿತ ಎಲೆಗಳನ್ನು ತೆಗೆಯಿರಿ ಮತ್ತು ನಾಶಮ���ಡಿ; ಫಸಲು ಶ್ರೇಣಿಯನ್ನು ಪಾಲಿಸಿ.",
+      "ರೋಗ ಅನुकूलವಾದ ಹವಾಮಾನದಲ್ಲಿ ಫಂಗಿಸೈಡ್ ಬಳಸಿ.",
+      "ಪ್ರಮಾಣಿತ ಬೀಜ ಬಳಸಿ ಮತ್ತು ಸಮತೋಲಿತ ಪೋಷಣೆಯನ್ನು ಕಾಪಾಡಿರಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+  "Potato___Late_blight": {
+    "plant_en": "Potato",
+    "plant_kn": "ಆಲೂಗಡ್ಡೆ",
+    "disease_en": "Late blight",
+    "disease_kn": "ನಂತರದ ಬ್ಲೈಟ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Remove infected plants; practice sanitation and crop rotation.",
+      "Use approved fungicides in a protective spray program.",
+      "Avoid moving tubers from infected fields."
+    ],
+    "treatment_kn": [
+      "ರೋಗಿತ ಗಿಡಗಳನ್ನು ತೆಗೆಯಿರಿ; ಸ್ಯಾನಿಟೇಶನ್ ಮತ್ತು ಫಸಲು ಶ್ರೇಣಿಯನ್ನು ಅನುಸರಿಸಿ.",
+      "ರಕ್ಷಕ ಸಿಂಪಡಿಸುವಿಕೆಯಲ್ಲಿ ಅನುಮೋದಿತ ಫಂಗಿಸೈಡ್ ಬಳಸಿ.",
+      "ರೋಗಿತ ಮೈದಾನದಿಂದ ಟ್ಯೂಬರ್‌ಗಳನ್��ು ಸಾಗಿಸುವುದನ್ನು ತಪ್ಪಿಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+  "Potato___healthy": {
+    "plant_en": "Potato",
+    "plant_kn": "ಆಲೂಗಡ್ಡೆ",
+    "disease_en": "Healthy",
+    "disease_kn": "ಆರೋಗ್ಯವಂತವಾಗಿದೆ",
+    "confidenceThreshold": 0.0,
+    "treatment_en": ["No treatment required. Continue monitoring."],
+    "treatment_kn": ["ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ಮುಂದುವರಿಯುವಂತೆ ಗಮನಿಸಿ."],
+    "reference": "PlantVillage"
+  },
+
+  "Apple___Apple_scab": {
+    "plant_en": "Apple",
+    "plant_kn": "ಆಪಲ್",
+    "disease_en": "Apple scab",
+    "disease_kn": "ಆಪಲ್ ಸ್ಕ್ಯಾಬ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Remove and destroy fallen leaves and mummified fruit.",
+      "Prune for air circulation and apply protective fungicides in season."
+    ],
+    "treatment_kn": [
+      "ಹುಳಿತಕ್ಕಿದ ಎಲೆಗಳು ಮತ್ತು ಬೇರುಹಿಡಿದ ಫಲಗಳನ್ನು ತೆಗೆದು ನಾಶಮಾಡಿ.",
+      "ಗಾಳಿ ಸಂಚಲನಕ್ಕಾಗಿ ಪ್ರೂನಿಂಗ್ ಮಾಡಿ ಮತ್ತು ಸೀಸನ್ ನಲ್ಲಿ ರಕ್ಷಣಾತ್ಮಕ ಫಂಗಿಸೈಡ್ ಬಳಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+
+  "Grape___Black_rot": {
+    "plant_en": "Grape",
+    "plant_kn": "ದ್ರಾಕ್ಷಿ",
+    "disease_en": "Black rot",
+    "disease_kn": "ಕಪ್ಪು ಕುಪ್ಪು",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Remove infected clusters and mummies; apply fungicide sprays as recommended.",
+      "Practice canopy management to reduce humidity."
+    ],
+    "treatment_kn": [
+      "ರೋಗಿತ ಗುಂಪುಗಳನ್ನು ಮತ್ತು ಸಣ್ಣ ಸೊಪ್ಪುಗಳನ್ನು ತೆಗೆದು ನಾಶಮಾಡಿ; ಸಲಹೆಗೊಳಿಸಿದಂತೆ ಫಂಗಿಸೈಡ್ ಸಿಂಪಡಿಸಿ.",
+      "ಜುರುಪನ್ನು ಕಡಿಮೆ ಮಾಡಲು ಕೆನಪಿ ನಿರ್ವಹಣೆಯನ್ನು ಅನುಸರಿಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+
+  "Grape___healthy": {
+    "plant_en": "Grape",
+    "plant_kn": "ದ್ರಾಕ್ಷಿ",
+    "disease_en": "Healthy",
+    "disease_kn": "ಆರೋಗ್ಯವಂತವಾಗಿದೆ",
+    "confidenceThreshold": 0.0,
+    "treatment_en": ["No treatment required. Monitor regularly."],
+    "treatment_kn": ["ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ನಿಯಮಿತವಾಗಿ ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ."],
+    "reference": "PlantVillage"
+  },
+
+  "Corn_(maize)___Northern_Leaf_Blight": {
+    "plant_en": "Maize (Corn)",
+    "plant_kn": "ಜೋಳ",
+    "disease_en": "Northern leaf blight",
+    "disease_kn": "ಉತ್ತರ ಎಲೆ ಬ್ಲೈಟ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Use resistant hybrids and practice crop rotation.",
+      "Avoid continuous corn plantings and manage residue."
+    ],
+    "treatment_kn": [
+      "ಪ್ರತಿರೋಧಕ ಹೈಬ್ರಿಡ್ ಬಳಸಿ ಮತ್ತು ಫಸಲು ಶ್ರೇಣಿಯನ್ನು ಪಾಲಿಸಿ.",
+      "ನಿರಂತರ ಜೋಳ ಬೆಳೆಗೆಯುವುದನ್ನು ತಪ್ಪಿಸಿ ಮತ್ತು ಉಳಿದ ಭಾಗ ನಿರ್ವಹಿಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+
+  "Corn_(maize)___Common_rust": {
+    "plant_en": "Maize (Corn)",
+    "plant_kn": "ಜೋಳ",
+    "disease_en": "Common rust",
+    "disease_kn": "ಸಾಮಾನ್ಯ ರಸ್ಟ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Plant resistant varieties and apply fungicides if severe.",
+      "Manage field conditions to reduce humidity."
+    ],
+    "treatment_kn": [
+      "ಪ್ರತಿರೋಧಕ ವೇರಿಯಂಟ್ಗಳನ್ನು ರೋಪಿಸಿ ಮತ್ತು ಗಂಭೀರವಾದರೆ ಫಂಗಿಸೈಡ್ ಬಳಸಿ.",
+      "ಜುರುಪನ್ನು ಕಡಿಮೆ ಮಾಡಲು ಕ್ಷೇತ್ರ ಪರಿಸರ ನಿರ್ವಹಣೆ ಮಾಡಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+
+  "Strawberry___Leaf_scorch": {
+    "plant_en": "Strawberry",
+    "plant_kn": "ಸ್ಟ್ರಾಬೆರಿ",
+    "disease_en": "Leaf scorch",
+    "disease_kn": "ಎಲೆ ಸುಟ್ಟುಹೋಗುವುದು",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Improve irrigation scheduling and avoid water stress.",
+      "Remove severely affected plants and improve drainage."
+    ],
+    "treatment_kn": [
+      "ನೀರಾವರಿ ವೇಳೆಯನ್ನು ಉತ್ತಮಗೊಳಿಸಿ ಮತ್ತು ಜಲಾಶಯಾಂಶ ತಪ್ಪಿಸಿ.",
+      "ತೀವ್ರವಾಗಿ ಪ್ರಭಾವಿತರಾದ ಗಿಡಗಳನ್��ು ತೆಗೆದು ಮತ್ತು ಒದ್ದಿದ್ದನ್ನು ಸುಧಾರಿಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+
+  "Apple___Black_rot": {
+    "plant_en": "Apple",
+    "plant_kn": "ಆಪಲ್",
+    "disease_en": "Black rot",
+    "disease_kn": "ಕಪ್ಪು ಕುಪ್ಪು",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Remove and destroy infected wood and fruit; apply fungicides in the season."
+    ],
+    "treatment_kn": [
+      "ರೋಗಿತ ಮರ ಮತ್ತು ಫಲಗಳನ್ನು ತೆಗೆದು ನಾಶಮಾಡಿ; ಸೀಸನ್ ನಲ್ಲಿ ಫಂಗಿಸೈಡ್ ಬಳಸಿ."
+    ],
+    "reference": "PlantVillage"
+  },
+
+  "Tomato___Tomato_mosaic_virus": {
+    "plant_en": "Tomato",
+    "plant_kn": "ಟೊಮೇಟೋ",
+    "disease_en": "Tomato mosaic virus",
+    "disease_kn": "ಟೊಮೇಟೋ ಮೋಸೈಕ್ ವೈರಸ್",
+    "confidenceThreshold": 0.6,
+    "treatment_en": [
+      "Use certified virus-free seed and remove infected plants.",
+      "Control weeds and insect vectors; practice good sanitation."
+    ],
+    "treatment_kn": [
+      "ಸಾರ್ಟಿಫೈಡ್ ವೈರಸ್ ಮುಕ್ತ ಬೀಜ ಬಳಸಿ ಮತ���ತು ರೋಗಿತ ಗಿಡಗಳನ್ನು ತೆಗೆದುಹಾಕಿ.",
+      "ಕೀಟಗಳ ಹರಡುವಿಕೆಯನ್ನ ಮತ್ತು ಕಾಳಜಿ ನಿರ್ವಹಿಸಿ; ಉತ್ತಮ ಸ್ಯಾನಿಟೇಶನ್ ಪಾಲಿಸಿ."
+    ],
+    "reference": "PlantVillage"
+  }
+}
