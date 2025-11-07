@@ -10,6 +10,7 @@ export default function DiseaseDetection() {
   );
 
   const [classLabels, setClassLabels] = useState<string[] | null>(null);
+  const [showSolution, setShowSolution] = useState(false);
   const [leafTypes, setLeafTypes] = useState<Record<string, any> | null>(null);
 
   useEffect(() => {
@@ -438,6 +439,52 @@ export default function DiseaseDetection() {
               <p>
                 Confidence: <strong>{(result.score * 100).toFixed(1)}%</strong>
               </p>
+
+              <div className="mt-3">
+                <button
+                  onClick={() => setShowSolution((s) => !s)}
+                  className="px-3 py-1 bg-indigo-600 text-white rounded"
+                >
+                  {showSolution ? "Hide Solution" : "Solution"}
+                </button>
+              </div>
+
+              {showSolution && (
+                <div className="mt-4 p-3 border rounded bg-gray-50">
+                  <h4 className="font-medium mb-2">Detailed Solution</h4>
+                  {result.details ? (
+                    <div>
+                      <h5 className="font-medium">Treatment Steps (English)</h5>
+                      <ol className="list-decimal list-inside mt-2 text-sm">
+                        {result.details.treatment_en.map((s: string, i: number) => (
+                          <li key={i} className="mb-1">{s}</li>
+                        ))}
+                      </ol>
+
+                      <h5 className="font-medium mt-3">Prevention & Notes</h5>
+                      <ul className="list-disc list-inside mt-2 text-sm">
+                        {result.details.prevention?.map((s: string, i: number) => (
+                          <li key={i} className="mb-1">{s}</li>
+                        ))}
+                        {!result.details.prevention && result.details.reference && (
+                          <li className="mb-1">See reference: {result.details.reference}</li>
+                        )}
+                      </ul>
+
+                      <h5 className="font-medium mt-3">ಚಿಕಿತ್ಸೆ (ಕನ್ನಡ)</h5>
+                      <ol className="list-decimal list-inside mt-2 text-sm">
+                        {result.details.treatment_kn.map((s: string, i: number) => (
+                          <li key={i} className="mb-1">{s}</li>
+                        ))}
+                      </ol>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-sm">No detailed mapping found. Try uploading a clearer photo or specify crop type.</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {result.details ? (
                 <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
