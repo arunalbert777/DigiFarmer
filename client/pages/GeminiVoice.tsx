@@ -151,7 +151,29 @@ export default function GeminiVoice() {
       });
 
       if (!res.ok) {
-        // Try to extract helpful details from the response
+        // If the Netlify function is missing (404), try server-side endpoint as fallback
+        if (res.status === 404) {
+          try {
+            const srv = await fetch('/api/gemini-chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: text }),
+            });
+            if (srv.ok) {
+              const data = await srv.json().catch(() => null);
+              const reply = (data && (data.bot || data.text || data.message)) || '';
+              if (reply && String(reply).trim()) {
+                addMessage(String(reply), 'gemini');
+                speakText(String(reply));
+                return;
+              }
+            }
+          } catch (e) {
+            console.warn('[gemini] server fallback failed', e);
+          }
+        }
+
+        // Try to extract helpful details from the original response
         let details = null;
         try {
           const ct = (res.headers.get("content-type") || "").toLowerCase();
