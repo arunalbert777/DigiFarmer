@@ -598,10 +598,21 @@ export default function DiseaseDetection() {
 
               <div className="mt-3">
                 <button
-                  onClick={() => handleToggleSolution()}
+                  onClick={() => {
+                    try {
+                      const diseaseName =
+                        result?.details?.disease_en || result?.label || (Array.isArray(result?.all) ? result?.all?.[0]?.className || String(result?.all?.[0]) : "");
+                      const q = encodeURIComponent(String(diseaseName || ""));
+                      // navigate to voice assistant and pass query via URL
+                      (window as any).location.href = `/gemini-voice?q=${q}`;
+                    } catch (e) {
+                      // fallback to previous behavior
+                      handleToggleSolution();
+                    }
+                  }}
                   className="px-3 py-1 bg-indigo-600 text-white rounded"
                 >
-                  {showSolution ? "Hide Solution" : "Solution"}
+                  Open Voice Assistant
                 </button>
               </div>
 
