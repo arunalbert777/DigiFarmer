@@ -55,8 +55,12 @@
     "disease_en": "Healthy",
     "disease_kn": "ಆರೋಗ್ಯವಂತವಾಗಿದೆ",
     "confidenceThreshold": 0.0,
-    "treatment_en": ["No treatment required. Continue regular care and monitoring."],
-    "treatment_kn": ["ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ನಿಯಮಿತ ಆರೈಕೆ ಮತ್ತು ಪರಿಶೀಲನೆ ಮುಂದುವರಿಸಿ."],
+    "treatment_en": [
+      "No treatment required. Continue regular care and monitoring."
+    ],
+    "treatment_kn": [
+      "ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ನಿಯಮಿತ ಆರೈಕೆ ಮತ್ತು ಪರಿಶೀಲನೆ ಮುಂದುವರಿಸಿ."
+    ],
     "reference": "PlantVillage"
   },
   "Blueberry___healthy": {
@@ -66,7 +70,9 @@
     "disease_kn": "ಆರೋಗ್ಯವಂತವಾಗಿದೆ",
     "confidenceThreshold": 0.0,
     "treatment_en": ["No treatment required. Monitor regularly."],
-    "treatment_kn": ["ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ನಿಯಮಿತವಾಗಿ ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ."],
+    "treatment_kn": [
+      "ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ನಿಯಮಿತವಾಗಿ ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ."
+    ],
     "reference": "PlantVillage"
   },
   "Cherry_(including_sour)___Powdery_mildew": {
@@ -488,7 +494,9 @@
     "disease_kn": "ಆರೋಗ್ಯವಂತವಾಗಿದೆ",
     "confidenceThreshold": 0.0,
     "treatment_en": ["No treatment required. Monitor regularly."],
-    "treatment_kn": ["ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ನಿಯಮಿತವಾಗಿ ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ."],
+    "treatment_kn": [
+      "ಯಾವುದೇ ಚಿಕಿತ್ಸೆಯ ಅಗತ್ಯವಿಲ್ಲ. ನಿಯಮಿತವಾಗಿ ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಿ."
+    ],
     "reference": "PlantVillage"
   }
 }
