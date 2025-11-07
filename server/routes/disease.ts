@@ -1,5 +1,3 @@
-import type { RequestHandler } from "express";
-
 // Simplified disease detection endpoint: accepts image (multipart or JSON/dataURL)
 // Performs validation/resizing and delegates inference to client-side TFJS or hosted model.
 export const handleDiseaseDetect: RequestHandler = async (req, res) => {
@@ -310,6 +308,64 @@ export const handleDiseaseLabels: RequestHandler = async (_req, res) => {
           "No labels found. Provide models/plant_disease/labels.json or configure HUGGINGFACE_MODEL to fetch metadata.",
       });
   } catch (e: any) {
+    return res.status(500).json({ error: e.message || String(e) });
+  }
+};
+
+// POST /api/detect/solution - searches the web (Wikipedia) for the label and returns a summary or search URL
+export const handleSolutionSearch: RequestHandler = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const label = (typeof body === 'string' ? body : body.label) || body?.q || '';
+    if (!label) return res.status(400).json({ error: 'Missing label to search' });
+
+    const qs = [
+      `${label} plant disease management`,
+      `${label} disease treatment`,
+      `${label} plant disease`,
+      `${label}`,
+    ];
+
+    const searchWiki = async (query: string) => {
+      const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
+        query,
+      )}&utf8=1&format=json`;
+      const sresp = await fetch(searchUrl);
+      if (!sresp.ok) return null;
+      const sjson = await sresp.json().catch(() => null);
+      const first = sjson?.query?.search?.[0];
+      if (!first) return null;
+      const title = first.title;
+      const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
+        title,
+      )}`;
+      const presp = await fetch(summaryUrl, { headers: { Accept: 'application/json' } });
+      if (!presp.ok) return { title, url: `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}` };
+      const pjson = await presp.json().catch(() => null);
+      return {
+        title,
+        extract: pjson?.extract || null,
+        url: `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`,
+      };
+    };
+
+    for (const q of qs) {
+      try {
+        const found = await searchWiki(q);
+        if (found && (found.extract || found.url)) {
+          return res.status(200).json({ source: 'wikipedia', ...found });
+        }
+      } catch (e) {
+        console.warn('[solution] wiki search error', e);
+      }
+    }
+
+    const google = `https://www.google.com/search?q=${encodeURIComponent(
+      label + ' plant disease treatment',
+    )}`;
+    return res.status(200).json({ source: 'google', url: google });
+  } catch (e: any) {
+    console.error('[solution] error', e);
     return res.status(500).json({ error: e.message || String(e) });
   }
 };
