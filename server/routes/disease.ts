@@ -312,7 +312,7 @@ export const handleDiseaseLabels: RequestHandler = async (_req, res) => {
   }
 };
 
-// POST /api/detect/solution - searches the web (Wikipedia) for the label and returns a summary or search URL
+// POST /api/detect/solution - searches the web (Wikipedia) for the label and returns a summary or search URL (includes Kannada lookup)
 export const handleSolutionSearch: RequestHandler = async (req, res) => {
   try {
     const body = req.body || {};
@@ -326,37 +326,67 @@ export const handleSolutionSearch: RequestHandler = async (req, res) => {
       `${label}`,
     ];
 
-    const searchWiki = async (query: string) => {
-      const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
-        query,
-      )}&utf8=1&format=json`;
-      const sresp = await fetch(searchUrl);
-      if (!sresp.ok) return null;
-      const sjson = await sresp.json().catch(() => null);
-      const first = sjson?.query?.search?.[0];
-      if (!first) return null;
-      const title = first.title;
-      const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
-        title,
-      )}`;
-      const presp = await fetch(summaryUrl, { headers: { Accept: 'application/json' } });
-      if (!presp.ok) return { title, url: `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}` };
-      const pjson = await presp.json().catch(() => null);
-      return {
-        title,
-        extract: pjson?.extract || null,
-        url: `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`,
-      };
+    const searchLang = async (lang: string, query: string) => {
+      try {
+        const searchUrl = `https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
+          query,
+        )}&utf8=1&format=json`;
+        const sresp = await fetch(searchUrl);
+        if (!sresp.ok) return null;
+        const sjson = await sresp.json().catch(() => null);
+        const first = sjson?.query?.search?.[0];
+        if (!first) return null;
+        const title = first.title;
+        const summaryUrl = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
+          title,
+        )}`;
+        const presp = await fetch(summaryUrl, { headers: { Accept: 'application/json' } });
+        if (!presp.ok)
+          return { title, url: `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}` };
+        const pjson = await presp.json().catch(() => null);
+        return {
+          title,
+          extract: pjson?.extract || null,
+          url: `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}`,
+        };
+      } catch (e) {
+        console.warn(`[solution] ${lang} wiki search error`, e);
+        return null;
+      }
     };
 
+    // Try English searches first and attempt Kannada lookup for the same queries/titles
     for (const q of qs) {
       try {
-        const found = await searchWiki(q);
-        if (found && (found.extract || found.url)) {
-          return res.status(200).json({ source: 'wikipedia', ...found });
+        const enFound = await searchLang('en', q);
+        if (enFound && (enFound.extract || enFound.url)) {
+          // try Kannada for the same query/title
+          let knFound = null;
+          try {
+            // first try searching Kannada with same title
+            knFound = await searchLang('kn', enFound.title || q);
+            // if not found, try searching Kannada with the original query
+            if (!knFound) knFound = await searchLang('kn', q);
+          } catch (e) {
+            knFound = null;
+          }
+
+          return res.status(200).json({ source: 'wikipedia', ...enFound, kn: knFound || null });
         }
       } catch (e) {
         console.warn('[solution] wiki search error', e);
+      }
+    }
+
+    // If no English results, try Kannada-only search
+    for (const q of qs) {
+      try {
+        const knFound = await searchLang('kn', q);
+        if (knFound && (knFound.extract || knFound.url)) {
+          return res.status(200).json({ source: 'wikipedia_kn', ...knFound });
+        }
+      } catch (e) {
+        console.warn('[solution] kn wiki search error', e);
       }
     }
 
