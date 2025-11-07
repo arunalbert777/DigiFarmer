@@ -12,8 +12,8 @@ export default function DiseaseDetection() {
   const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
-    // Load disease mapping data (human readable names + treatment steps)
-    fetch("/data/diseases.json")
+    // Load multilingual disease mapping data
+    fetch("/data/diseases_multilingual.json")
       .then((r) => r.json())
       .then((j) => setDiseaseMap(j))
       .catch(() => setDiseaseMap(null));
@@ -267,22 +267,55 @@ export default function DiseaseDetection() {
   }
 
   function enrichResult(label: string, score: number) {
-    // Try to find a mapping in diseaseMap: keys may match class names from PlantVillage or generic labels
     if (!diseaseMap) return {};
     // direct match
     if (diseaseMap[label]) return { details: diseaseMap[label] };
-    // normalize some common label formats
-    const normalized = label.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "");
+
+    // try normalized label
+    const normalized = label.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_()]/g, "");
     if (diseaseMap[normalized]) return { details: diseaseMap[normalized] };
 
-    // If label is like class_12 and diseaseMap contains entries by index, try to map by index
-    const m = label.match(/^class_(\d+)$/i);
-    if (m) {
-      // Try to map by index -> many models have class ordering; we can't know it here.
-      // As a safer fallback, look for a 'healthy' key when confidence low/high
-      if (score < 0.15 && diseaseMap["healthy"]) return { details: diseaseMap["healthy"] };
+    // attempt to match common PlantVillage patterns by splitting
+    const tryKey = (k: string) => {
+      if (diseaseMap[k]) return diseaseMap[k];
+      return null;
+    };
+
+    // if label contains '___' try direct
+    if (label.includes('___') && tryKey(label)) return { details: tryKey(label) };
+
+    // fallback: try to parse plant and disease from label like 'Tomato___Late_blight'
+    const parts = label.split('___');
+    if (parts.length === 2) {
+      const key = `${parts[0]}___${parts[1]}`;
+      if (diseaseMap[key]) return { details: diseaseMap[key] };
     }
 
+    // If label looks like class_#, give a best-effort generic response
+    const m = label.match(/^class_(\d+)$/i);
+    if (m) {
+      const idx = Number(m[1]);
+      // no deterministic mapping available here — return a generic structure
+      return {
+        details: {
+          plant_en: "Unknown",
+          plant_kn: "ಅನಾಮಧೇಯ",
+          disease_en: "Unknown disease",
+          disease_kn: "ಅನಾಮಧೇಯ ರೋಗ",
+          treatment_en: [
+            "Image unclear — retake a close-up of the affected leaf or capture multiple angles.",
+            "Provide crop type and recent symptoms for better guidance."
+          ],
+          treatment_kn: [
+            "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾರು ಕೋಣಗಳನ್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
+            "ಉತ್ತಮ ಸಲಹೆಗಾಗಿ ಬೆಳೆ ಪ್ರಕಾರ ಮತ್ತು ಇತ್ತೀಚಿನ ಲಕ್ಷಣಗಳನ್ನು ಒದಗಿಸಿ."
+          ],
+          reference: "PlantVillage"
+        }
+      };
+    }
+
+    // final fallback: return nothing
     return {};
   }
 
@@ -291,19 +324,11 @@ export default function DiseaseDetection() {
       <h1 className="text-3xl font-bold mb-4">AI Disease Detection</h1>
       <p className="mb-4 text-gray-600">
         Upload or capture a photo of the plant or leaf and the AI will attempt to
-        identify the disease and provide treatment recommendations.
+        identify the disease and provide treatment recommendations in English and Kannada.
       </p>
 
       <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2">
         <input type="file" accept="image/*" onChange={handleFile} />
-        <input
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handleFile}
-          className="hidden"
-          aria-hidden
-        />
         <button
           onClick={() => {
             if (usingCamera) stopCamera();
@@ -369,31 +394,51 @@ export default function DiseaseDetection() {
             <div>
               <h3 className="font-semibold">Detection Result</h3>
               <p className="mt-2">
-                Label: <strong>{result.label}</strong>
+                Label: <strong>{String(result.label)}</strong>
               </p>
               <p>
                 Confidence: <strong>{(result.score * 100).toFixed(1)}%</strong>
               </p>
 
               {result.details ? (
-                <div className="mt-3">
-                  <p>
-                    Plant: <strong>{result.details.plant}</strong>
-                  </p>
-                  <p>
-                    Disease: <strong>{result.details.disease}</strong>
-                  </p>
-
-                  <div className="mt-3">
-                    <h4 className="font-medium">Recommended treatment (step-by-step)</h4>
-                    <ol className="list-decimal list-inside mt-2 text-sm">
-                      {result.details.treatment.map((s: string, i: number) => (
-                        <li key={i} className="mb-1">{s}</li>
-                      ))}
-                    </ol>
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-medium">English</h4>
+                    <p className="mt-2">
+                      Plant: <strong>{result.details.plant_en}</strong>
+                    </p>
+                    <p>
+                      Disease: <strong>{result.details.disease_en}</strong>
+                    </p>
+                    <div className="mt-3">
+                      <h5 className="font-medium">Treatment (English)</h5>
+                      <ol className="list-decimal list-inside mt-2 text-sm">
+                        {result.details.treatment_en.map((s: string, i: number) => (
+                          <li key={i} className="mb-1">{s}</li>
+                        ))}
+                      </ol>
+                    </div>
                     {result.details.reference && (
                       <p className="mt-2 text-xs text-gray-600">Reference: {result.details.reference}</p>
                     )}
+                  </div>
+
+                  <div>
+                    <h4 className="font-medium">ಕನ್ನಡ</h4>
+                    <p className="mt-2">
+                      ಸಸ್ಯ: <strong>{result.details.plant_kn}</strong>
+                    </p>
+                    <p>
+                      ರೋಗ: <strong>{result.details.disease_kn}</strong>
+                    </p>
+                    <div className="mt-3">
+                      <h5 className="font-medium">ಚಿಕಿತ್ಸೆ (ಕನ್ನಡ)</h5>
+                      <ol className="list-decimal list-inside mt-2 text-sm">
+                        {result.details.treatment_kn.map((s: string, i: number) => (
+                          <li key={i} className="mb-1">{s}</li>
+                        ))}
+                      </ol>
+                    </div>
                   </div>
                 </div>
               ) : (
