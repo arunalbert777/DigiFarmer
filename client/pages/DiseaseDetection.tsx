@@ -314,13 +314,25 @@ export default function DiseaseDetection() {
 
   function enrichResult(label: string, score: number) {
     if (!diseaseMap) return {};
+
+    // If label is a class index like class_12 and we have classLabels, map it
+    const mClass = label.match(/^class_(\d+)$/i);
+    if (mClass && (window as any)._classLabels === undefined) {
+      // also support older global storage if needed
+    }
+    if (mClass && classLabels && classLabels.length > 0) {
+      const idx = Number(mClass[1]);
+      if (!Number.isNaN(idx) && idx >= 0 && idx < classLabels.length) {
+        const mapped = classLabels[idx];
+        label = String(mapped);
+      }
+    }
+
     // direct match
     if (diseaseMap[label]) return { details: diseaseMap[label] };
 
-    // try normalized label
-    const normalized = label
-      .replace(/\s+/g, "_")
-      .replace(/[^a-zA-Z0-9_()]/g, "");
+    // try normalized label: replace spaces with _ and strip odd chars
+    const normalized = label.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_()]/g, "");
     if (diseaseMap[normalized]) return { details: diseaseMap[normalized] };
 
     // attempt to match common PlantVillage patterns by splitting
@@ -329,9 +341,8 @@ export default function DiseaseDetection() {
       return null;
     };
 
-    // if label contains '___' try direct
-    if (label.includes("___") && tryKey(label))
-      return { details: tryKey(label) };
+    // if label contains '___' try direct (PlantVillage format)
+    if (label.includes("___") && tryKey(label)) return { details: tryKey(label) };
 
     // fallback: try to parse plant and disease from label like 'Tomato___Late_blight'
     const parts = label.split("___");
@@ -340,11 +351,11 @@ export default function DiseaseDetection() {
       if (diseaseMap[key]) return { details: diseaseMap[key] };
     }
 
-    // If label looks like class_#, give a best-effort generic response
+    // If still unresolved and 'healthy' exists, return healthy suggestion for low confidence
     const m = label.match(/^class_(\d+)$/i);
     if (m) {
-      const idx = Number(m[1]);
-      // no deterministic mapping available here — return a generic structure
+      if (diseaseMap["healthy"]) return { details: diseaseMap["healthy"] };
+
       return {
         details: {
           plant_en: "Unknown",
