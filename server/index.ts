@@ -51,6 +51,8 @@ export function createServer() {
 
   // Disease detection endpoint
   app.post("/api/detect", handleDiseaseDetect);
+  // Expose labels (from local conversion or HF model metadata)
+  app.get("/api/detect/labels", handleDiseaseLabels);
 
   return app;
 }
