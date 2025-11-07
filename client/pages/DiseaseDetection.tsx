@@ -395,7 +395,7 @@ export default function DiseaseDetection() {
       ],
       treatment_kn: [
         "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್ನು ಮರುಹಿಡಿಯಿರಿ.",
-        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ್ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
+        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನ�� ಮತ್ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
         "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್ಚಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
         "ನಿರ್ದಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳೀಯ ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
@@ -451,6 +451,31 @@ export default function DiseaseDetection() {
         setResult((prev: any) => ({ ...(prev || {}), details: gen }));
         setShowSolution(true);
         return;
+      }
+
+      // Before final fallback, try web search via server for a solution
+      try {
+        const resp = await fetch('/api/detect/solution', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ label: primaryLabel }),
+        });
+        if (resp.ok) {
+          const payload = await resp.json().catch(() => null);
+          if (payload) {
+            if (payload.extract || payload.url) {
+              const sol = defaultGenericSolution(primaryLabel || 'Unknown');
+              sol.treatment_en = payload.extract ? [payload.extract] : [`More info: ${payload.url}`];
+              sol.treatment_kn = sol.treatment_kn || [];
+              sol.reference = payload.url || payload.title || 'web';
+              setResult((prev: any) => ({ ...(prev || {}), details: sol }));
+              setShowSolution(true);
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[solution] web search failed', err);
       }
 
       // Final fallback
