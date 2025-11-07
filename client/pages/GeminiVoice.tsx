@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { useLanguage } from "../contexts/LanguageContext";
-import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 export default function GeminiVoice() {
