@@ -401,6 +401,37 @@ export default function DiseaseDetection() {
     return {};
   }
 
+  function findLeafType(label: string) {
+    if (!leafTypes) return null;
+    const raw = String(label || "").toLowerCase();
+    // direct by key
+    for (const k of Object.keys(leafTypes)) {
+      if (k.toLowerCase() === raw) return leafTypes[k];
+    }
+    // match by plant_en or plant_kn tokens
+    for (const k of Object.keys(leafTypes)) {
+      const v = leafTypes[k];
+      const pen = String(v.plant_en || "").toLowerCase();
+      const pkn = String(v.plant_kn || "").toLowerCase();
+      if (pen.includes(raw) || pkn.includes(raw)) return v;
+    }
+    // token match
+    const toks = raw.split(/[^a-z0-9]+/).filter(Boolean);
+    if (toks.length) {
+      for (const k of Object.keys(leafTypes)) {
+        const v = leafTypes[k];
+        const pen = String(v.plant_en || "").toLowerCase();
+        for (const t of toks) if (t && pen.includes(t)) return v;
+      }
+    }
+    return null;
+  }
+
+  // try to find leaf match from result label (if available)
+  const leafMatch = result
+    ? findLeafType(result.label || (Array.isArray(result.all) ? String(result.all[0]) : ""))
+    : null;
+
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold mb-4">AI Disease Detection</h1>
