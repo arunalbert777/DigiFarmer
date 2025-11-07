@@ -340,7 +340,7 @@ export default function DiseaseDetection() {
             "Provide crop type and recent symptoms for better guidance.",
           ],
           treatment_kn: [
-            "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾರು ಕೋಣಗಳನ್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
+            "ಚಿತ್��� ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾರು ಕೋಣಗಳ��್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
             "ಉತ್ತಮ ಸಲಹೆಗಾಗಿ ಬೆಳೆ ಪ್ರಕಾರ ಮತ್ತು ಇತ್ತೀಚಿನ ಲಕ್ಷಣಗಳನ್ನು ಒದಗಿಸಿ.",
           ],
           reference: "PlantVillage",
@@ -442,7 +442,7 @@ export default function DiseaseDetection() {
 
               <div className="mt-3">
                 <button
-                  onClick={() => setShowSolution((s) => !s)}
+                  onClick={() => handleToggleSolution()}
                   className="px-3 py-1 bg-indigo-600 text-white rounded"
                 >
                   {showSolution ? "Hide Solution" : "Solution"}
