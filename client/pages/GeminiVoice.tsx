@@ -13,6 +13,7 @@ export default function GeminiVoice() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    // cleanup recognition on unmount
     return () => {
       if (recognitionRef.current) {
         try {
@@ -25,6 +26,23 @@ export default function GeminiVoice() {
       }
     };
   }, []);
+
+  // If navigated with a query param ?q=..., auto-send it to the assistant
+  const location = useLocation();
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(location.search);
+      const q = params.get("q") || (location.state && (location.state as any).q);
+      if (q && q.trim()) {
+        // small delay to allow component to finish mounting
+        setTimeout(() => {
+          sendTextMessage(q);
+        }, 400);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [location.search]);
 
   function showMessage(text: string) {
     const el = document.getElementById("messageBox");
