@@ -341,7 +341,7 @@ export default function DiseaseDetection() {
           ],
           treatment_kn: [
             "ಚಿತ್��� ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾರು ಕೋಣಗಳ��್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
-            "ಉತ್ತಮ ಸಲಹೆಗಾಗಿ ಬೆಳೆ ಪ್ರಕಾರ ಮತ್ತು ಇತ್ತೀಚಿನ ಲಕ್ಷಣಗಳನ್ನು ಒದಗಿಸಿ.",
+            "ಉತ್ತಮ ಸಲಹೆಗಾಗಿ ಬೆಳೆ ಪ್ರಕಾರ ಮತ್ತು ಇತ್ತೀಚಿನ ಲಕ್ಷಣಗಳನ್���ು ಒದಗಿಸಿ.",
           ],
           reference: "PlantVillage",
         },
@@ -398,7 +398,7 @@ export default function DiseaseDetection() {
         "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
         "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
-        "ನಿರ್ದಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳ��ಯ ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
+        "ನಿರ್��ಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳ��ಯ ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
       ],
       reference: "PlantVillage",
     };
@@ -462,6 +462,38 @@ export default function DiseaseDetection() {
         });
         if (resp.ok) {
           const payload = await resp.json().catch(() => null);
+          if (
+            payload &&
+            (payload.extract || payload.url || (payload.kn && (payload.kn.extract || payload.kn.url) ) || payload.sections || (payload.kn && payload.kn.sections))
+          ) {
+            const sol = defaultGenericSolution(primaryLabel || 'Unknown');
+
+            // Helper to pick prioritized sections
+            const pickSections = (s: any) => {
+              if (!s) return null;
+              const order = ['treatment', 'management', 'control', 'prevention', 'symptoms', 'other'];
+              const out: string[] = [];
+              for (const k of order) {
+                if (s[k] && Array.isArray(s[k])) out.push(...s[k]);
+              }
+              return out.length ? out : null;
+            };
+
+            const enFromSections = pickSections(payload.sections || payload);
+            if (enFromSections) sol.treatment_en = enFromSections;
+            else if (payload.extract) sol.treatment_en = [payload.extract];
+            else if (payload.url) sol.treatment_en = [`More info: ${payload.url}`];
+
+            const knFromSections = pickSections((payload.kn && payload.kn.sections) ? payload.kn.sections : (payload.kn || null));
+            if (knFromSections) sol.treatment_kn = knFromSections;
+            else if (payload.kn && payload.kn.extract) sol.treatment_kn = [payload.kn.extract];
+            else if (payload.kn && payload.kn.url) sol.treatment_kn = [`ದ���ವಿಟ್ಟು ಕೆಳಗಿನ ಮಾಹಿತಿಯನ್ನು ನೋಡಿ: ${payload.kn.url}`];
+            else sol.treatment_kn = sol.treatment_kn || [];
+
+            sol.reference = payload.url || payload.title || (payload.kn && payload.kn.url) || 'web';
+            setResult((prev: any) => ({ ...(prev || {}), details: sol }));
+            setShowSolution(true);
+          }
           if (
             payload &&
             (payload.extract || payload.url || (payload.kn && (payload.kn.extract || payload.kn.url)))
