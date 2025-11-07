@@ -394,7 +394,7 @@ export default function DiseaseDetection() {
         "Consult local extension or expert for a specific chemical/control recommendation.",
       ],
       treatment_kn: [
-        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್ನು ಮರುಹಿಡಿಯಿರಿ.",
+        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
         "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ್ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
         "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
@@ -455,25 +455,25 @@ export default function DiseaseDetection() {
 
       // Before final fallback, try web search via server for a solution
       try {
-        const resp = await fetch('/api/detect/solution', {
+        fetch('/api/detect/solution', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ label: primaryLabel }),
-        });
-        if (resp.ok) {
-          const payload = await resp.json().catch(() => null);
-          if (payload) {
-            if (payload.extract || payload.url) {
+        })
+          .then((resp) => (resp.ok ? resp.json().catch(() => null) : null))
+          .then((payload) => {
+            if (payload && (payload.extract || payload.url)) {
               const sol = defaultGenericSolution(primaryLabel || 'Unknown');
               sol.treatment_en = payload.extract ? [payload.extract] : [`More info: ${payload.url}`];
               sol.treatment_kn = sol.treatment_kn || [];
               sol.reference = payload.url || payload.title || 'web';
               setResult((prev: any) => ({ ...(prev || {}), details: sol }));
               setShowSolution(true);
-              return;
             }
-          }
-        }
+          })
+          .catch((err) => {
+            console.warn('[solution] web search failed', err);
+          });
       } catch (err) {
         console.warn('[solution] web search failed', err);
       }
