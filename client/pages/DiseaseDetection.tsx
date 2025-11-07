@@ -395,7 +395,7 @@ export default function DiseaseDetection() {
 
       {usingCamera && (
         <div className="mb-4">
-          <video ref={videoRef} className="w-full rounded-lg border" />
+          <video ref={videoRef} className="w-full rounded-lg border" muted playsInline autoPlay />
           <div className="mt-2">
             <button
               onClick={captureFromCamera}
