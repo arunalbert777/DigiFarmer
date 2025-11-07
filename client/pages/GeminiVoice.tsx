@@ -151,8 +151,27 @@ export default function GeminiVoice() {
       });
 
       if (!res.ok) {
-        const bodyText = await res.text();
-        throw new Error(`Upstream error: ${bodyText || res.statusText}`);
+        // Try to extract helpful details from the response
+        let details = null;
+        try {
+          const ct = (res.headers.get("content-type") || "").toLowerCase();
+          if (ct.includes("application/json")) {
+            details = await res.json().catch(() => null);
+          } else {
+            details = await res.text().catch(() => null);
+          }
+        } catch (e) {
+          details = null;
+        }
+
+        const msg = typeof details === "string" && details.trim()
+          ? details
+          : (details && typeof details === "object" ? JSON.stringify(details) : res.statusText || `Status ${res.status}`);
+
+        console.error("[gemini] upstream not ok:", res.status, msg);
+        addMessage(`AI service error: ${msg}`, "gemini");
+        speakText("Sorry, I couldn't reach the AI service. Please try again later.");
+        return;
       }
 
       const contentType = (res.headers.get("content-type") || "").toLowerCase();
