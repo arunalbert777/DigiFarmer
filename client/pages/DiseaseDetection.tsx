@@ -571,6 +571,17 @@ export default function DiseaseDetection() {
                     </div>
                   </div>
                 </div>
+              ) : leafMatch ? (
+                <div className="mt-3">
+                  <h4 className="font-medium">Detected Plant / Leaf Type</h4>
+                  <p className="mt-2">Plant: <strong>{leafMatch.plant_en}</strong></p>
+                  <p>Kannada: <strong>{leafMatch.plant_kn}</strong></p>
+                  <div className="mt-3">
+                    <h5 className="font-medium">Leaf Description</h5>
+                    <p className="text-sm mt-2">{leafMatch.leaf_description_en}</p>
+                    <p className="text-sm mt-2">{leafMatch.leaf_description_kn}</p>
+                  </div>
+                </div>
               ) : (
                 <details className="mt-2">
                   <summary className="text-sm text-gray-600">
