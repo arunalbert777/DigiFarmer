@@ -131,72 +131,107 @@ export default function GeminiVoice() {
   }
 
   async function getGeminiResponse(prompt: string) {
-    // Call Netlify function proxy
-    const url = "/.netlify/functions/gemini-proxy";
     const shortLang = language && language.startsWith("kn") ? "kn" : "en";
-    // For Kannada, request server-side TTS audio when available; otherwise request text
-    const wantAudio = shortLang === "kn";
-    const payload = {
-      type: wantAudio ? "audio" : "text",
-      text: prompt,
-      lang: shortLang,
-    };
+  // For Kannada, request server-side TTS audio when available; otherwise request text
+  const wantAudio = shortLang === "kn";
+  const payload = {
+    type: wantAudio ? "audio" : "text",
+    text: prompt,
+    lang: shortLang,
+  };
 
+  // Try multiple likely endpoints for the proxy (Netlify functions or local server endpoint)
+  const endpoints = [
+    "/.netlify/functions/gemini-proxy",
+    "/.netlify/functions/gemini-chat",
+    "/.netlify/functions/api/gemini-proxy",
+    "/.netlify/functions/api/gemini-chat",
+    "/api/gemini-chat",
+  ];
+
+  let res: Response | null = null;
+  let lastError: any = null;
+  for (const ep of endpoints) {
     try {
-      const res = await fetch(url, {
+      // Use fetchWithRetry to handle transient 429 responses
+      res = await fetchWithRetry(ep, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
         cache: "no-store",
-      });
+      }, 2, 500).catch((e) => { throw e; });
 
-      if (!res.ok) {
-        // If the Netlify function is missing (404), try server-side endpoint as fallback
-        if (res.status === 404) {
-          try {
-            const srv = await fetch('/api/gemini-chat', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ message: text }),
-            });
-            if (srv.ok) {
-              const data = await srv.json().catch(() => null);
-              const reply = (data && (data.bot || data.text || data.message)) || '';
-              if (reply && String(reply).trim()) {
-                addMessage(String(reply), 'gemini');
-                speakText(String(reply));
-                return;
-              }
-            }
-          } catch (e) {
-            console.warn('[gemini] server fallback failed', e);
-          }
-        }
-
-        // Try to extract helpful details from the original response
-        let details = null;
-        try {
-          const ct = (res.headers.get("content-type") || "").toLowerCase();
-          if (ct.includes("application/json")) {
-            details = await res.json().catch(() => null);
-          } else {
-            details = await res.text().catch(() => null);
-          }
-        } catch (e) {
-          details = null;
-        }
-
-        const msg = typeof details === "string" && details.trim()
-          ? details
-          : (details && typeof details === "object" ? JSON.stringify(details) : res.statusText || `Status ${res.status}`);
-
-        console.error("[gemini] upstream not ok:", res.status, msg);
-        addMessage(`AI service error: ${msg}`, "gemini");
-        speakText("Sorry, I couldn't reach the AI service. Please try again later.");
-        return;
+      if (res && res.ok) {
+        // found a working endpoint
+        break;
       }
 
-      const contentType = (res.headers.get("content-type") || "").toLowerCase();
+      // If not OK and 404, continue to next endpoint
+      if (res && res.status === 404) {
+        lastError = { status: 404 };
+        res = null;
+        continue;
+      }
+
+      // For other non-ok statuses, capture details and stop trying further
+      if (res && !res.ok) {
+        lastError = res;
+        break;
+      }
+    } catch (err) {
+      lastError = err;
+      // try next endpoint
+      res = null;
+      continue;
+    }
+  }
+
+  try {
+    if (!res || !res.ok) {
+      // As a final fallback, try server-side /api/gemini-chat with 'message' shape if available
+      try {
+        const srv = await fetch('/api/gemini-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: prompt }),
+        });
+        if (srv.ok) {
+          const data = await srv.json().catch(() => null);
+          const reply = (data && (data.bot || data.text || data.message)) || '';
+          if (reply && String(reply).trim()) {
+            addMessage(String(reply), 'gemini');
+            speakText(String(reply));
+            return;
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      // Build diagnostic message
+      let diag = '';
+      try {
+        if (lastError) {
+          if (lastError instanceof Response) {
+            const ct = (lastError.headers.get('content-type') || '').toLowerCase();
+            const details = ct.includes('application/json')
+              ? await lastError.json().catch(() => null)
+              : await lastError.text().catch(() => null);
+            diag = typeof details === 'string' ? details : JSON.stringify(details || details === null ? details : String(details));
+          } else if (typeof lastError === 'string') diag = lastError;
+          else diag = JSON.stringify(lastError);
+        }
+      } catch (e) {
+        diag = String(lastError);
+      }
+
+      console.error('[gemini] upstream not ok:', lastError);
+      addMessage(`AI service error: ${diag || 'unavailable'}`, 'gemini');
+      speakText("Sorry, I couldn't reach the AI service. Please try again later.");
+      return;
+    }
+
+    const contentType = (res.headers.get("content-type") || "").toLowerCase();
 
       // If server returned audio (e.g., audio/mpeg, audio/wav), play it directly
       if (contentType.startsWith("audio/")) {
