@@ -204,12 +204,53 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
     if (cached && cached.expires > now)
       return res.status(200).json({ ...cached.value, cached: true });
 
-    // 5) No server-side inference performed here. Instruct client to run inference locally.
+    // 5) Try Hugging Face Inference API if configured (fallback to client-side)
+    const HF_KEY = process.env.HUGGINGFACE_API_KEY;
+    const HF_MODEL = process.env.HUGGINGFACE_MODEL;
+    if (HF_KEY && HF_MODEL) {
+      try {
+        const hfUrl = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
+        console.log("[disease] calling HuggingFace model:", HF_MODEL);
+        const resp = await fetch(hfUrl, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${HF_KEY}`,
+            "Content-Type": detectedMime || "application/octet-stream",
+            Accept: "application/json",
+          },
+          body: usedBuffer,
+        });
+        const out = await resp.json().catch(() => null);
+        if (!resp.ok) {
+          console.error("[disease] HF inference failed", resp.status, out);
+          throw new Error(out?.error || `HF inference failed with ${resp.status}`);
+        }
+
+        // Expected output: array of {label, score} or model specific JSON
+        if (Array.isArray(out) && out.length) {
+          const top = out[0];
+          const label = top.label || (top.class_name || "unknown");
+          const score = top.score || top.probability || 0;
+          const value = { label, score, raw: out };
+          cache.set(key, { value, expires: now + CACHE_TTL });
+          return res.status(200).json(value);
+        }
+
+        // Generic return if shape different
+        const value = { raw: out };
+        cache.set(key, { value, expires: now + CACHE_TTL });
+        return res.status(200).json(value);
+      } catch (e) {
+        console.error("[disease] HuggingFace inference error:", e);
+      }
+    }
+
+    // 6) No server-side inference available
     return res
       .status(501)
       .json({
         error:
-          "No server-side model available. Please perform client-side inference or set PLANT_MODEL_URL in server env to enable hosted-model server-side inference.",
+          "No server-side model available. Please perform client-side inference or configure HUGGINGFACE_MODEL and HUGGINGFACE_API_KEY in server env to enable hosted-model server-side inference.",
       });
   } catch (err: any) {
     console.error("[disease] error:", err);
