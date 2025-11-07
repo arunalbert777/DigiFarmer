@@ -262,7 +262,8 @@ export const handleDiseaseLabels: RequestHandler = async (_req, res) => {
       try {
         const raw = await fs.readFile(p, "utf8");
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return res.status(200).json({ labels: parsed });
+        if (Array.isArray(parsed))
+          return res.status(200).json({ labels: parsed });
       } catch (e) {
         // file not found or invalid — continue
       }
@@ -282,13 +283,19 @@ export const handleDiseaseLabels: RequestHandler = async (_req, res) => {
         if (resp.ok) {
           const meta = await resp.json().catch(() => null);
           if (meta) {
-            const id2label = meta?.id2label || meta?.config?.id2label || meta?.config?.decoder?.id2label;
+            const id2label =
+              meta?.id2label ||
+              meta?.config?.id2label ||
+              meta?.config?.decoder?.id2label;
             if (id2label && typeof id2label === "object") {
-              const keys = Object.keys(id2label).sort((a, b) => Number(a) - Number(b));
+              const keys = Object.keys(id2label).sort(
+                (a, b) => Number(a) - Number(b),
+              );
               const labels = keys.map((k) => id2label[k]);
               return res.status(200).json({ labels });
             }
-            if (meta?.labels && Array.isArray(meta.labels)) return res.status(200).json({ labels: meta.labels });
+            if (meta?.labels && Array.isArray(meta.labels))
+              return res.status(200).json({ labels: meta.labels });
           }
         }
       } catch (e) {
@@ -296,7 +303,12 @@ export const handleDiseaseLabels: RequestHandler = async (_req, res) => {
       }
     }
 
-    return res.status(404).json({ error: "No labels found. Provide models/plant_disease/labels.json or configure HUGGINGFACE_MODEL to fetch metadata." });
+    return res
+      .status(404)
+      .json({
+        error:
+          "No labels found. Provide models/plant_disease/labels.json or configure HUGGINGFACE_MODEL to fetch metadata.",
+      });
   } catch (e: any) {
     return res.status(500).json({ error: e.message || String(e) });
   }

@@ -37,7 +37,8 @@ export default function DiseaseDetection() {
           const r2 = await fetch("/api/detect/labels");
           if (!r2.ok) throw new Error("no server labels");
           const payload = await r2.json();
-          if (payload && Array.isArray(payload.labels)) setClassLabels(payload.labels as string[]);
+          if (payload && Array.isArray(payload.labels))
+            setClassLabels(payload.labels as string[]);
           else setClassLabels(null);
         } catch (e) {
           setClassLabels(null);
@@ -343,7 +344,9 @@ export default function DiseaseDetection() {
     if (diseaseMap[label]) return { details: diseaseMap[label] };
 
     // try normalized label: replace spaces with _ and strip odd chars
-    const normalized = label.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_()]/g, "");
+    const normalized = label
+      .replace(/\s+/g, "_")
+      .replace(/[^a-zA-Z0-9_()]/g, "");
     if (diseaseMap[normalized]) return { details: diseaseMap[normalized] };
 
     // attempt to match common PlantVillage patterns by splitting
@@ -353,7 +356,8 @@ export default function DiseaseDetection() {
     };
 
     // if label contains '___' try direct (PlantVillage format)
-    if (label.includes("___") && tryKey(label)) return { details: tryKey(label) };
+    if (label.includes("___") && tryKey(label))
+      return { details: tryKey(label) };
 
     // fallback: try to parse plant and disease from label like 'Tomato___Late_blight'
     const parts = label.split("___");
