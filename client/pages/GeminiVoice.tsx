@@ -225,7 +225,7 @@ export default function GeminiVoice() {
         diag = String(lastError);
       }
 
-      console.error('[gemini] upstream not ok:', lastError);
+      console.error('[gemini] upstream not ok:', diag || lastError);
       addMessage(`AI service error: ${diag || 'unavailable'}`, 'gemini');
       speakText("Sorry, I couldn't reach the AI service. Please try again later.");
       return;
