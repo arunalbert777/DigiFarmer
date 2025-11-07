@@ -53,6 +53,8 @@ export function createServer() {
   app.post("/api/detect", handleDiseaseDetect);
   // Expose labels (from local conversion or HF model metadata)
   app.get("/api/detect/labels", handleDiseaseLabels);
+  // Search web (Wikipedia) for label solutions
+  app.post("/api/detect/solution", handleSolutionSearch);
 
   return app;
 }
