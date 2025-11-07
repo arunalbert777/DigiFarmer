@@ -378,6 +378,93 @@ export default function DiseaseDetection() {
     return null;
   }
 
+  // Attempt to map generic labels to PlantVillage disease details or provide fallback solutions
+  function defaultGenericSolution(label: string) {
+    const raw = String(label || "").trim();
+    return {
+      plant_en: "Unknown",
+      plant_kn: "ಅನಾಮಧೇಯ",
+      disease_en: raw || "Unknown disease",
+      disease_kn: raw || "ಅನಾಮಧೇಯ ರೋಗ",
+      treatment_en: [
+        "Image unclear — retake a close-up of the affected leaf focusing on lesions or spots.",
+        "Avoid shadows and glare; photograph in diffuse daylight.",
+        "Remove heavily infected leaves and destroy them to reduce inoculum.",
+        "Improve plant spacing and air circulation.",
+        "Consult local extension or expert for a specific chemical/control recommendation.",
+      ],
+      treatment_kn: [
+        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್ನು ಮರುಹಿಡಿಯಿರಿ.",
+        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ್ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
+        "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
+        "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್ಚಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
+        "ನಿರ್ದಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳೀಯ ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
+      ],
+      reference: "PlantVillage",
+    };
+  }
+
+  function handleToggleSolution() {
+    if (!result) return setShowSolution(false);
+    if (showSolution) return setShowSolution(false);
+
+    // If result already has details, just show
+    if (result.details) {
+      setShowSolution(true);
+      return;
+    }
+
+    // Try to enrich using existing label(s)
+    const primaryLabel =
+      result.label || (Array.isArray(result.all) ? (result.all[0]?.className || String(result.all[0])) : "");
+
+    try {
+      const enriched = enrichResult(primaryLabel, result.score || 0) || {};
+      if (enriched.details) {
+        setResult((prev: any) => ({ ...(prev || {}), details: enriched.details }));
+        setShowSolution(true);
+        return;
+      }
+
+      // Try top predictions
+      if (Array.isArray(result.all) && result.all.length) {
+        for (const item of result.all) {
+          const lbl = item?.className || item?.label || String(item);
+          const prob = item?.probability || item?.score || result.score || 0;
+          const e2 = enrichResult(lbl, prob) || {};
+          if (e2.details) {
+            setResult((prev: any) => ({ ...(prev || {}), details: e2.details }));
+            setShowSolution(true);
+            return;
+          }
+        }
+      }
+
+      // Try leaf-type mapping
+      const candidate = findLeafType(primaryLabel || "");
+      if (candidate) {
+        const gen = defaultGenericSolution(primaryLabel || candidate.plant_en || "Unknown");
+        gen.plant_en = candidate.plant_en || gen.plant_en;
+        gen.plant_kn = candidate.plant_kn || gen.plant_kn;
+        gen.disease_en = "Unable to determine disease from image";
+        gen.disease_kn = "ರೋಗವನ್ನು ಚಿತ್ರದಿಂದ ನಿರ್ಧರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ";
+        setResult((prev: any) => ({ ...(prev || {}), details: gen }));
+        setShowSolution(true);
+        return;
+      }
+
+      // Final fallback
+      const fallback = defaultGenericSolution(primaryLabel || "Unknown");
+      setResult((prev: any) => ({ ...(prev || {}), details: fallback }));
+      setShowSolution(true);
+    } catch (e) {
+      console.warn("[solution] mapping failed", e);
+      const fallback = defaultGenericSolution(result.label || "Unknown");
+      setResult((prev: any) => ({ ...(prev || {}), details: fallback }));
+      setShowSolution(true);
+    }
+  }
+
   // try to find leaf match from result label (if available)
   const leafMatch = result
     ? findLeafType(
