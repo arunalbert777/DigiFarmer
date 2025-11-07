@@ -132,7 +132,7 @@ export default function GeminiVoice() {
 
   async function getGeminiResponse(prompt: string) {
     // Call Netlify function proxy
-    const url = "./.netlify/functions/gemini-proxy";
+    const url = "/.netlify/functions/gemini-proxy";
     const shortLang = language && language.startsWith("kn") ? "kn" : "en";
     // For Kannada, request server-side TTS audio when available; otherwise request text
     const wantAudio = shortLang === "kn";
