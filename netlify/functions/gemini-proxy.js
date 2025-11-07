@@ -85,7 +85,8 @@ exports.handler = async function (event, context) {
       } catch (upErr) {
         console.error("[gemini-proxy] SDK error:", String(upErr));
         // Return a friendly textual fallback so the client can proceed without throwing
-        const fallbackText = "AI service currently unavailable. Please try again later.";
+        const fallbackText =
+          "AI service currently unavailable. Please try again later.";
         return {
           statusCode: 200,
           headers: {

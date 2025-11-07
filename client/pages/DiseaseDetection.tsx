@@ -52,7 +52,6 @@ export default function DiseaseDetection() {
     return () => {};
   }, []);
 
-
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -73,7 +72,6 @@ export default function DiseaseDetection() {
     while (n--) u8arr[n] = bstr.charCodeAt(n);
     return new File([u8arr], filename, { type: "image/jpeg" });
   }
-
 
   async function submitImage() {
     if (!imageData) return;
@@ -416,12 +414,18 @@ export default function DiseaseDetection() {
 
     // Try to enrich using existing label(s)
     const primaryLabel =
-      result.label || (Array.isArray(result.all) ? (result.all[0]?.className || String(result.all[0])) : "");
+      result.label ||
+      (Array.isArray(result.all)
+        ? result.all[0]?.className || String(result.all[0])
+        : "");
 
     try {
       const enriched = enrichResult(primaryLabel, result.score || 0) || {};
       if (enriched.details) {
-        setResult((prev: any) => ({ ...(prev || {}), details: enriched.details }));
+        setResult((prev: any) => ({
+          ...(prev || {}),
+          details: enriched.details,
+        }));
         setShowSolution(true);
         return;
       }
@@ -433,7 +437,10 @@ export default function DiseaseDetection() {
           const prob = item?.probability || item?.score || result.score || 0;
           const e2 = enrichResult(lbl, prob) || {};
           if (e2.details) {
-            setResult((prev: any) => ({ ...(prev || {}), details: e2.details }));
+            setResult((prev: any) => ({
+              ...(prev || {}),
+              details: e2.details,
+            }));
             setShowSolution(true);
             return;
           }
@@ -443,7 +450,9 @@ export default function DiseaseDetection() {
       // Try leaf-type mapping
       const candidate = findLeafType(primaryLabel || "");
       if (candidate) {
-        const gen = defaultGenericSolution(primaryLabel || candidate.plant_en || "Unknown");
+        const gen = defaultGenericSolution(
+          primaryLabel || candidate.plant_en || "Unknown",
+        );
         gen.plant_en = candidate.plant_en || gen.plant_en;
         gen.plant_kn = candidate.plant_kn || gen.plant_kn;
         gen.disease_en = "Unable to determine disease from image";
@@ -455,23 +464,34 @@ export default function DiseaseDetection() {
 
       // Before final fallback, try web search via server for a solution
       try {
-        const resp = await fetch('/api/detect/solution', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const resp = await fetch("/api/detect/solution", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ label: primaryLabel }),
         });
         if (resp.ok) {
           const payload = await resp.json().catch(() => null);
           if (
             payload &&
-            (payload.extract || payload.url || (payload.kn && (payload.kn.extract || payload.kn.url) ) || payload.sections || (payload.kn && payload.kn.sections))
+            (payload.extract ||
+              payload.url ||
+              (payload.kn && (payload.kn.extract || payload.kn.url)) ||
+              payload.sections ||
+              (payload.kn && payload.kn.sections))
           ) {
-            const sol = defaultGenericSolution(primaryLabel || 'Unknown');
+            const sol = defaultGenericSolution(primaryLabel || "Unknown");
 
             // Helper to pick prioritized sections
             const pickSections = (s: any) => {
               if (!s) return null;
-              const order = ['treatment', 'management', 'control', 'prevention', 'symptoms', 'other'];
+              const order = [
+                "treatment",
+                "management",
+                "control",
+                "prevention",
+                "symptoms",
+                "other",
+              ];
               const out: string[] = [];
               for (const k of order) {
                 if (s[k] && Array.isArray(s[k])) out.push(...s[k]);
@@ -482,44 +502,65 @@ export default function DiseaseDetection() {
             const enFromSections = pickSections(payload.sections || payload);
             if (enFromSections) sol.treatment_en = enFromSections;
             else if (payload.extract) sol.treatment_en = [payload.extract];
-            else if (payload.url) sol.treatment_en = [`More info: ${payload.url}`];
+            else if (payload.url)
+              sol.treatment_en = [`More info: ${payload.url}`];
 
-            const knFromSections = pickSections((payload.kn && payload.kn.sections) ? payload.kn.sections : (payload.kn || null));
+            const knFromSections = pickSections(
+              payload.kn && payload.kn.sections
+                ? payload.kn.sections
+                : payload.kn || null,
+            );
             if (knFromSections) sol.treatment_kn = knFromSections;
-            else if (payload.kn && payload.kn.extract) sol.treatment_kn = [payload.kn.extract];
-            else if (payload.kn && payload.kn.url) sol.treatment_kn = [`ದ���ವಿಟ್ಟು ಕೆಳಗಿನ ಮಾಹಿತಿಯನ್ನು ನೋಡಿ: ${payload.kn.url}`];
+            else if (payload.kn && payload.kn.extract)
+              sol.treatment_kn = [payload.kn.extract];
+            else if (payload.kn && payload.kn.url)
+              sol.treatment_kn = [
+                `ದ���ವಿಟ್ಟು ಕೆಳಗಿನ ಮಾಹಿತಿಯನ್ನು ನೋಡಿ: ${payload.kn.url}`,
+              ];
             else sol.treatment_kn = sol.treatment_kn || [];
 
-            sol.reference = payload.url || payload.title || (payload.kn && payload.kn.url) || 'web';
+            sol.reference =
+              payload.url ||
+              payload.title ||
+              (payload.kn && payload.kn.url) ||
+              "web";
             setResult((prev: any) => ({ ...(prev || {}), details: sol }));
             setShowSolution(true);
           }
           if (
             payload &&
-            (payload.extract || payload.url || (payload.kn && (payload.kn.extract || payload.kn.url)))
+            (payload.extract ||
+              payload.url ||
+              (payload.kn && (payload.kn.extract || payload.kn.url)))
           ) {
-            const sol = defaultGenericSolution(primaryLabel || 'Unknown');
+            const sol = defaultGenericSolution(primaryLabel || "Unknown");
             sol.treatment_en = payload.extract
               ? [payload.extract]
               : payload.url
-              ? [`More info: ${payload.url}`]
-              : sol.treatment_en;
+                ? [`More info: ${payload.url}`]
+                : sol.treatment_en;
 
             if (payload.kn && payload.kn.extract) {
               sol.treatment_kn = [payload.kn.extract];
             } else if (payload.kn && payload.kn.url && !sol.treatment_kn) {
-              sol.treatment_kn = [`ದಯವಿಟ್ಟು નીચેದ ರೆಮರ್ಫ್ ನೋಡಿ: ${payload.kn.url}`];
+              sol.treatment_kn = [
+                `ದಯವಿಟ್ಟು નીચેದ ರೆಮರ್ಫ್ ನೋಡಿ: ${payload.kn.url}`,
+              ];
             } else {
               sol.treatment_kn = sol.treatment_kn || [];
             }
 
-            sol.reference = payload.url || payload.title || (payload.kn && payload.kn.url) || 'web';
+            sol.reference =
+              payload.url ||
+              payload.title ||
+              (payload.kn && payload.kn.url) ||
+              "web";
             setResult((prev: any) => ({ ...(prev || {}), details: sol }));
             setShowSolution(true);
           }
         }
       } catch (err) {
-        console.warn('[solution] web search failed', err);
+        console.warn("[solution] web search failed", err);
       }
 
       // Final fallback
@@ -571,7 +612,6 @@ export default function DiseaseDetection() {
         </button>
       </div>
 
-
       {imageData && (
         <div className="mb-4">
           <img
@@ -601,7 +641,12 @@ export default function DiseaseDetection() {
                   onClick={() => {
                     try {
                       const diseaseName =
-                        result?.details?.disease_en || result?.label || (Array.isArray(result?.all) ? result?.all?.[0]?.className || String(result?.all?.[0]) : "");
+                        result?.details?.disease_en ||
+                        result?.label ||
+                        (Array.isArray(result?.all)
+                          ? result?.all?.[0]?.className ||
+                            String(result?.all?.[0])
+                          : "");
                       const q = encodeURIComponent(String(diseaseName || ""));
                       // navigate to voice assistant and pass query via URL
                       (window as any).location.href = `/gemini-voice?q=${q}`;
@@ -623,31 +668,49 @@ export default function DiseaseDetection() {
                     <div>
                       <h5 className="font-medium">Treatment Steps (English)</h5>
                       <ol className="list-decimal list-inside mt-2 text-sm">
-                        {result.details.treatment_en.map((s: string, i: number) => (
-                          <li key={i} className="mb-1">{s}</li>
-                        ))}
+                        {result.details.treatment_en.map(
+                          (s: string, i: number) => (
+                            <li key={i} className="mb-1">
+                              {s}
+                            </li>
+                          ),
+                        )}
                       </ol>
 
                       <h5 className="font-medium mt-3">Prevention & Notes</h5>
                       <ul className="list-disc list-inside mt-2 text-sm">
-                        {result.details.prevention?.map((s: string, i: number) => (
-                          <li key={i} className="mb-1">{s}</li>
-                        ))}
-                        {!result.details.prevention && result.details.reference && (
-                          <li className="mb-1">See reference: {result.details.reference}</li>
+                        {result.details.prevention?.map(
+                          (s: string, i: number) => (
+                            <li key={i} className="mb-1">
+                              {s}
+                            </li>
+                          ),
                         )}
+                        {!result.details.prevention &&
+                          result.details.reference && (
+                            <li className="mb-1">
+                              See reference: {result.details.reference}
+                            </li>
+                          )}
                       </ul>
 
                       <h5 className="font-medium mt-3">ಚಿಕಿತ್ಸೆ (ಕನ್ನಡ)</h5>
                       <ol className="list-decimal list-inside mt-2 text-sm">
-                        {result.details.treatment_kn.map((s: string, i: number) => (
-                          <li key={i} className="mb-1">{s}</li>
-                        ))}
+                        {result.details.treatment_kn.map(
+                          (s: string, i: number) => (
+                            <li key={i} className="mb-1">
+                              {s}
+                            </li>
+                          ),
+                        )}
                       </ol>
                     </div>
                   ) : (
                     <div>
-                      <p className="text-sm">No detailed mapping found. Try uploading a clearer photo or specify crop type.</p>
+                      <p className="text-sm">
+                        No detailed mapping found. Try uploading a clearer photo
+                        or specify crop type.
+                      </p>
                     </div>
                   )}
                 </div>

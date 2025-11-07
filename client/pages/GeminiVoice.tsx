@@ -31,7 +31,8 @@ export default function GeminiVoice() {
   useEffect(() => {
     try {
       const params = new URLSearchParams(location.search);
-      const q = params.get("q") || (location.state && (location.state as any).q);
+      const q =
+        params.get("q") || (location.state && (location.state as any).q);
       if (q && q.trim()) {
         // small delay to allow component to finish mounting
         setTimeout(() => {
@@ -132,107 +133,124 @@ export default function GeminiVoice() {
 
   async function getGeminiResponse(prompt: string) {
     const shortLang = language && language.startsWith("kn") ? "kn" : "en";
-  // For Kannada, request server-side TTS audio when available; otherwise request text
-  const wantAudio = shortLang === "kn";
-  const payload = {
-    type: wantAudio ? "audio" : "text",
-    text: prompt,
-    lang: shortLang,
-  };
+    // For Kannada, request server-side TTS audio when available; otherwise request text
+    const wantAudio = shortLang === "kn";
+    const payload = {
+      type: wantAudio ? "audio" : "text",
+      text: prompt,
+      lang: shortLang,
+    };
 
-  // Try multiple likely endpoints for the proxy (Netlify functions or local server endpoint)
-  const endpoints = [
-    "/.netlify/functions/gemini-proxy",
-    "/.netlify/functions/gemini-chat",
-    "/.netlify/functions/api/gemini-proxy",
-    "/.netlify/functions/api/gemini-chat",
-    "/api/gemini-chat",
-  ];
+    // Try multiple likely endpoints for the proxy (Netlify functions or local server endpoint)
+    const endpoints = [
+      "/.netlify/functions/gemini-proxy",
+      "/.netlify/functions/gemini-chat",
+      "/.netlify/functions/api/gemini-proxy",
+      "/.netlify/functions/api/gemini-chat",
+      "/api/gemini-chat",
+    ];
 
-  let res: Response | null = null;
-  let lastError: any = null;
-  for (const ep of endpoints) {
-    try {
-      // Use fetchWithRetry to handle transient 429 responses
-      res = await fetchWithRetry(ep, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        cache: "no-store",
-      }, 2, 500).catch((e) => { throw e; });
+    let res: Response | null = null;
+    let lastError: any = null;
+    for (const ep of endpoints) {
+      try {
+        // Use fetchWithRetry to handle transient 429 responses
+        res = await fetchWithRetry(
+          ep,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            cache: "no-store",
+          },
+          2,
+          500,
+        ).catch((e) => {
+          throw e;
+        });
 
-      if (res && res.ok) {
-        // found a working endpoint
-        break;
-      }
+        if (res && res.ok) {
+          // found a working endpoint
+          break;
+        }
 
-      // If not OK and 404, continue to next endpoint
-      if (res && res.status === 404) {
-        // preserve the Response object so we can inspect status and body later
-        lastError = res;
+        // If not OK and 404, continue to next endpoint
+        if (res && res.status === 404) {
+          // preserve the Response object so we can inspect status and body later
+          lastError = res;
+          res = null;
+          continue;
+        }
+
+        // For other non-ok statuses, capture details and stop trying further
+        if (res && !res.ok) {
+          lastError = res;
+          break;
+        }
+      } catch (err) {
+        lastError = err;
+        // try next endpoint
         res = null;
         continue;
       }
-
-      // For other non-ok statuses, capture details and stop trying further
-      if (res && !res.ok) {
-        lastError = res;
-        break;
-      }
-    } catch (err) {
-      lastError = err;
-      // try next endpoint
-      res = null;
-      continue;
     }
-  }
 
-  try {
-    if (!res || !res.ok) {
-      // As a final fallback, try server-side /api/gemini-chat with 'message' shape if available
-      try {
-        const srv = await fetch('/api/gemini-chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: prompt }),
-        });
-        if (srv.ok) {
-          const data = await srv.json().catch(() => null);
-          const reply = (data && (data.bot || data.text || data.message)) || '';
-          if (reply && String(reply).trim()) {
-            addMessage(String(reply), 'gemini');
-            speakText(String(reply));
-            return;
+    try {
+      if (!res || !res.ok) {
+        // As a final fallback, try server-side /api/gemini-chat with 'message' shape if available
+        try {
+          const srv = await fetch("/api/gemini-chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: prompt }),
+          });
+          if (srv.ok) {
+            const data = await srv.json().catch(() => null);
+            const reply =
+              (data && (data.bot || data.text || data.message)) || "";
+            if (reply && String(reply).trim()) {
+              addMessage(String(reply), "gemini");
+              speakText(String(reply));
+              return;
+            }
           }
+        } catch (e) {
+          // ignore
         }
-      } catch (e) {
-        // ignore
+
+        // Build diagnostic message
+        let diag = "";
+        try {
+          if (lastError) {
+            if (lastError instanceof Response) {
+              const ct = (
+                lastError.headers.get("content-type") || ""
+              ).toLowerCase();
+              const details = ct.includes("application/json")
+                ? await lastError.json().catch(() => null)
+                : await lastError.text().catch(() => null);
+              diag =
+                typeof details === "string"
+                  ? details
+                  : JSON.stringify(
+                      details || details === null ? details : String(details),
+                    );
+            } else if (typeof lastError === "string") diag = lastError;
+            else diag = JSON.stringify(lastError);
+          }
+        } catch (e) {
+          diag = String(lastError);
+        }
+
+        console.error("[gemini] upstream not ok:", diag || lastError);
+        addMessage(`AI service error: ${diag || "unavailable"}`, "gemini");
+        speakText(
+          "Sorry, I couldn't reach the AI service. Please try again later.",
+        );
+        return;
       }
 
-      // Build diagnostic message
-      let diag = '';
-      try {
-        if (lastError) {
-          if (lastError instanceof Response) {
-            const ct = (lastError.headers.get('content-type') || '').toLowerCase();
-            const details = ct.includes('application/json')
-              ? await lastError.json().catch(() => null)
-              : await lastError.text().catch(() => null);
-            diag = typeof details === 'string' ? details : JSON.stringify(details || details === null ? details : String(details));
-          } else if (typeof lastError === 'string') diag = lastError;
-          else diag = JSON.stringify(lastError);
-        }
-      } catch (e) {
-        diag = String(lastError);
-      }
-
-      console.error('[gemini] upstream not ok:', diag || lastError);
-      addMessage(`AI service error: ${diag || 'unavailable'}`, 'gemini');
-      speakText("Sorry, I couldn't reach the AI service. Please try again later.");
-      return;
-    }
-
-    const contentType = (res.headers.get("content-type") || "").toLowerCase();
+      const contentType = (res.headers.get("content-type") || "").toLowerCase();
 
       // If server returned audio (e.g., audio/mpeg, audio/wav), play it directly
       if (contentType.startsWith("audio/")) {
