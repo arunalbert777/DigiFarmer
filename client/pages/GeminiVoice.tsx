@@ -168,7 +168,8 @@ export default function GeminiVoice() {
 
       // If not OK and 404, continue to next endpoint
       if (res && res.status === 404) {
-        lastError = { status: 404 };
+        // preserve the Response object so we can inspect status and body later
+        lastError = res;
         res = null;
         continue;
       }
