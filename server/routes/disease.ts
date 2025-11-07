@@ -341,14 +341,79 @@ export const handleSolutionSearch: RequestHandler = async (req, res) => {
           title,
         )}`;
         const presp = await fetch(summaryUrl, { headers: { Accept: 'application/json' } });
-        if (!presp.ok)
-          return { title, url: `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}` };
-        const pjson = await presp.json().catch(() => null);
-        return {
+        const pjson = presp && presp.ok ? await presp.json().catch(() => null) : null;
+
+        const result: any = {
           title,
           extract: pjson?.extract || null,
           url: `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}`,
         };
+
+        // Attempt to fetch full HTML and parse sections (Management / Treatment / Control / Prevention)
+        try {
+          const parseUrl = `https://${lang}.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(
+            title,
+          )}&prop=text&format=json`;
+          const presp2 = await fetch(parseUrl);
+          if (presp2 && presp2.ok) {
+            const pfull = await presp2.json().catch(() => null);
+            const html = pfull?.parse?.text?.['*'];
+            if (html) {
+              try {
+                const cheerio = await import('cheerio');
+                const $ = (cheerio as any).load(html);
+                const sections: Record<string, string[]> = {};
+                $('h2, h3').each((_, el) => {
+                  const heading = $(el).text().replace(/\[[^\]]*\]/g, '').trim();
+                  if (!heading) return;
+                  const keyText = heading.toLowerCase();
+                  const interested = /(management|treatment|control|prevention|symptoms?)/i.test(
+                    keyText,
+                  );
+                  if (!interested) return;
+
+                  // collect paragraphs & lists until next heading of same level
+                  const collected: string[] = [];
+                  let sib = $(el).next();
+                  while (sib && sib.length && !/^h2$|^h3$/i.test(sib[0].name)) {
+                    if (sib[0].name === 'p') {
+                      const txt = $(sib).text().trim();
+                      if (txt) collected.push(txt);
+                    } else if (sib[0].name === 'ul' || sib[0].name === 'ol') {
+                      $(sib)
+                        .find('li')
+                        .each((_, li) => {
+                          const t = $(li).text().trim();
+                          if (t) collected.push(t);
+                        });
+                    }
+                    sib = sib.next();
+                  }
+
+                  if (collected.length) {
+                    let k = 'other';
+                    if (/treat/i.test(keyText)) k = 'treatment';
+                    else if (/manage/i.test(keyText)) k = 'management';
+                    else if (/control/i.test(keyText)) k = 'control';
+                    else if (/prevent/i.test(keyText)) k = 'prevention';
+                    else if (/symptom/i.test(keyText)) k = 'symptoms';
+
+                    sections[k] = sections[k] || [];
+                    sections[k].push(...collected);
+                  }
+                });
+
+                if (Object.keys(sections).length) result.sections = sections;
+              } catch (e) {
+                // cheerio not available or parse failed — ignore and continue
+              }
+            }
+          }
+        } catch (e) {
+          // parsing failed — ignore
+        }
+
+        return result;
       } catch (e) {
         console.warn(`[solution] ${lang} wiki search error`, e);
         return null;
