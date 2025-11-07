@@ -1,0 +1,62 @@
+{
+  "Tomato": {
+    "plant_en": "Tomato",
+    "plant_kn": "Tamatekayi (ಟಮಟೆಕಾಯಿ)",
+    "leaf_description_en": "Pinnate, curled greyish green leaves",
+    "leaf_description_kn": "ಹಾದಿ, ನೆರೆಗು ಮುಳುಗಿದ ಕಂದು ಹಸಿರು ಎಲೆಗಳು"
+  },
+  "Brinjal": {
+    "plant_en": "Brinjal (Eggplant)",
+    "plant_kn": "Badane kaayi (ಬದನೇಕಾಯಿ)",
+    "leaf_description_en": "Broad, oval leaves",
+    "leaf_description_kn": "ಹೆಚ್ಚು, ಓವಲ್ ಆಕಾರದ ಎಲೆಗಳು"
+  },
+  "Okra": {
+    "plant_en": "Lady's finger (Okra)",
+    "plant_kn": "Bende kaayi (ಬೆಂಡೇಕಾಯಿ)",
+    "leaf_description_en": "Long, slender leaves",
+    "leaf_description_kn": "ಉದ್ದ, ಸಣ್ಣ ಎಲೆಗಳು"
+  },
+  "Onion": {
+    "plant_en": "Onion",
+    "plant_kn": "Eerulli (ಈರುಳ್ಳಿ)",
+    "leaf_description_en": "Long, tubular leaves",
+    "leaf_description_kn": "ಉದ್ದ, ಟ್ಯೂಬಲ್ಲರ್ ಎಲೆಗಳು"
+  },
+  "Cabbage": {
+    "plant_en": "Cabbage",
+    "plant_kn": "Yele kosu (ಎಲೆ ಕೋಸು)",
+    "leaf_description_en": "Large, round leafy head",
+    "leaf_description_kn": "ದೊಡ್ಡ, ವಲಯಾಕಾರದ ಎಲೆ ತಲೆ"
+  },
+  "Capsicum": {
+    "plant_en": "Capsicum (Bell pepper)",
+    "plant_kn": "Donne Menasina kaayi (ದೊಣ್ಣೆ ಮೆಣಸಿನಕಾಯಿ)",
+    "leaf_description_en": "Smooth broad leaves",
+    "leaf_description_kn": "ಮೃದುವಾದ, ವಿಶಾಲ ಎಲೆಗಳು"
+  },
+  "Spinach": {
+    "plant_en": "Spinach (Palak)",
+    "plant_kn": "Palak soppu (ಪಾಲಕ್ ಸೊಪ್ಪು)",
+    "leaf_description_en": "Soft green leaves",
+    "leaf_description_kn": "ಮೃದುವಾದ ಹಸಿರು ಎಲೆಗಳು"
+  },
+  "Bitter_gourd": {
+    "plant_en": "Bitter Gourd",
+    "plant_kn": "Haagala kaayi (ಹಾಗಲಕಾಯಿ)",
+    "leaf_description_en": "Compound, lobed leaves",
+    "leaf_description_kn": "ಸಂಯುಕ್ತ, ಲೋಬ್ಡ್ ಎಲೆಗಳು"
+  },
+  "Drumstick": {
+    "plant_en": "Drumstick (Moringa)",
+    "plant_kn": "Nuggeggayi (ನುಗಗೆ)",
+    "leaf_description_en": "Long, slender, pinnate leaves",
+    "leaf_description_kn": "ಉದ್ದ, ಸಣ್��, ಪಿನೇಟ್ ಎಲೆಗಳು"
+  },
+  "Pumpkin": {
+    "plant_en": "Pumpkin",
+    "plant_kn": "Kumbal kaayi (ಕುಂಬಳಕಾಯಿ)",
+    "leaf_description_en": "Large lobed leaves",
+    "leaf_description_kn": "ದೊಡ್ಡ ಲೋಬ್ಡ್ ಎಲೆಗಳು"
+  }
+}
