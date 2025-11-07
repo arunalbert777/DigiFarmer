@@ -13,12 +13,25 @@ export default function DiseaseDetection() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
+  const [classLabels, setClassLabels] = useState<string[] | null>(null);
+
   useEffect(() => {
     // Load multilingual disease mapping data
     fetch("/data/diseases_multilingual.json")
       .then((r) => r.json())
       .then((j) => setDiseaseMap(j))
       .catch(() => setDiseaseMap(null));
+
+    // Try to load TFJS labels.json produced during conversion/training
+    fetch("/models/plant_disease/labels.json")
+      .then((r) => {
+        if (!r.ok) throw new Error("no labels");
+        return r.json();
+      })
+      .then((j) => {
+        if (Array.isArray(j)) setClassLabels(j as string[]);
+      })
+      .catch(() => setClassLabels(null));
 
     return () => stopCamera();
   }, []);
