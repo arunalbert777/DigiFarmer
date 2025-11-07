@@ -14,6 +14,7 @@ export default function DiseaseDetection() {
   const streamRef = useRef<MediaStream | null>(null);
 
   const [classLabels, setClassLabels] = useState<string[] | null>(null);
+  const [leafTypes, setLeafTypes] = useState<Record<string, any> | null>(null);
 
   useEffect(() => {
     // Load multilingual disease mapping data
@@ -21,6 +22,12 @@ export default function DiseaseDetection() {
       .then((r) => r.json())
       .then((j) => setDiseaseMap(j))
       .catch(() => setDiseaseMap(null));
+
+    // Load leaf types mapping
+    fetch("/data/leaf_types.json")
+      .then((r) => r.json())
+      .then((j) => setLeafTypes(j))
+      .catch(() => setLeafTypes(null));
 
     // Try to load TFJS labels.json produced during conversion/training, fall back to server metadata endpoint
     fetch("/models/plant_disease/labels.json")
