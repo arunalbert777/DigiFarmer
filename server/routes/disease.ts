@@ -251,3 +251,53 @@ export const handleDiseaseDetect: RequestHandler = async (req, res) => {
       .json({ error: err.message || "Internal server error" });
   }
 };
+
+// Endpoint to expose class labels (from local labels.json or HF model metadata)
+export const handleDiseaseLabels: RequestHandler = async (_req, res) => {
+  try {
+    // 1) Try to read local labels file generated during training/convert
+    try {
+      const fs = await import("fs/promises");
+      const p = "models/plant_disease/labels.json";
+      try {
+        const raw = await fs.readFile(p, "utf8");
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return res.status(200).json({ labels: parsed });
+      } catch (e) {
+        // file not found or invalid — continue
+      }
+    } catch (e) {
+      // fs import failed — continue
+    }
+
+    // 2) Try to fetch model metadata from HuggingFace if configured
+    const HF_KEY = process.env.HUGGINGFACE_API_KEY;
+    const HF_MODEL = process.env.HUGGINGFACE_MODEL;
+    if (HF_KEY && HF_MODEL) {
+      try {
+        const hfMetaUrl = `https://huggingface.co/api/models/${HF_MODEL}`;
+        const resp = await fetch(hfMetaUrl, {
+          headers: { Authorization: `Bearer ${HF_KEY}` },
+        });
+        if (resp.ok) {
+          const meta = await resp.json().catch(() => null);
+          if (meta) {
+            const id2label = meta?.id2label || meta?.config?.id2label || meta?.config?.decoder?.id2label;
+            if (id2label && typeof id2label === "object") {
+              const keys = Object.keys(id2label).sort((a, b) => Number(a) - Number(b));
+              const labels = keys.map((k) => id2label[k]);
+              return res.status(200).json({ labels });
+            }
+            if (meta?.labels && Array.isArray(meta.labels)) return res.status(200).json({ labels: meta.labels });
+          }
+        }
+      } catch (e) {
+        console.warn("[disease] HF metadata fetch failed", e);
+      }
+    }
+
+    return res.status(404).json({ error: "No labels found. Provide models/plant_disease/labels.json or configure HUGGINGFACE_MODEL to fetch metadata." });
+  } catch (e: any) {
+    return res.status(500).json({ error: e.message || String(e) });
+  }
+};
