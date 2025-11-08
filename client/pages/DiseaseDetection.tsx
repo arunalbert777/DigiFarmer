@@ -646,15 +646,23 @@ export default function DiseaseDetection() {
                       // Build labels string from detection result
                       let labelsArr: string[] = [];
                       if (Array.isArray(result?.all) && result.all.length) {
-                        labelsArr = result.all.map((it: any) => it.className || it.label || String(it));
-                      } else if (typeof result?.label === 'string' && result.label.trim()) {
+                        labelsArr = result.all.map(
+                          (it: any) => it.className || it.label || String(it),
+                        );
+                      } else if (
+                        typeof result?.label === "string" &&
+                        result.label.trim()
+                      ) {
                         // split by comma if multiple
-                        labelsArr = result.label.split(',').map((s: string) => s.trim()).filter(Boolean);
+                        labelsArr = result.label
+                          .split(",")
+                          .map((s: string) => s.trim())
+                          .filter(Boolean);
                       } else if (result?.details?.disease_en) {
                         labelsArr = [String(result.details.disease_en)];
                       }
 
-                      const labelsString = labelsArr.join(', ');
+                      const labelsString = labelsArr.join(", ");
                       const promptText = `give simple and short step by step agricultural solution in kannada for this type of leaf disease labels - ${labelsString}`;
                       const q = encodeURIComponent(String(promptText || ""));
 
