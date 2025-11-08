@@ -655,9 +655,9 @@ export default function DiseaseDetection() {
                       try {
                         const nav = (window as any).__navigate || null;
                         // prefer react-router navigate if available via hook
-                        if (typeof navigate === 'function') {
+                        if (typeof navigate === "function") {
                           navigate(`/gemini-voice?q=${q}`);
-                        } else if (nav && typeof nav === 'function') {
+                        } else if (nav && typeof nav === "function") {
                           nav(`/gemini-voice?q=${q}`);
                         } else {
                           // fallback to full redirect
