@@ -40,10 +40,17 @@ echo "Pulling Kaggle kernel: $KERNEL_SLUG"
 TARGET_DIR="$OUT_DIR/$(echo "$KERNEL_SLUG" | tr '/' '_')"
 mkdir -p "$TARGET_DIR"
 
-kaggle kernels pull "$KERNEL_SLUG" -p "$TARGET_DIR" --unzip || {
+if ! kaggle kernels pull "$KERNEL_SLUG" -p "$TARGET_DIR" ; then
   echo "Failed to pull kernel $KERNEL_SLUG" >&2
   exit 4
-}
+fi
+
+# If a zip artifact was downloaded by the CLI, unzip it into the target directory
+ZIPFILE="$(ls "$TARGET_DIR"/*.zip 2>/dev/null | head -n1 || true)"
+if [ -n "$ZIPFILE" ]; then
+  echo "Unzipping $ZIPFILE into $TARGET_DIR"
+  unzip -o "$ZIPFILE" -d "$TARGET_DIR" || true
+fi
 
 echo "Kernel pulled to: $TARGET_DIR"
 
