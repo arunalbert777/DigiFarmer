@@ -384,7 +384,7 @@ export default function DiseaseDetection() {
       plant_en: "Unknown",
       plant_kn: "ಅನಾಮಧೇಯ",
       disease_en: raw || "Unknown disease",
-      disease_kn: raw || "ಅನಾಮಧೇಯ ರೋಗ",
+      disease_kn: raw || "ಅನಾ��ಧೇಯ ರೋಗ",
       treatment_en: [
         "Image unclear — retake a close-up of the affected leaf focusing on lesions or spots.",
         "Avoid shadows and glare; photograph in diffuse daylight.",
@@ -393,11 +393,11 @@ export default function DiseaseDetection() {
         "Consult local extension or expert for a specific chemical/control recommendation.",
       ],
       treatment_kn: [
-        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇ���ೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
-        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರ���ಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
+        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
+        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
         "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
-        "ನಿರ್��ಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳ��ಯ ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
+        "ನಿರ್��ಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳ��ಯ ತಜ್ಞರನ್ನ��� ಸಂಪರ್ಕಿಸಿ.",
       ],
       reference: "PlantVillage",
     };
@@ -457,7 +457,7 @@ export default function DiseaseDetection() {
         gen.plant_en = candidate.plant_en || gen.plant_en;
         gen.plant_kn = candidate.plant_kn || gen.plant_kn;
         gen.disease_en = "Unable to determine disease from image";
-        gen.disease_kn = "ರೋಗವನ್ನು ಚಿತ್ರದಿಂದ ನಿರ್���ರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ";
+        gen.disease_kn = "ರೋಗವನ್ನು ಚಿತ್ರದಿಂದ ನಿರ್ಧರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ";
         setResult((prev: any) => ({ ...(prev || {}), details: gen }));
         setShowSolution(true);
         return;
@@ -575,6 +575,8 @@ export default function DiseaseDetection() {
       setShowSolution(true);
     }
   }
+
+  const navigate = useNavigate();
 
   // try to find leaf match from result label (if available)
   const leafMatch = result
@@ -708,7 +710,7 @@ export default function DiseaseDetection() {
                           )}
                       </ul>
 
-                      <h5 className="font-medium mt-3">ಚಿಕಿತ್ಸೆ (ಕನ್ನಡ)</h5>
+                      <h5 className="font-medium mt-3">ಚಿಕಿತ್���ೆ (ಕನ್ನಡ)</h5>
                       <ol className="list-decimal list-inside mt-2 text-sm">
                         {result.details.treatment_kn.map(
                           (s: string, i: number) => (
