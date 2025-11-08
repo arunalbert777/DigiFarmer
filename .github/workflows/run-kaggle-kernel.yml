@@ -1,0 +1,79 @@
+name: Run Kaggle Kernel -> Train -> Push to HF
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  run-kaggle-kernel:
+    runs-on: ubuntu-latest
+    env:
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      HUB_MODEL_ID: ${{ secrets.HUB_MODEL_ID }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+
+      - name: Install Python packages
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --quiet kaggle papermill transformers accelerate evaluate huggingface_hub torch torchvision timm
+
+      - name: Configure Kaggle credentials
+        run: |
+          mkdir -p $HOME/.kaggle
+          echo "{\"username\": \"${KAGGLE_USERNAME}\", \"key\": \"${KAGGLE_KEY}\"}" > $HOME/.kaggle/kaggle.json
+          chmod 600 $HOME/.kaggle/kaggle.json
+
+      - name: Pull Kaggle kernel and detect notebook
+        id: pull
+        run: |
+          python3 scripts/hf_finetune/run_pull_and_extract.py imtkaggleteam/plant-diseases-detection-pytorch /tmp/kaggle_kernel > /tmp/pull_out.json || true
+          cat /tmp/pull_out.json
+          NB=$(jq -r 'select(.notebook) | .notebook' /tmp/pull_out.json 2>/dev/null || true)
+          if [ -z "$NB" ] || [ "$NB" = "null" ]; then
+            echo "no_notebook=true" >> $GITHUB_OUTPUT
+          else
+            echo "notebook_path=$NB" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: Execute pulled notebook with papermill (if found)
+        if: steps.pull.outputs.no_notebook != 'true'
+        run: |
+          NOTEBOOK=${{ steps.pull.outputs.notebook_path }}
+          echo "Executing notebook: $NOTEBOOK"
+          papermill "$NOTEBOOK" "${NOTEBOOK%.*}-executed.ipynb" -p HUB_MODEL_ID "${HUB_MODEL_ID}"
+
+      - name: Prepare dataset and run training script
+        run: |
+          # Attempt to prepare dataset using repo helper and train
+          RAW_OUT=/tmp/plantvillage_raw
+          HF_PREPARE_OUT=/tmp/hf_dataset
+          python3 scripts/hf_finetune/download_plantvillage_kaggle.py --dataset emmarex/plantdisease --out_dir "$RAW_OUT" --prepare_out "$HF_PREPARE_OUT" || true
+          python3 scripts/hf_finetune/train.py --dataset_path "$HF_PREPARE_OUT" --model_name_or_path google/vit-base-patch16-224 --output_dir outputs/plant-vit --per_device_train_batch_size 16 --num_train_epochs 3 --push_to_hub --hub_model_id "${HUB_MODEL_ID}" || true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
+      - name: Upload training artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plant-model-outputs
+          path: |
+            outputs/**
+            /tmp/kaggle_kernel/**
+
+      - name: Notify
+        run: echo "Workflow finished. If push_to_hub succeeded, model available at: ${HUB_MODEL_ID}"
