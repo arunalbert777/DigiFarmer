@@ -393,10 +393,10 @@ export default function DiseaseDetection() {
         "Consult local extension or expert for a specific chemical/control recommendation.",
       ],
       treatment_kn: [
-        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
-        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
-        "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್��ು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
-        "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನ��� ಸುಧಾರಿಸಿ.",
+        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇ���ೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
+        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರ���ಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
+        "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
+        "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
         "ನಿರ್��ಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳ��ಯ ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
       ],
       reference: "PlantVillage",
@@ -457,7 +457,7 @@ export default function DiseaseDetection() {
         gen.plant_en = candidate.plant_en || gen.plant_en;
         gen.plant_kn = candidate.plant_kn || gen.plant_kn;
         gen.disease_en = "Unable to determine disease from image";
-        gen.disease_kn = "ರೋಗವನ್ನು ಚಿತ್ರದಿಂದ ನಿರ್ಧರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ";
+        gen.disease_kn = "ರೋಗವನ್ನು ಚಿತ್ರದಿಂದ ನಿರ್���ರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ";
         setResult((prev: any) => ({ ...(prev || {}), details: gen }));
         setShowSolution(true);
         return;
@@ -649,8 +649,21 @@ export default function DiseaseDetection() {
                             String(result?.all?.[0])
                           : "");
                       const q = encodeURIComponent(String(diseaseName || ""));
-                      // navigate to voice assistant and pass query via URL
-                      (window as any).location.href = `/gemini-voice?q=${q}`;
+                      // navigate to voice assistant and pass query via URL (client-side)
+                      try {
+                        const nav = (window as any).__navigate || null;
+                        // prefer react-router navigate if available via hook
+                        if (typeof navigate === 'function') {
+                          navigate(`/gemini-voice?q=${q}`);
+                        } else if (nav && typeof nav === 'function') {
+                          nav(`/gemini-voice?q=${q}`);
+                        } else {
+                          // fallback to full redirect
+                          window.location.href = `/gemini-voice?q=${q}`;
+                        }
+                      } catch (e) {
+                        window.location.href = `/gemini-voice?q=${q}`;
+                      }
                     } catch (e) {
                       // fallback to previous behavior
                       handleToggleSolution();
