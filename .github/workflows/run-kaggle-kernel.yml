@@ -76,4 +76,5 @@ jobs:
             /tmp/kaggle_kernel/**
 
       - name: Notify
-        run: echo "Workflow finished. If push_to_hub succeeded, model available at: ${HUB_MODEL_ID}"
+        run: |
+          echo "Workflow finished. If push_to_hub succeeded, model available at: $HUB_MODEL_ID"
