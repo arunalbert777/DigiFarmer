@@ -516,7 +516,7 @@ export default function DiseaseDetection() {
               sol.treatment_kn = [payload.kn.extract];
             else if (payload.kn && payload.kn.url)
               sol.treatment_kn = [
-                `ದ���ವಿಟ್ಟು ಕೆಳಗಿನ ಮಾಹಿತಿಯನ್ನು ನೋಡಿ: ${payload.kn.url}`,
+                `ದ���ವಿಟ್ಟು ಕೆಳಗಿನ ಮಾಹಿತಿಯನ್ನು ನೋಡ���: ${payload.kn.url}`,
               ];
             else sol.treatment_kn = sol.treatment_kn || [];
 
@@ -673,7 +673,7 @@ export default function DiseaseDetection() {
                   }}
                   className="px-3 py-1 bg-indigo-600 text-white rounded"
                 >
-                  Open Voice Assistant
+                  Give solution
                 </button>
               </div>
 
