@@ -21,3 +21,14 @@ Output: public/diagrams/disease_flowchart.png
 2. npm run dev
 
 For more details, see docs/ARCHITECTURE_COMPLETE.md and docs/FILE_STRUCTURE.md.
+
+## Open in Colab
+You can open the provided Colab notebook (scripts/hf_finetune/colab_train.ipynb) with one click using the following badge. Replace OWNER, REPO and BRANCH with your GitHub repository owner, repository name and branch (for example: `main`) if needed.
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/OWNER/REPO/blob/BRANCH/scripts/hf_finetune/colab_train.ipynb)
+
+If your repo is hosted at GitHub under `github.com/your-user/your-repo`, the link becomes:
+
+https://colab.research.google.com/github/your-user/your-repo/blob/main/scripts/hf_finetune/colab_train.ipynb
+
+Clicking the badge will open the notebook in Colab where you can run the download, prepare, train, and push steps (set GPU runtime). If you want, I can update the badge to the exact repository path if you tell me your GitHub username and repository name (or provide the remote URL).
