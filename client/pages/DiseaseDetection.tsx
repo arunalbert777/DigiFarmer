@@ -339,7 +339,7 @@ export default function DiseaseDetection() {
             "Provide crop type and recent symptoms for better guidance.",
           ],
           treatment_kn: [
-            "ಚಿತ್��� ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾರು ಕೋಣಗಳ��್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
+            "ಚಿತ್��� ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾ���ು ಕೋಣಗಳ��್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
             "ಉತ್ತಮ ಸಲಹೆಗಾಗಿ ಬೆಳೆ ಪ್ರಕಾರ ಮತ್ತು ಇತ್ತೀಚಿನ ಲಕ್ಷಣಗಳನ್���ು ಒದಗಿಸಿ.",
           ],
           reference: "PlantVillage",
@@ -394,7 +394,7 @@ export default function DiseaseDetection() {
       ],
       treatment_kn: [
         "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
-        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
+        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್��ು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
         "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
         "ನಿರ್��ಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳ��ಯ ತಜ್ಞರನ್ನ��� ಸಂಪರ್ಕಿಸಿ.",
@@ -643,14 +643,21 @@ export default function DiseaseDetection() {
                 <button
                   onClick={() => {
                     try {
-                      const diseaseName =
-                        result?.details?.disease_en ||
-                        result?.label ||
-                        (Array.isArray(result?.all)
-                          ? result?.all?.[0]?.className ||
-                            String(result?.all?.[0])
-                          : "");
-                      const q = encodeURIComponent(String(diseaseName || ""));
+                      // Build labels string from detection result
+                      let labelsArr: string[] = [];
+                      if (Array.isArray(result?.all) && result.all.length) {
+                        labelsArr = result.all.map((it: any) => it.className || it.label || String(it));
+                      } else if (typeof result?.label === 'string' && result.label.trim()) {
+                        // split by comma if multiple
+                        labelsArr = result.label.split(',').map((s: string) => s.trim()).filter(Boolean);
+                      } else if (result?.details?.disease_en) {
+                        labelsArr = [String(result.details.disease_en)];
+                      }
+
+                      const labelsString = labelsArr.join(', ');
+                      const promptText = `give simple and short step by step agricultural solution in kannada for this type of leaf disease labels - ${labelsString}`;
+                      const q = encodeURIComponent(String(promptText || ""));
+
                       // navigate to voice assistant and pass query via URL (client-side)
                       try {
                         const nav = (window as any).__navigate || null;
