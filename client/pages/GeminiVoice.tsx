@@ -220,34 +220,28 @@ export default function GeminiVoice() {
 
         // Build diagnostic message
         let diag = "";
-        try {
-          if (lastError) {
-            if (lastError instanceof Response) {
-              const ct = (
-                lastError.headers.get("content-type") || ""
-              ).toLowerCase();
-              const details = ct.includes("application/json")
-                ? await lastError.json().catch(() => null)
-                : await lastError.text().catch(() => null);
-              diag =
-                typeof details === "string"
-                  ? details
-                  : JSON.stringify(
-                      details || details === null ? details : String(details),
-                    );
-            } else if (typeof lastError === "string") diag = lastError;
-            else diag = JSON.stringify(lastError);
-          }
-        } catch (e) {
-          diag = String(lastError);
+      try {
+        if (lastError) {
+          if (lastError instanceof Response) {
+            const ct = (lastError.headers.get("content-type") || "").toLowerCase();
+            const details = ct.includes("application/json")
+              ? await lastError.json().catch(() => null)
+              : await lastError.text().catch(() => null);
+            diag = typeof details === "string" ? details : JSON.stringify(details || details === null ? details : String(details));
+          } else if (typeof lastError === "string") diag = lastError;
+          else diag = JSON.stringify(lastError);
+        } else {
+          // No specific error captured — likely all endpoints failed silently
+          diag = `No proxy endpoints responded. Tried: ${endpoints.join(", ")}`;
         }
+      } catch (e) {
+        diag = String(lastError || e);
+      }
 
-        console.error("[gemini] upstream not ok:", diag || lastError);
-        addMessage(`AI service error: ${diag || "unavailable"}`, "gemini");
-        speakText(
-          "Sorry, I couldn't reach the AI service. Please try again later.",
-        );
-        return;
+      console.error("[gemini] upstream not ok:", diag);
+      addMessage(`AI service error: ${diag}`, "gemini");
+      speakText("Sorry, I couldn't reach the AI service. Please try again later.");
+      return;
       }
 
       const contentType = (res.headers.get("content-type") || "").toLowerCase();
