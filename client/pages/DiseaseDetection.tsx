@@ -339,7 +339,7 @@ export default function DiseaseDetection() {
             "Provide crop type and recent symptoms for better guidance.",
           ],
           treatment_kn: [
-            "ಚಿತ್��� ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾ���ು ಕೋಣಗಳ��್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
+            "ಚಿತ್��� ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾ���ು ಕೋಣಗಳ��್ನು ಸೆರೆಹಿಡಿಯಿ���ಿ.",
             "ಉತ್ತಮ ಸಲಹೆಗಾಗಿ ಬೆಳೆ ಪ್ರಕಾರ ಮತ್ತು ಇತ್ತೀಚಿನ ಲಕ್ಷಣಗಳನ್���ು ಒದಗಿಸಿ.",
           ],
           reference: "PlantVillage",
@@ -382,7 +382,7 @@ export default function DiseaseDetection() {
     const raw = String(label || "").trim();
     return {
       plant_en: "Unknown",
-      plant_kn: "ಅನಾಮಧೇಯ",
+      plant_kn: "ಅನಾಮ��ೇಯ",
       disease_en: raw || "Unknown disease",
       disease_kn: raw || "ಅನಾ��ಧೇಯ ರೋಗ",
       treatment_en: [
@@ -396,7 +396,7 @@ export default function DiseaseDetection() {
         "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
         "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್��ು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
-        "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
+        "ಸಸ್���ಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
         "ನಿರ್��ಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳ��ಯ ತಜ್ಞರನ್ನ��� ಸಂಪರ್ಕಿಸಿ.",
       ],
       reference: "PlantVillage",
@@ -594,6 +594,21 @@ export default function DiseaseDetection() {
         to identify the disease and provide treatment recommendations in English
         and Kannada.
       </p>
+
+      <div className="mb-4 p-4 rounded-lg bg-yellow-50 border border-yellow-100">
+        <h4 className="font-semibold mb-2">Capture tips for better accuracy</h4>
+        <ul className="list-disc list-inside text-sm mb-2">
+          <li>Use a high-resolution photo where the affected leaf fills ~60–80% of the frame.</li>
+          <li>Take a close-up of the lesion or spots and a second wider shot showing the whole leaf or plant.</li>
+          <li>Use diffuse natural light; avoid strong glare, harsh shadows, or overexposure.</li>
+          <li>Choose a plain contrasting background and avoid including hands, soil, or other plants.</li>
+          <li>Take multiple angles and ensure the image is in focus (no motion blur).</li>
+        </ul>
+        <div className="text-sm">
+          <strong>Kannada:</strong>
+          <p>ಸೂಚನೆಗಳು: ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಕಾಣಿಸಲು আক্রান্ত ಎಲೆ ಚಿತ್ರವನ್ನು ಕೈಗೆತ್ತಿಕೊಳ್ಳಿ, ಬೆಳಕು ಸರಿಯಾದಾಗ, ಹಿನ್ನಲೆ ಸರಳವಾಗಿರಲಿ, ಮತ್ತು ದಪ್ಪದ ಕುಟುಂಬದ ವಿವರಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.</p>
+        </div>
+      </div>
 
       <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2">
         <input type="file" accept="image/*" onChange={handleFile} />
