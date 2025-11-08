@@ -339,7 +339,7 @@ export default function DiseaseDetection() {
             "Provide crop type and recent symptoms for better guidance.",
           ],
           treatment_kn: [
-            "ಚಿತ್��� ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾ���ು ಕೋಣಗಳ��್ನು ಸೆರೆಹಿಡಿಯಿ���ಿ.",
+            "ಚಿತ್��� ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಪ್ರಭಾವಿತ ಎಲೆನ ಸಮೀಪದಿಂದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಹಲವಾ���ು ಕೋಣಗಳ��್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
             "ಉತ್ತಮ ಸಲಹೆಗಾಗಿ ಬೆಳೆ ಪ್ರಕಾರ ಮತ್ತು ಇತ್ತೀಚಿನ ಲಕ್ಷಣಗಳನ್���ು ಒದಗಿಸಿ.",
           ],
           reference: "PlantVillage",
@@ -382,7 +382,7 @@ export default function DiseaseDetection() {
     const raw = String(label || "").trim();
     return {
       plant_en: "Unknown",
-      plant_kn: "ಅನಾಮ��ೇಯ",
+      plant_kn: "ಅನಾಮಧೇಯ",
       disease_en: raw || "Unknown disease",
       disease_kn: raw || "ಅನಾ��ಧೇಯ ರೋಗ",
       treatment_en: [
@@ -396,7 +396,7 @@ export default function DiseaseDetection() {
         "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
         "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್��ು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
-        "ಸಸ್���ಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
+        "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
         "ನಿರ್��ಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳ��ಯ ತಜ್ಞರನ್ನ��� ಸಂಪರ್ಕಿಸಿ.",
       ],
       reference: "PlantVillage",
@@ -606,7 +606,7 @@ export default function DiseaseDetection() {
         </ul>
         <div className="text-sm">
           <strong>Kannada:</strong>
-          <p>ಸೂಚನೆಗಳು: ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಕಾಣಿಸಲು আক্রান্ত ಎಲೆ ಚಿತ್ರವನ್ನು ಕೈಗೆತ್ತಿಕೊಳ್ಳಿ, ಬೆಳಕು ಸರಿಯಾದಾಗ, ಹಿನ್ನಲೆ ಸರಳವಾಗಿರಲಿ, ಮತ್ತು ದಪ್ಪದ ಕುಟುಂಬದ ವಿವರಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.</p>
+          <p>ಸೂಚನೆಗಳು: ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಕಾಣಿಸಲು আক্রান্ত ಎಲೆ ಚಿತ್ರವನ್ನ�� ಕೈಗೆತ್ತಿಕೊಳ್ಳಿ, ಬೆಳಕು ಸರಿಯಾದಾಗ, ಹಿನ್ನಲೆ ಸರಳವಾಗಿರಲಿ, ಮತ್ತು ದಪ್ಪದ ಕುಟುಂಬದ ವಿವರಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.</p>
         </div>
       </div>
 
@@ -639,6 +639,20 @@ export default function DiseaseDetection() {
           />
         </div>
       )}
+
+      <div className="mb-4 p-4 rounded-lg bg-gray-50 border">
+        <h4 className="font-semibold mb-2">Improve model accuracy (fine-tune)</h4>
+        <p className="text-sm mb-2">This project supports fine-tuning a custom model on PlantVillage or your collected dataset. High-level steps:</p>
+        <ol className="list-decimal list-inside text-sm mb-2">
+          <li>Prepare an ImageNet-style dataset with one folder per class (or CSV mapping).</li>
+          <li>Use the provided scripts in <code>scripts/hf_finetune/</code> to prepare and train (ViT/ResNet).</li>
+          <li>Push the trained model to Hugging Face Hub and set <code>HUGGINGFACE_MODEL</code> on the server, then redeploy.</li>
+        </ol>
+        <p className="text-sm">Quick pointers: aim for balanced classes (100+ images/class minimum), augment images (crop, flip, color jitter), and include lesion-focused crops.</p>
+        <div className="mt-3">
+          <a href="/docs/FINE_TUNE_HF.md" className="text-sm text-blue-600 underline">Open fine-tune guide</a>
+        </div>
+      </div>
 
       {result && (
         <div className="p-4 border rounded-lg bg-white">
