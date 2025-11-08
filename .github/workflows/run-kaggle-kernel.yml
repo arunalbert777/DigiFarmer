@@ -28,7 +28,9 @@ jobs:
       - name: Install Python packages
         run: |
           python -m pip install --upgrade pip
-          python -m pip install --quiet kaggle papermill transformers accelerate evaluate huggingface_hub torch torchvision timm
+          python -m pip install --quiet kaggle papermill ipykernel jupyter_client transformers accelerate evaluate huggingface_hub torch torchvision timm
+          # Register a python3 kernel for papermill to use
+          python -m ipykernel install --user --name python3 --display-name python3 || true
 
       - name: Configure Kaggle credentials
         run: |
