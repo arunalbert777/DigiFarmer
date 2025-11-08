@@ -598,15 +598,34 @@ export default function DiseaseDetection() {
       <div className="mb-4 p-4 rounded-lg bg-yellow-50 border border-yellow-100">
         <h4 className="font-semibold mb-2">Capture tips for better accuracy</h4>
         <ul className="list-disc list-inside text-sm mb-2">
-          <li>Use a high-resolution photo where the affected leaf fills ~60–80% of the frame.</li>
-          <li>Take a close-up of the lesion or spots and a second wider shot showing the whole leaf or plant.</li>
-          <li>Use diffuse natural light; avoid strong glare, harsh shadows, or overexposure.</li>
-          <li>Choose a plain contrasting background and avoid including hands, soil, or other plants.</li>
-          <li>Take multiple angles and ensure the image is in focus (no motion blur).</li>
+          <li>
+            Use a high-resolution photo where the affected leaf fills ~60–80% of
+            the frame.
+          </li>
+          <li>
+            Take a close-up of the lesion or spots and a second wider shot
+            showing the whole leaf or plant.
+          </li>
+          <li>
+            Use diffuse natural light; avoid strong glare, harsh shadows, or
+            overexposure.
+          </li>
+          <li>
+            Choose a plain contrasting background and avoid including hands,
+            soil, or other plants.
+          </li>
+          <li>
+            Take multiple angles and ensure the image is in focus (no motion
+            blur).
+          </li>
         </ul>
         <div className="text-sm">
           <strong>Kannada:</strong>
-          <p>ಸೂಚನೆಗಳು: ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಕಾಣಿಸಲು আক্রান্ত ಎಲೆ ಚಿತ್ರವನ್ನ�� ಕೈಗೆತ್ತಿಕೊಳ್ಳಿ, ಬೆಳಕು ಸರಿಯಾದಾಗ, ಹಿನ್ನಲೆ ಸರಳವಾಗಿರಲಿ, ಮತ್ತು ದಪ್ಪದ ಕುಟುಂಬದ ವಿವರಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.</p>
+          <p>
+            ಸೂಚನೆಗಳು: ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಕಾಣಿಸಲು আক্রান্ত ಎಲೆ ಚಿತ್ರವನ್ನ��
+            ಕೈಗೆತ್ತಿಕೊಳ್ಳಿ, ಬೆಳಕು ಸರಿಯಾದಾಗ, ಹಿನ್ನಲೆ ಸರಳವಾಗಿರಲಿ, ಮತ್ತು ದಪ್ಪದ
+            ಕುಟುಂಬದ ವಿವರಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.
+          </p>
         </div>
       </div>
 
@@ -641,16 +660,39 @@ export default function DiseaseDetection() {
       )}
 
       <div className="mb-4 p-4 rounded-lg bg-gray-50 border">
-        <h4 className="font-semibold mb-2">Improve model accuracy (fine-tune)</h4>
-        <p className="text-sm mb-2">This project supports fine-tuning a custom model on PlantVillage or your collected dataset. High-level steps:</p>
+        <h4 className="font-semibold mb-2">
+          Improve model accuracy (fine-tune)
+        </h4>
+        <p className="text-sm mb-2">
+          This project supports fine-tuning a custom model on PlantVillage or
+          your collected dataset. High-level steps:
+        </p>
         <ol className="list-decimal list-inside text-sm mb-2">
-          <li>Prepare an ImageNet-style dataset with one folder per class (or CSV mapping).</li>
-          <li>Use the provided scripts in <code>scripts/hf_finetune/</code> to prepare and train (ViT/ResNet).</li>
-          <li>Push the trained model to Hugging Face Hub and set <code>HUGGINGFACE_MODEL</code> on the server, then redeploy.</li>
+          <li>
+            Prepare an ImageNet-style dataset with one folder per class (or CSV
+            mapping).
+          </li>
+          <li>
+            Use the provided scripts in <code>scripts/hf_finetune/</code> to
+            prepare and train (ViT/ResNet).
+          </li>
+          <li>
+            Push the trained model to Hugging Face Hub and set{" "}
+            <code>HUGGINGFACE_MODEL</code> on the server, then redeploy.
+          </li>
         </ol>
-        <p className="text-sm">Quick pointers: aim for balanced classes (100+ images/class minimum), augment images (crop, flip, color jitter), and include lesion-focused crops.</p>
+        <p className="text-sm">
+          Quick pointers: aim for balanced classes (100+ images/class minimum),
+          augment images (crop, flip, color jitter), and include lesion-focused
+          crops.
+        </p>
         <div className="mt-3">
-          <a href="/docs/FINE_TUNE_HF.md" className="text-sm text-blue-600 underline">Open fine-tune guide</a>
+          <a
+            href="/docs/FINE_TUNE_HF.md"
+            className="text-sm text-blue-600 underline"
+          >
+            Open fine-tune guide
+          </a>
         </div>
       </div>
 
