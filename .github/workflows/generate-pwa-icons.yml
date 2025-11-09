@@ -1,0 +1,42 @@
+name: Generate PWA icons from SVG
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - 'public/icons/**.svg'
+
+jobs:
+  generate-icons:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+
+      - name: Generate PNG icons
+        run: |
+          set -e
+          SRC=public/icons/icon-512x512.svg
+          if [ ! -f "$SRC" ]; then
+            echo "Source SVG not found: $SRC" && exit 1
+          fi
+          mkdir -p public/icons
+          convert -background none "$SRC" -resize 192x192 public/icons/icon-192x192.png
+          convert -background none "$SRC" -resize 512x512 public/icons/icon-512x512.png
+          convert -background none "$SRC" -resize 96x96 public/icons/scan-icon.png || true
+          convert -background none "$SRC" -resize 96x96 public/icons/chat-icon.png || true
+          convert -background none "$SRC" -resize 96x96 public/icons/expert-icon.png || true
+          ls -la public/icons
+
+      - name: Commit generated icons
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/icons/*.png || true
+          git commit -m "chore: generate PWA PNG icons from SVG" || echo "No changes to commit"
+          git push origin HEAD:main || echo "Push failed"
