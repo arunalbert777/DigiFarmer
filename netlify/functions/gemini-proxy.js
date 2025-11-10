@@ -90,7 +90,12 @@ exports.handler = async function (event, context) {
           // success
           break;
         } catch (upErr) {
-          console.error("[gemini-proxy] SDK error (attempt", attempt, "):", String(upErr));
+          console.error(
+            "[gemini-proxy] SDK error (attempt",
+            attempt,
+            "):",
+            String(upErr),
+          );
           // If we've exhausted retries, fall through to fallback behavior
           if (attempt >= maxTries) {
             break;
@@ -104,7 +109,9 @@ exports.handler = async function (event, context) {
       }
 
       if (!resp) {
-        console.error("[gemini-proxy] All attempts to call generateContent failed");
+        console.error(
+          "[gemini-proxy] All attempts to call generateContent failed",
+        );
         const fallbackText =
           "AI service currently unavailable. Please try again later.";
         return {

@@ -327,10 +327,14 @@ export default function GeminiVoice() {
       }
 
       // Detect common server-side fallback and show actionable guidance
-      if (typeof text === 'string' && text.toLowerCase().includes('ai service currently unavailable')) {
-        const msg = "AI service currently unavailable. Please ensure the server has a valid GOOGLE_API_KEY (or GEMINI_API_KEY) configured in Netlify/hosting environment and try again.";
-        console.error('[gemini] proxy returned fallback unavailable message');
-        addMessage(msg, 'gemini');
+      if (
+        typeof text === "string" &&
+        text.toLowerCase().includes("ai service currently unavailable")
+      ) {
+        const msg =
+          "AI service currently unavailable. Please ensure the server has a valid GOOGLE_API_KEY (or GEMINI_API_KEY) configured in Netlify/hosting environment and try again.";
+        console.error("[gemini] proxy returned fallback unavailable message");
+        addMessage(msg, "gemini");
         speakText(msg);
         return;
       }
