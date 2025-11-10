@@ -26,6 +26,24 @@ export default function GeminiVoice() {
     };
   }, []);
 
+  // Ensure speechSynthesis voices are loaded (mobile browsers often delay voice availability)
+  useEffect(() => {
+    try {
+      const loadVoices = () => {
+        try {
+          const v = window.speechSynthesis.getVoices() || [];
+          // no-op; this forces browser to populate voices list
+          return v;
+        } catch (e) {
+          return [];
+        }
+      };
+      loadVoices();
+      window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
+      return () => window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+    } catch (e) {}
+  }, []);
+
   // If navigated with a query param ?q=..., auto-send it to the assistant
   const location = useLocation();
   useEffect(() => {
@@ -62,12 +80,16 @@ export default function GeminiVoice() {
     conv.scrollTop = conv.scrollHeight;
   }
 
+  // Short language code (kn/en) derived from selected language to help matching voices and server behavior
+  const shortLang = language && language.startsWith("kn") ? "kn" : "en";
+
   function initializeRecognition() {
     const win: any = window as any;
     const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
     if (!SR) {
+      // On iOS Safari and some mobile browsers, SpeechRecognition is not available
       showMessage(
-        "Speech recognition not supported in this browser. Use Chrome/Edge.",
+        "Speech recognition not available in this browser. Please use Chrome on Android or a Chromium-based browser.",
       );
       return null;
     }
@@ -75,7 +97,12 @@ export default function GeminiVoice() {
     recognitionRef.current = rec;
     rec.continuous = false;
     rec.interimResults = false;
-    rec.lang = language;
+    // prefer full locale (e.g. kn-IN or en-US) but fall back to short code if needed
+    try {
+      rec.lang = language;
+    } catch (e) {
+      rec.lang = shortLang === "kn" ? "kn-IN" : "en-US";
+    }
 
     rec.onstart = () => {
       setIsListening(true);
@@ -98,7 +125,13 @@ export default function GeminiVoice() {
 
     rec.onerror = (e: any) => {
       console.error("Speech recognition error:", e);
-      setStatus(`Error: ${e.error}. Please try again.`);
+      let friendly = "An error occurred with speech recognition.";
+      try {
+        if (e && e.error === 'not-allowed') friendly = 'Microphone access was denied. Please enable the microphone for this site.';
+        else if (e && e.error === 'no-speech') friendly = "I didn't hear anything. Try speaking louder or enabling the microphone.";
+      } catch (er) {}
+      showMessage(friendly);
+      setStatus(friendly);
       setIsListening(false);
     };
 
@@ -323,15 +356,39 @@ export default function GeminiVoice() {
         return;
       }
       const utt = new SpeechSynthesisUtterance(text);
+      // use the selected locale if available, otherwise prefer a matching language
       utt.lang = language;
       const voices = window.speechSynthesis.getVoices() || [];
-      const match = voices.find((v) => v.lang && v.lang.startsWith(language));
+      // match by shortLang first (kn/en) then by full locale
+      let match = voices.find((v) => v.lang && v.lang.startsWith(shortLang));
+      if (!match) match = voices.find((v) => v.lang && v.lang.startsWith(language));
       if (match) utt.voice = match as any;
       utt.onstart = () => setStatus("Speaking...");
       utt.onend = () => setStatus("Click the mic to start speaking.");
       utt.onerror = () => setStatus("Error during speech synthesis.");
       // Ensure any previous speech/audio is stopped before speaking
       stopSpeech();
+      // On some mobile browsers voices are not loaded until user interaction — ensure voices are available
+      const voicesNow = window.speechSynthesis.getVoices();
+      if (!voicesNow || voicesNow.length === 0) {
+        // try waiting for voiceschanged event then speak
+        const onVoicesChanged = () => {
+          try {
+            const v = window.speechSynthesis.getVoices() || [];
+            const m = v.find((x) => x.lang && x.lang.startsWith(shortLang)) || v.find((x) => x.lang && x.lang.startsWith(language));
+            if (m) utt.voice = m as any;
+          } catch (e) {}
+          window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
+          window.speechSynthesis.speak(utt);
+        };
+        window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
+        // also try to speak after short delay in case voices are ready
+        setTimeout(() => {
+          if ((window.speechSynthesis.getVoices() || []).length > 0) window.speechSynthesis.speak(utt);
+        }, 250);
+        return;
+      }
+
       window.speechSynthesis.speak(utt);
     } catch (e) {
       console.warn(e);
