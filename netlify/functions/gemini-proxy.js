@@ -80,11 +80,31 @@ exports.handler = async function (event, context) {
       };
 
       let resp;
-      try {
-        resp = await client.models.generateContent(request);
-      } catch (upErr) {
-        console.error("[gemini-proxy] SDK error:", String(upErr));
-        // Return a friendly textual fallback so the client can proceed without throwing
+      // Retry logic for transient upstream errors (eg. 503 model overloaded)
+      const maxTries = 4;
+      let attempt = 0;
+      while (attempt < maxTries) {
+        attempt += 1;
+        try {
+          resp = await client.models.generateContent(request);
+          // success
+          break;
+        } catch (upErr) {
+          console.error("[gemini-proxy] SDK error (attempt", attempt, "):", String(upErr));
+          // If we've exhausted retries, fall through to fallback behavior
+          if (attempt >= maxTries) {
+            break;
+          }
+          // exponential backoff with jitter
+          const backoff = Math.min(2000 * Math.pow(2, attempt), 15000);
+          const jitter = Math.floor(Math.random() * 500);
+          await new Promise((r) => setTimeout(r, backoff + jitter));
+          continue;
+        }
+      }
+
+      if (!resp) {
+        console.error("[gemini-proxy] All attempts to call generateContent failed");
         const fallbackText =
           "AI service currently unavailable. Please try again later.";
         return {
