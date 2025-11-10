@@ -39,8 +39,9 @@ export default function GeminiVoice() {
         }
       };
       loadVoices();
-      window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
-      return () => window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+      window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+      return () =>
+        window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
     } catch (e) {}
   }, []);
 
@@ -127,8 +128,12 @@ export default function GeminiVoice() {
       console.error("Speech recognition error:", e);
       let friendly = "An error occurred with speech recognition.";
       try {
-        if (e && e.error === 'not-allowed') friendly = 'Microphone access was denied. Please enable the microphone for this site.';
-        else if (e && e.error === 'no-speech') friendly = "I didn't hear anything. Try speaking louder or enabling the microphone.";
+        if (e && e.error === "not-allowed")
+          friendly =
+            "Microphone access was denied. Please enable the microphone for this site.";
+        else if (e && e.error === "no-speech")
+          friendly =
+            "I didn't hear anything. Try speaking louder or enabling the microphone.";
       } catch (er) {}
       showMessage(friendly);
       setStatus(friendly);
@@ -361,7 +366,8 @@ export default function GeminiVoice() {
       const voices = window.speechSynthesis.getVoices() || [];
       // match by shortLang first (kn/en) then by full locale
       let match = voices.find((v) => v.lang && v.lang.startsWith(shortLang));
-      if (!match) match = voices.find((v) => v.lang && v.lang.startsWith(language));
+      if (!match)
+        match = voices.find((v) => v.lang && v.lang.startsWith(language));
       if (match) utt.voice = match as any;
       utt.onstart = () => setStatus("Speaking...");
       utt.onend = () => setStatus("Click the mic to start speaking.");
@@ -375,16 +381,25 @@ export default function GeminiVoice() {
         const onVoicesChanged = () => {
           try {
             const v = window.speechSynthesis.getVoices() || [];
-            const m = v.find((x) => x.lang && x.lang.startsWith(shortLang)) || v.find((x) => x.lang && x.lang.startsWith(language));
+            const m =
+              v.find((x) => x.lang && x.lang.startsWith(shortLang)) ||
+              v.find((x) => x.lang && x.lang.startsWith(language));
             if (m) utt.voice = m as any;
           } catch (e) {}
-          window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
+          window.speechSynthesis.removeEventListener(
+            "voiceschanged",
+            onVoicesChanged,
+          );
           window.speechSynthesis.speak(utt);
         };
-        window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
+        window.speechSynthesis.addEventListener(
+          "voiceschanged",
+          onVoicesChanged,
+        );
         // also try to speak after short delay in case voices are ready
         setTimeout(() => {
-          if ((window.speechSynthesis.getVoices() || []).length > 0) window.speechSynthesis.speak(utt);
+          if ((window.speechSynthesis.getVoices() || []).length > 0)
+            window.speechSynthesis.speak(utt);
         }, 250);
         return;
       }
