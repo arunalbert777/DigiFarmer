@@ -463,12 +463,13 @@ export default function DiseaseDetection() {
 
       // pick best
       const entries = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-      const best = entries[0];
-      if (!best || best[1] <= 0) return null;
-      const key = best[0];
-      const plant = leafTypesMap[key] || {};
-      const scoreVal = Math.min(1, best[1] / 4);
-      return { key, plant_en: plant.plant_en || plant.plant || key, plant_kn: plant.plant_kn, score: scoreVal };
+      const entriesSorted = entries.filter((e) => e[1] > 0);
+      if (!entriesSorted.length) return null;
+      const guesses = entriesSorted.slice(0, 3).map(([k, v]) => {
+        const p = leafTypesMap[k] || {};
+        return { key: k, plant_en: p.plant_en || p.plant || k, plant_kn: p.plant_kn, score: Math.min(1, v / 4) };
+      });
+      return guesses;
     } catch (e) {
       console.warn('detectLeafTypeByShape failed', e);
       return null;
@@ -747,7 +748,7 @@ export default function DiseaseDetection() {
           <strong>Kannada:</strong>
           <p>
             ಸೂಚನೆಗಳು: ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಕಾಣಿಸಲು আক্রান্ত ಎಲೆ ಚಿತ್ರವನ್ನ��
-            ಕೈಗೆತ್ತಿ��ೊಳ್ಳಿ, ಬೆಳಕು ಸರಿಯಾದಾಗ, ಹಿನ್ನಲೆ ಸರಳವಾಗಿರಲಿ, ಮತ್ತು ದಪ್ಪದ
+            ಕೈಗೆತ್ತಿಕೊಳ್ಳಿ, ಬೆಳಕು ಸರಿಯಾದಾಗ, ಹಿನ್ನಲೆ ಸರಳವಾಗಿರಲಿ, ಮತ್ತು ದಪ್ಪದ
             ಕುಟುಂಬದ ವಿವರಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.
           </p>
         </div>
