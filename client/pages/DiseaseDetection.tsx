@@ -13,6 +13,7 @@ export default function DiseaseDetection() {
   const [classLabels, setClassLabels] = useState<string[] | null>(null);
   const [showSolution, setShowSolution] = useState(false);
   const [leafTypes, setLeafTypes] = useState<Record<string, any> | null>(null);
+  const [leafGuess, setLeafGuess] = useState<{key:string, plant_en:string, plant_kn?:string, score:number} | null>(null);
 
   useEffect(() => {
     // Load multilingual disease mapping data
@@ -394,7 +395,7 @@ export default function DiseaseDetection() {
       ],
       treatment_kn: [
         "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
-        "ನೇರ ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್��ು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
+        "ನೇರ ಸೂರ್��ನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್��ು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
         "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
         "ನಿರ್��ಿಷ್ಟ ರಾಸಾಯನಿಕ/ನಿಯಂತ್ರಣ ಸಲಹೆಗಾಗಿ ಸ್ಥಳ��ಯ ತಜ್ಞರನ್ನ��� ಸಂಪರ್ಕಿಸಿ.",
@@ -457,7 +458,7 @@ export default function DiseaseDetection() {
         gen.plant_en = candidate.plant_en || gen.plant_en;
         gen.plant_kn = candidate.plant_kn || gen.plant_kn;
         gen.disease_en = "Unable to determine disease from image";
-        gen.disease_kn = "ರೋಗವನ್ನು ಚಿತ್ರದಿಂದ ನಿರ್ಧರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ";
+        gen.disease_kn = "ರ���ಗವನ್ನು ಚಿತ್ರದಿಂದ ನಿರ್ಧರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ";
         setResult((prev: any) => ({ ...(prev || {}), details: gen }));
         setShowSolution(true);
         return;
