@@ -517,7 +517,7 @@ export default function DiseaseDetection() {
         "Consult local extension or expert for a specific chemical/control recommendation.",
       ],
       treatment_kn: [
-        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣ���ಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
+        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿ��ೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
         "ನೇರ ಸೂರ್��ನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್��ು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
         "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
@@ -640,7 +640,7 @@ export default function DiseaseDetection() {
               sol.treatment_kn = [payload.kn.extract];
             else if (payload.kn && payload.kn.url)
               sol.treatment_kn = [
-                `ದ���ವಿಟ್ಟು ಕೆಳಗಿನ ಮಾಹಿತಿಯನ್ನು ನ���ಡ���: ${payload.kn.url}`,
+                `ದ���ವಿಟ್ಟು ಕೆಳಗಿನ ಮಾಹಿತಿಯನ್ನು ನೋಡ���: ${payload.kn.url}`,
               ];
             else sol.treatment_kn = sol.treatment_kn || [];
 
@@ -833,6 +833,17 @@ export default function DiseaseDetection() {
               <p>
                 Confidence: <strong>{(result.score * 100).toFixed(1)}%</strong>
               </p>
+
+              {leafGuess && (
+                <div className="mt-3 p-3 border rounded bg-gray-50">
+                  <h4 className="font-medium">Detected Leaf Type (by shape)</h4>
+                  <p className="mt-1">
+                    <strong>{leafGuess.plant_en}</strong>
+                    {leafGuess.plant_kn ? ` — ${leafGuess.plant_kn}` : null}
+                  </p>
+                  <p className="text-sm text-gray-600">Confidence: {(leafGuess.score * 100).toFixed(0)}%</p>
+                </div>
+              )}
 
               <div className="mt-3">
                 <button
