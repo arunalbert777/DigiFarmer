@@ -13,7 +13,7 @@ export default function DiseaseDetection() {
   const [classLabels, setClassLabels] = useState<string[] | null>(null);
   const [showSolution, setShowSolution] = useState(false);
   const [leafTypes, setLeafTypes] = useState<Record<string, any> | null>(null);
-  const [leafGuess, setLeafGuess] = useState<{key:string, plant_en:string, plant_kn?:string, score:number} | null>(null);
+  const [leafGuesses, setLeafGuesses] = useState<{key:string, plant_en:string, plant_kn?:string, score:number}[] | null>(null);
 
   useEffect(() => {
     // Load multilingual disease mapping data
@@ -747,7 +747,7 @@ export default function DiseaseDetection() {
           <strong>Kannada:</strong>
           <p>
             ಸೂಚನೆಗಳು: ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಕಾಣಿಸಲು আক্রান্ত ಎಲೆ ಚಿತ್ರವನ್ನ��
-            ಕೈಗೆತ್ತಿಕೊಳ್ಳಿ, ಬೆಳಕು ಸರಿಯಾದಾಗ, ಹಿನ್ನಲೆ ಸರಳವಾಗಿರಲಿ, ಮತ್ತು ದಪ್ಪದ
+            ಕೈಗೆತ್ತಿ��ೊಳ್ಳಿ, ಬೆಳಕು ಸರಿಯಾದಾಗ, ಹಿನ್ನಲೆ ಸರಳವಾಗಿರಲಿ, ಮತ್ತು ದಪ್ಪದ
             ಕುಟುಂಬದ ವಿವರಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.
           </p>
         </div>
