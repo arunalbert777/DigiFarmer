@@ -352,6 +352,129 @@ export default function DiseaseDetection() {
     return {};
   }
 
+  async function detectLeafTypeByShape(dataUrl: string | null, leafTypesMap: Record<string, any> | null) {
+    if (!dataUrl || !leafTypesMap) return null;
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = dataUrl;
+      await new Promise<void>((res, rej) => {
+        img.onload = () => res();
+        img.onerror = (e) => rej(e);
+      });
+
+      const W = 256;
+      const H = 256;
+      const canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      // draw image to canvas fitting center
+      const ar = img.width / img.height;
+      let dw = W, dh = H;
+      if (ar > 1) {
+        dh = Math.round(W / ar);
+      } else {
+        dw = Math.round(H * ar);
+      }
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, H);
+      ctx.drawImage(img, Math.round((W - dw) / 2), Math.round((H - dh) / 2), dw, dh);
+
+      const id = ctx.getImageData(0, 0, W, H);
+      const data = id.data;
+      const mask = new Uint8Array(W * H);
+      let area = 0;
+      let minX = W, minY = H, maxX = 0, maxY = 0;
+      for (let y = 0; y < H; y++) {
+        for (let x = 0; x < W; x++) {
+          const i = (y * W + x) * 4;
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          // simple green-screening heuristic
+          const isLeaf = g > r + 10 && g > b + 10 && g > 60;
+          if (isLeaf) {
+            mask[y * W + x] = 1;
+            area++;
+            if (x < minX) minX = x;
+            if (y < minY) minY = y;
+            if (x > maxX) maxX = x;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+      if (area < 50) return null;
+      const bboxW = Math.max(1, maxX - minX + 1);
+      const bboxH = Math.max(1, maxY - minY + 1);
+      const aspect = bboxW / bboxH;
+      const fill = area / (bboxW * bboxH);
+      // perimeter heuristic
+      let perimeter = 0;
+      for (let y = minY; y <= maxY; y++) {
+        for (let x = minX; x <= maxX; x++) {
+          const idx = y * W + x;
+          if (!mask[idx]) continue;
+          // 4-neighbor check
+          const neighbors = [
+            mask[idx - 1] || 0,
+            mask[idx + 1] || 0,
+            mask[idx - W] || 0,
+            mask[idx + W] || 0,
+          ];
+          const nsum = neighbors.reduce((s, v) => s + v, 0);
+          if (nsum < 4) perimeter++;
+        }
+      }
+      const complexity = perimeter / Math.sqrt(area || 1);
+
+      // heuristics to score candidate leaf types
+      const scores: Record<string, number> = {};
+      Object.keys(leafTypesMap).forEach((k) => (scores[k] = 0));
+
+      const longCandidates = ['Onion', 'Okra', 'Drumstick'];
+      const roundCandidates = ['Cabbage', 'Brinjal', 'Capsicum', 'Pumpkin'];
+      const lobedCandidates = ['Bitter_gourd', 'Pumpkin'];
+      const smallLeafCandidates = ['Spinach', 'Tomato'];
+
+      if (aspect > 2.0 || aspect < 0.5) {
+        longCandidates.forEach((k) => {
+          if (k in scores) scores[k] += 2;
+        });
+      }
+      if (fill > 0.6 && aspect > 0.7 && aspect < 1.3) {
+        roundCandidates.forEach((k) => {
+          if (k in scores) scores[k] += 2;
+        });
+      }
+      if (complexity > 0.25) {
+        lobedCandidates.forEach((k) => {
+          if (k in scores) scores[k] += 2;
+        });
+      }
+      if (area / (W * H) < 0.015) {
+        smallLeafCandidates.forEach((k) => {
+          if (k in scores) scores[k] += 1;
+        });
+      }
+
+      // bonus: prefer keys that include the word seen in file name? skip
+
+      // pick best
+      const entries = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+      const best = entries[0];
+      if (!best || best[1] <= 0) return null;
+      const key = best[0];
+      const plant = leafTypesMap[key] || {};
+      const scoreVal = Math.min(1, best[1] / 4);
+      return { key, plant_en: plant.plant_en || plant.plant || key, plant_kn: plant.plant_kn, score: scoreVal };
+    } catch (e) {
+      console.warn('detectLeafTypeByShape failed', e);
+      return null;
+    }
+  }
+
   function findLeafType(label: string) {
     if (!leafTypes) return null;
     const raw = String(label || "").toLowerCase();
@@ -394,7 +517,7 @@ export default function DiseaseDetection() {
         "Consult local extension or expert for a specific chemical/control recommendation.",
       ],
       treatment_kn: [
-        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣಭಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
+        "ಚಿತ್ರ ಅಸ್ಪಷ್ಟವಾಗಿದೆ — ಲೇಶನ್‌ಗಳು ಅಥವಾ ಕೆಂಪು ಕಣ���ಾಗಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ ಫೋಟೋವನ್���ು ಮರುಹಿಡಿಯಿರಿ.",
         "ನೇರ ಸೂರ್��ನ ಬೆಳಕನ್ನು ಮತ��ತು ಪ್ರತಿರೇಖೆಯನ್ನು ತಪ್ಪಿಸಿ; ಪ್ರಭಾವಿತ ಪ್ರದೇಶವನ್��ು ಒಳಗೊಂಡಂತೆ ಕ್ಲೋಸ್-ಅಪ್ ತೆಗೆದುಕೊಳ್ಳಿ.",
         "ತೈವ್ರವಾಗಿ ಸೋಂಕಿತ ಎಲೆಗಳನ್ನು ತೆಗೆದು ಮತ್ತು ನಾಶಮಾಡಿ.",
         "ಸಸ್ಯಗಳ ನಡುವಿನ ಸ್ಥಳವನ್ನು ಹೆಚ್��ಿಸಿ ಮತ್ತು ಗಾಳಿಚಲನೆ ಸುಧಾರಿಸಿ.",
@@ -517,7 +640,7 @@ export default function DiseaseDetection() {
               sol.treatment_kn = [payload.kn.extract];
             else if (payload.kn && payload.kn.url)
               sol.treatment_kn = [
-                `ದ���ವಿಟ್ಟು ಕೆಳಗಿನ ಮಾಹಿತಿಯನ್ನು ನೋಡ���: ${payload.kn.url}`,
+                `ದ���ವಿಟ್ಟು ಕೆಳಗಿನ ಮಾಹಿತಿಯನ್ನು ನ���ಡ���: ${payload.kn.url}`,
               ];
             else sol.treatment_kn = sol.treatment_kn || [];
 
