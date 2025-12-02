@@ -12,7 +12,8 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
       if (typeof req.body.message === "string") message = req.body.message;
       else if (typeof req.body.prompt === "string") message = req.body.prompt;
       else if (typeof req.body.input === "string") message = req.body.input;
-      else if (req.body.input && typeof req.body.input.text === "string") message = req.body.input.text;
+      else if (req.body.input && typeof req.body.input.text === "string")
+        message = req.body.input.text;
       else if (req.body.contents && Array.isArray(req.body.contents)) {
         // contents: [{ parts: [{ text }] }]
         try {
@@ -25,18 +26,32 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
     }
 
     if (!message || typeof message !== "string") {
-      return res.status(400).json({ error: "Missing 'message' (or 'prompt') in request body", received: req.body });
+      return res
+        .status(400)
+        .json({
+          error: "Missing 'message' (or 'prompt') in request body",
+          received: req.body,
+        });
     }
 
     const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
     const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
     if (!apiKey) {
-      console.error("[server/gemini] Error: API key not found in environment variables");
-      console.error("[server/gemini] Available env vars:", Object.keys(process.env).filter(k => k.includes('GOOGLE') || k.includes('GEMINI') || k.includes('API')));
+      console.error(
+        "[server/gemini] Error: API key not found in environment variables",
+      );
+      console.error(
+        "[server/gemini] Available env vars:",
+        Object.keys(process.env).filter(
+          (k) =>
+            k.includes("GOOGLE") || k.includes("GEMINI") || k.includes("API"),
+        ),
+      );
       return res.status(500).json({
-        error: "Server misconfiguration: missing GOOGLE_API_KEY or GEMINI_API_KEY",
-        hint: "Please set GOOGLE_API_KEY as an environment variable (in Netlify: Site settings > Build & deploy > Environment variables) and redeploy"
+        error:
+          "Server misconfiguration: missing GOOGLE_API_KEY or GEMINI_API_KEY",
+        hint: "Please set GOOGLE_API_KEY as an environment variable (in Netlify: Site settings > Build & deploy > Environment variables) and redeploy",
       });
     }
 
