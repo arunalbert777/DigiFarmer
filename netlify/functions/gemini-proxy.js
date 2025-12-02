@@ -49,12 +49,16 @@ exports.handler = async function (event, context) {
     }
 
     const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+
     if (!apiKey) {
+      console.error("[netlify/gemini-proxy] Error: API key not found in environment variables");
+      console.error("[netlify/gemini-proxy] Available env vars:", Object.keys(process.env).filter(k => k.includes('GOOGLE') || k.includes('GEMINI') || k.includes('API')));
       return {
         statusCode: 500,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          error: "Server misconfiguration: missing API key",
+          error: "Server misconfiguration: missing GOOGLE_API_KEY or GEMINI_API_KEY",
+          hint: "Please set GOOGLE_API_KEY in Netlify Site settings > Build & deploy > Environment variables and redeploy"
         }),
       };
     }
