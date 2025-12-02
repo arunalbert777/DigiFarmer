@@ -2,12 +2,12 @@
 // Securely proxy requests to Google Generative Language API (Gemini)
 // Reads API key from process.env.GOOGLE_API_KEY
 
-const { GoogleGenAI } = require("@google/genai");
+import { GoogleGenAI } from "@google/genai";
 
 // Netlify Function: netlify/functions/gemini-chat.js
 // Uses @google/genai SDK and reads API key from process.env.GOOGLE_API_KEY or process.env.GEMINI_API_KEY
 
-exports.handler = async function (event, context) {
+export const handler = async function (event, context) {
   try {
     if (event.httpMethod !== "POST") {
       return {
