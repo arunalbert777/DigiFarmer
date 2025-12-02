@@ -4,9 +4,9 @@
 // For 'text' type this returns { text, raw }
 // For 'audio' type this returns 501 (not implemented) with guidance to use client-side TTS or connect a TTS provider
 
-const { GoogleGenAI } = require("@google/genai");
+import { GoogleGenAI } from "@google/genai";
 
-exports.handler = async function (event, context) {
+export const handler = async function (event, context) {
   try {
     if (event.httpMethod !== "POST") {
       return {
