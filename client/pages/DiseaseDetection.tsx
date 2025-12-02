@@ -841,14 +841,18 @@ export default function DiseaseDetection() {
                 Confidence: <strong>{(result.score * 100).toFixed(1)}%</strong>
               </p>
 
-              {leafGuess && (
+              {leafGuesses && leafGuesses.length > 0 && (
                 <div className="mt-3 p-3 border rounded bg-gray-50">
-                  <h4 className="font-medium">Detected Leaf Type (by shape)</h4>
-                  <p className="mt-1">
-                    <strong>{leafGuess.plant_en}</strong>
-                    {leafGuess.plant_kn ? ` — ${leafGuess.plant_kn}` : null}
-                  </p>
-                  <p className="text-sm text-gray-600">Confidence: {(leafGuess.score * 100).toFixed(0)}%</p>
+                  <h4 className="font-medium">Detected Leaf Types (by shape)</h4>
+                  <ol className="list-decimal list-inside mt-2 text-sm">
+                    {leafGuesses.map((g, i) => (
+                      <li key={g.key + i} className="mb-1">
+                        <strong>{g.plant_en}</strong>
+                        {g.plant_kn ? ` — ${g.plant_kn}` : null}
+                        <span className="ml-2 text-xs text-gray-600">({Math.round(g.score * 100)}%)</span>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
               )}
 
