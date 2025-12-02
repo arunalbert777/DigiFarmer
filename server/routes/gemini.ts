@@ -32,7 +32,12 @@ export const handleGeminiChat: RequestHandler = async (req, res) => {
     const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
     if (!apiKey) {
-      return res.status(500).json({ error: "Server misconfiguration: missing API key" });
+      console.error("[server/gemini] Error: API key not found in environment variables");
+      console.error("[server/gemini] Available env vars:", Object.keys(process.env).filter(k => k.includes('GOOGLE') || k.includes('GEMINI') || k.includes('API')));
+      return res.status(500).json({
+        error: "Server misconfiguration: missing GOOGLE_API_KEY or GEMINI_API_KEY",
+        hint: "Please set GOOGLE_API_KEY as an environment variable (in Netlify: Site settings > Build & deploy > Environment variables) and redeploy"
+      });
     }
 
     // Google Generative Language API endpoint (v1beta generateContent)
