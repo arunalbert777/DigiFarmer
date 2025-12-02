@@ -77,7 +77,7 @@ export const handler = async function (event, context) {
       };
     }
 
-    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-preview-05-20";
+    const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
     // Initialize client
     const client = new GoogleGenAI({ apiKey });
