@@ -13,7 +13,9 @@ export default function DiseaseDetection() {
   const [classLabels, setClassLabels] = useState<string[] | null>(null);
   const [showSolution, setShowSolution] = useState(false);
   const [leafTypes, setLeafTypes] = useState<Record<string, any> | null>(null);
-  const [leafGuesses, setLeafGuesses] = useState<{key:string, plant_en:string, plant_kn?:string, score:number}[] | null>(null);
+  const [leafGuesses, setLeafGuesses] = useState<
+    { key: string; plant_en: string; plant_kn?: string; score: number }[] | null
+  >(null);
 
   useEffect(() => {
     // Load multilingual disease mapping data
@@ -161,7 +163,9 @@ export default function DiseaseDetection() {
           });
           try {
             if (imageData) {
-              detectLeafTypeByShape(imageData, leafTypes).then((g) => setLeafGuesses(g as any)).catch(() => {});
+              detectLeafTypeByShape(imageData, leafTypes)
+                .then((g) => setLeafGuesses(g as any))
+                .catch(() => {});
             }
           } catch (e) {}
           setLoading(false);
@@ -188,7 +192,12 @@ export default function DiseaseDetection() {
             model: "client-model",
             ...enriched,
           });
-          try { if (imageData) detectLeafTypeByShape(imageData, leafTypes).then((g) => setLeafGuesses(g as any)).catch(()=>{}); } catch(e) {}
+          try {
+            if (imageData)
+              detectLeafTypeByShape(imageData, leafTypes)
+                .then((g) => setLeafGuesses(g as any))
+                .catch(() => {});
+          } catch (e) {}
           setLoading(false);
           return;
         }
@@ -358,11 +367,14 @@ export default function DiseaseDetection() {
     return {};
   }
 
-  async function detectLeafTypeByShape(dataUrl: string | null, leafTypesMap: Record<string, any> | null) {
+  async function detectLeafTypeByShape(
+    dataUrl: string | null,
+    leafTypesMap: Record<string, any> | null,
+  ) {
     if (!dataUrl || !leafTypesMap) return null;
     try {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      img.crossOrigin = "anonymous";
       img.src = dataUrl;
       await new Promise<void>((res, rej) => {
         img.onload = () => res();
@@ -371,28 +383,38 @@ export default function DiseaseDetection() {
 
       const W = 256;
       const H = 256;
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = W;
       canvas.height = H;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       if (!ctx) return null;
       // draw image to canvas fitting center
       const ar = img.width / img.height;
-      let dw = W, dh = H;
+      let dw = W,
+        dh = H;
       if (ar > 1) {
         dh = Math.round(W / ar);
       } else {
         dw = Math.round(H * ar);
       }
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, W, H);
-      ctx.drawImage(img, Math.round((W - dw) / 2), Math.round((H - dh) / 2), dw, dh);
+      ctx.drawImage(
+        img,
+        Math.round((W - dw) / 2),
+        Math.round((H - dh) / 2),
+        dw,
+        dh,
+      );
 
       const id = ctx.getImageData(0, 0, W, H);
       const data = id.data;
       const mask = new Uint8Array(W * H);
       let area = 0;
-      let minX = W, minY = H, maxX = 0, maxY = 0;
+      let minX = W,
+        minY = H,
+        maxX = 0,
+        maxY = 0;
       for (let y = 0; y < H; y++) {
         for (let x = 0; x < W; x++) {
           const i = (y * W + x) * 4;
@@ -439,10 +461,10 @@ export default function DiseaseDetection() {
       const scores: Record<string, number> = {};
       Object.keys(leafTypesMap).forEach((k) => (scores[k] = 0));
 
-      const longCandidates = ['Onion', 'Okra', 'Drumstick'];
-      const roundCandidates = ['Cabbage', 'Brinjal', 'Capsicum', 'Pumpkin'];
-      const lobedCandidates = ['Bitter_gourd', 'Pumpkin'];
-      const smallLeafCandidates = ['Spinach', 'Tomato'];
+      const longCandidates = ["Onion", "Okra", "Drumstick"];
+      const roundCandidates = ["Cabbage", "Brinjal", "Capsicum", "Pumpkin"];
+      const lobedCandidates = ["Bitter_gourd", "Pumpkin"];
+      const smallLeafCandidates = ["Spinach", "Tomato"];
 
       if (aspect > 2.0 || aspect < 0.5) {
         longCandidates.forEach((k) => {
@@ -473,11 +495,16 @@ export default function DiseaseDetection() {
       if (!entriesSorted.length) return null;
       const guesses = entriesSorted.slice(0, 3).map(([k, v]) => {
         const p = leafTypesMap[k] || {};
-        return { key: k, plant_en: p.plant_en || p.plant || k, plant_kn: p.plant_kn, score: Math.min(1, v / 4) };
+        return {
+          key: k,
+          plant_en: p.plant_en || p.plant || k,
+          plant_kn: p.plant_kn,
+          score: Math.min(1, v / 4),
+        };
       });
       return guesses;
     } catch (e) {
-      console.warn('detectLeafTypeByShape failed', e);
+      console.warn("detectLeafTypeByShape failed", e);
       return null;
     }
   }
@@ -843,13 +870,17 @@ export default function DiseaseDetection() {
 
               {leafGuesses && leafGuesses.length > 0 && (
                 <div className="mt-3 p-3 border rounded bg-gray-50">
-                  <h4 className="font-medium">Detected Leaf Types (by shape)</h4>
+                  <h4 className="font-medium">
+                    Detected Leaf Types (by shape)
+                  </h4>
                   <ol className="list-decimal list-inside mt-2 text-sm">
                     {leafGuesses.map((g, i) => (
                       <li key={g.key + i} className="mb-1">
                         <strong>{g.plant_en}</strong>
                         {g.plant_kn ? ` — ${g.plant_kn}` : null}
-                        <span className="ml-2 text-xs text-gray-600">({Math.round(g.score * 100)}%)</span>
+                        <span className="ml-2 text-xs text-gray-600">
+                          ({Math.round(g.score * 100)}%)
+                        </span>
                       </li>
                     ))}
                   </ol>
