@@ -77,8 +77,7 @@ export const handler = async function (event, context) {
 
     if (type === "text") {
       // Create payload compatible with generateContent
-      const model =
-        process.env.GEMINI_MODEL || "gemini-2.0-flash";
+      const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
       const request = {
         model,
         contents: [
