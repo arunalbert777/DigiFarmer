@@ -5,6 +5,9 @@
 
 [build.environment]
   PNPM_FLAGS = "--no-frozen-lockfile"
+  # Netlify environment variables for Gemini API
+  # These should be set in the Netlify Dashboard under Site settings > Build & deploy > Environment variables
+  # Required: GOOGLE_API_KEY (your Google Generative AI API key)
 
 
 [functions]
