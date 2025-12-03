@@ -101,7 +101,7 @@ const stats = [
   { label: "Farmers Helped", value: "50K+", icon: Users },
   { label: "Diseases Detected", value: "200+", icon: Scan },
   { label: "Success Rate", value: "94%", icon: TrendingUp },
-  { label: "Countries", value: "25+", icon: Globe },
+  { label: "Countries", value: "India", icon: Globe },
 ];
 
 export default function Index() {
